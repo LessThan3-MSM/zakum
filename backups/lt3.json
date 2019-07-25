@@ -1,0 +1,284 @@
+{
+    "lt3": [
+        {
+            "id": "Tommy#4015",
+            "name": "Tomcicle",
+            "rank": 12,
+            "role": "dps",
+            "leader": true
+        },
+        {
+            "id": "thallium#0472",
+            "name": "Arrondi",
+            "rank": 8,
+            "role": "bishop",
+            "leader": true
+        },
+        {
+            "id": "awong617#6044",
+            "name": "Chopixistick",
+            "rank": 5,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "jacqio#4320",
+            "name": "Klossi",
+            "rank": 6,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Khel#7646",
+            "name": "Khel",
+            "rank": 5,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "HarlowAran (Ash/Ashley)#7612",
+            "name": "HarlowAran",
+            "rank": "DPS",
+            "role": 5,
+            "leader": false
+        },
+        {
+            "id": "Focus#6445",
+            "name": "iFocus",
+            "rank": 7,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "joey#2258",
+            "name": "BabyDrags",
+            "rank": 4,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "RecNeps#4810",
+            "name": "IceRec",
+            "rank": 4,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "XxDragonKing#3276",
+            "name": "XxDragonKing",
+            "rank": 4,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Joosa#1436",
+            "name": "Joosa",
+            "rank": 4,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "JoPeT#9697",
+            "name": "Jopet",
+            "rank": 4,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "TheRealSam#5919",
+            "name": "SammyPhantom",
+            "rank": 4,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Cardozo#2372",
+            "name": "Cardozo",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Josh#1379",
+            "name": "Croagunk",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "hii_matt#1388",
+            "name": "HiiMatt",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Zumi#4836",
+            "name": "Mezumi",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "angelxeternity#1099",
+            "name": "omgeez",
+            "rank": 3,
+            "role": "Buccaneer",
+            "leader": false
+        },
+        {
+            "id": "NHIZ#9296",
+            "name": "NHIZ",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "SendNukes#2926",
+            "name": "Sendnukes",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Htng#7058",
+            "name": "Shadowst4r",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "joey#2258",
+            "name": "SpillTheTea",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Tyrande#1734",
+            "name": "TyrandeMM",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "jeeff#2525",
+            "name": "AiSuushi",
+            "rank": 2,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Byn#4729",
+            "name": "Byn3",
+            "rank": 2,
+            "role": "Bishop",
+            "leader": false
+        },
+        {
+            "id": "Kellie#7385",
+            "name": "Calikellie",
+            "rank": 2,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "jacquejk#9898",
+            "name": "Camelia",
+            "rank": 2,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Ishie#5096",
+            "name": "Deboed",
+            "rank": 2,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "aphasia#1365",
+            "name": "M1nds3t",
+            "rank": 2,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Nikolai#9619",
+            "name": "Nikolai",
+            "rank": 2,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Smileforseleen#9642",
+            "name": "Seleen",
+            "rank": 2,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "xiaohotototo#1315",
+            "name": "Hotohori",
+            "rank": 1,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Heartbeat#8164",
+            "name": "Iliana",
+            "rank": 1,
+            "role": "Bishop",
+            "leader": false
+        },
+        {
+            "id": "Lukyra#6327",
+            "name": "Lukyra",
+            "rank": 1,
+            "role": "Bishop",
+            "leader": false
+        },
+        {
+            "id": "JoeyGIRTHGAWD#6459",
+            "name": "PrisonBorn",
+            "rank": 1,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Tara#9863",
+            "name": "Stiletto",
+            "rank": 1,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Helles#1869",
+            "name": "Akrot",
+            "rank": 0,
+            "role": "Bishop",
+            "leader": false
+        },
+        {
+            "id": "KitsuneKingu#8632",
+            "name": "Kitsu",
+            "rank": 0,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "LuciousCurls#0001",
+            "name": "LuciousCurls",
+            "rank": 0,
+            "role": "Bishop",
+            "leader": false
+        },
+        {
+            "id": "yamjerky#1109",
+            "name": "Driedyam",
+            "rank": "4",
+            "role": "DPS",
+            "leader": false
+        }
+    ]
+}
