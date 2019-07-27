@@ -1,11 +1,11 @@
 const Discord = require('discord.js');
-const {prefix, token} = require('./backups/config.json')
+const {prefix, token} = require('./config.json')
 const {lt3} = require("./guilds/lt3.json")
 const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
 var fs = require("fs");
 
-var timerChannels = require ('./backups/timerchannels.json');
+var timerChannels = require ('./timerchannels.json');
 
 let groups = [];
 let pool = [];
@@ -265,7 +265,7 @@ function getRoster(){
 }
 
 function getAdmins(){
-	return JSON.parse(fs.readFileSync('./backups/config.json', 'utf8')).admins
+	return JSON.parse(fs.readFileSync('./config.json', 'utf8')).admins
 }
 
 function addMemberToPool(name, message, roster){
@@ -357,7 +357,7 @@ function removeTimerCh(channel){
 function writeToTimerFile(channel){
 	var exported = true;
 	require('fs').writeFile(
-		'./backups/timerchannels.json', JSON.stringify(timerChannels, null, 4), 'utf-8',
+		'./timerchannels.json', JSON.stringify(timerChannels, null, 4), 'utf-8',
 
     function (err) {
         if (err) {
