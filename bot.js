@@ -233,3 +233,22 @@ client.on('message', message => {
 });
 
 client.login(token);
+
+/************TIMERS******************/
+/** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
+/** This REQUIRES cron npm to be installed **/
+var CronJob = require('cron').CronJob;
+var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.	
+	
+/** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
+//17:30 server time post a message!
+var expoMsg = 'Type !join to join the Zakum Expedition Queue and type !join again to leave. @here';
+//var testCh = '603734776503074827'; //TEST CH on DevServer
+var expoCh = '495314040810373140'; //Expo CH on LT3
+
+var expoTimer = new CronJob('30 17 * * *', function() {			
+	sendMsg(expoCh, expoMsg);
+	console.log(expoMsg);
+}, null, true, serverTimeZone);
+
+expoTimer.start();
