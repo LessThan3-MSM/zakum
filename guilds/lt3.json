@@ -155,13 +155,6 @@
             "leader": false
         },
         {
-            "id": "Tyrande#1734",
-            "name": "TyrandeMM",
-            "rank": 3,
-            "role": "DPS",
-            "leader": false
-        },
-        {
             "id": "jeeff#2525",
             "name": "AiSuushi",
             "rank": 2,
@@ -295,13 +288,6 @@
             "leader": false
         },
         {
-            "id": "Thomas Nguyen#8232",
-            "name": "Subzob",
-            "rank": 2,
-            "role": "DPS",
-            "leader": false
-        },
-        {
             "id": "RomanticMan#4455",
             "name": "RomanticMan",
             "rank": 1,
@@ -314,6 +300,21 @@
             "rank": 2,
             "role": "DPS",
             "leader": false
+        },
+        {
+            "id": "Tyrande#1734",
+            "name": "TyrandeMM",
+            "rank": 5,
+            "role": "DPS",
+            "leader": false
+        },
+        {
+            "id": "Thomas Nguyen#8232",
+            "name": "Subzob",
+            "rank": 3,
+            "role": "DPS",
+            "leader": false
         }
+
     ]
 }
