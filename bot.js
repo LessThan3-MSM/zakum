@@ -5,6 +5,8 @@ const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
 var fs = require("fs");
 
+var timerChannels = require ('./timerchannels.json');
+
 let groups = [];
 let pool = [];
 let waitlist = [];
@@ -169,6 +171,22 @@ client.on('message', message => {
 		classList && classList.length ? message.channel.send(`${classList.join(', ')} (${classList.length})`) : message.channel.send(`Zakum could not locate any guild members that play ${req}.`)
 	}
 
+	if(message.content.substring(0,11) === `${prefix}timerChAdd`){
+		if(!isAdmin){
+			message.channel.send(`Zakum is unable to acquiesce to the demands of a regular user.`);
+		}else{
+			addTimerCh(message.channel);
+		}
+	}else if(message.content.substring(0,14) === `${prefix}timerChRemove`){
+		if(!isAdmin){
+			message.channel.send(`Zakum is unable to acquiesce to the demands of a regular user.`);
+		}else{
+			removeTimerCh(message.channel);
+		}
+	}else if(message.content.substring(0,12) === `${prefix}timerChList`){
+		message.channel.send('['+timerChannels.toString()+']');
+	}
+
 });
 
 function formatGroupMessage(name, group) {
@@ -290,3 +308,68 @@ function addMemberToPool(name, message, roster){
 }
 
 client.login(token);
+
+/************TIMERS******************/
+/** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
+/** This REQUIRES cron npm to be installed **/
+var CronJob = require('cron').CronJob;
+var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.	
+	
+/** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
+//17:30 server time post a message!
+var expoMsg = 'Type !join to join the Zakum Expedition Queue and type !join again to leave. @here';
+
+var expoTimer = new CronJob('30 17 * * *', function(){	
+			for(var i = 0; i < timerChannels.length; i++){
+				var channel = client.channels.get(timerChannels[i]);
+				if(channel != undefined){
+					channel.send(expoMsg);
+				}
+			}	
+}, null, true, serverTimeZone);
+
+expoTimer.start();
+
+function addTimerCh(channel){
+	if(timerChannels.indexOf(channel.id) === -1) {
+		timerChannels.push(channel.id);
+		writeToTimerFile(channel);
+    } else {
+		channel.send(':scream: This channel already exists and cannot be added again.');
+	}
+}
+
+function removeTimerCh(channel){
+	var removed = false;
+	timerChannels = timerChannels.filter(function(value, index, arr){
+		if(value == channel.id){
+			removed = true;
+		}
+		return value != channel.id;
+	});
+	if(removed){
+		writeToTimerFile(channel);
+	} else {
+		channel.send(':scream: This channel does not currently exist and cannot be removed.');
+	}
+}
+
+function writeToTimerFile(channel){
+	var exported = true;
+	require('fs').writeFile(
+		'./timerchannels.json', JSON.stringify(timerChannels, null, 4), 'utf-8',
+
+    function (err) {
+        if (err) {
+            channel.send(':scream: Unable to add timer channel.');
+			exported = false;
+        }
+    }
+	
+	);
+	
+	if(exported){
+		channel.send(':thumbsup: Zakum has successfully modified the channel list.');
+	}
+}
+
