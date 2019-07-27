@@ -273,3 +273,29 @@ function addMemberToPool(name, message, roster){
 }
 
 client.login(token);
+
+/************TIMERS******************/
+/** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
+/** This REQUIRES cron npm to be installed **/
+var CronJob = require('cron').CronJob;
+var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.	
+	
+/** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
+//17:30 server time post a message!
+var expoMsg = 'Type !join to join the Zakum Expedition Queue and type !join again to leave. @here';
+//var expoCh = '495314040810373140'; //If in Discord Dev mode, you can right click on a channel and get its ID.
+var expoCh = '603734776503074827' //TEST CH ON TEST SERVER
+var expoTimer = new CronJob('* * * * *', function(){  //new CronJob('30 17 * * *', function() { 					
+	sendMsg(expoCh, expoMsg);
+}, null, true, serverTimeZone);
+
+expoTimer.start();
+
+//Helper method to send a message to the specified Discord channel.
+function sendMsg(channelID, amessage){
+	bot.sendMessage({		
+                    to: channelID,
+                    message: amessage
+                });								
+}
+
