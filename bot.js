@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const {prefix, token} = require('./config.json')
 const {lt3} = require("./guilds/lt3.json")
+const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
 var fs = require("fs");
 
@@ -31,18 +32,14 @@ client.on('message', message => {
 	if (message.content.substring(0,4) === `${prefix}add` && isAdmin){
 		const content = message.content.split(" ")
 		if(content.length !== 5) {
-			message.channel.send("Invalid member add format. Example: \`!add Horntail 1234 Horntail DPS 5 \`")
-			return;
-		}
-		if (content[3].toLowerCase() !== "buccaneer" && content[3].toLowerCase() !== "bishop" && content[3].toLowerCase().trim() !== "dps"){
-			message.channel.send("Invalid member add format. Role must be of type DPS, Bishop, or Buccaneer.")
+			message.channel.send("Invalid member add format. Example: \`!add Horntail#1234 Horntail Bowmaster 5 \`")
 			return;
 		}
 		if (content[1].split("#").length !== 2){
 			message.channel.send("Invalid Discord ID. Example: \`Horntail#1234\`")
 			return;
 		}
-		const member = {"id":content[1],"name":content[2],"rank":content[4],"role":content[3],"leader":false}
+		const member = {"id":content[1],"name":content[2],"rank":parseInt(content[4]),"role":content[3],"leader":false}
 		const roster = getRoster()
 		if (roster.find(person => person.name.toLowerCase() === member.name.toLowerCase() )){
 			message.channel.send(`${member.name} already exists on the LessThan3 guild roster!`)
@@ -150,6 +147,26 @@ client.on('message', message => {
 				};
 				message.channel.send(`Removed ${name} from expedition leaders!`)
 		});
+	}
+
+	if(message.content.substring(0,6) === `${prefix}class`){
+		const args = message.content
+		const req = args.split(" ").length === 3 ? `${args.split(" ")[1]}${args.split(" ")[2]}`:args.split(" ")[1]
+		const roster = getRoster()
+		const member = roster.find(member => member.name.toLowerCase() === req.toLowerCase())
+
+		if(member && member.name.toLowerCase().includes(req.toLowerCase())){
+			message.channel.send(`${member.name} plays ${member.role.substring(0,1).toUpperCase() + member.role.substring(1)}. That's a really cool class!`)
+			return;
+		}
+
+		if(!MAPLE_STORY_CLASSES.includes(req.toLowerCase())){
+			message.channel.send(`Zakum tried his best but does not think that ${req} exists in MapleStory M.`)
+			return;
+		}
+
+		const classList = roster.filter(member => member.role.toLowerCase() === req.toLowerCase()).map(member => member.name)
+		classList && classList.length ? message.channel.send(`${classList.toString()} (${classList.length})`) : message.channel.send(`Zakum could not locate any guild members that play ${req}.`)
 	}
 
 });
