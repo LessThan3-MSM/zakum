@@ -151,7 +151,7 @@ client.on('message', message => {
 
 	if(message.content.substring(0,6) === `${prefix}class`){
 		const args = message.content
-		const req = args.split(" ").length === 3 ? `${args.split(" ")[1]}${args.split(" ")[2]}`:args.split(" ")[1]
+		const req = args.split(" ").slice(1).join('')
 		const roster = getRoster()
 		const member = roster.find(member => member.name.toLowerCase() === req.toLowerCase())
 
@@ -166,7 +166,7 @@ client.on('message', message => {
 		}
 
 		const classList = roster.filter(member => member.role.toLowerCase() === req.toLowerCase()).map(member => member.name)
-		classList && classList.length ? message.channel.send(`${classList.toString()} (${classList.length})`) : message.channel.send(`Zakum could not locate any guild members that play ${req}.`)
+		classList && classList.length ? message.channel.send(`${classList.join(', ')} (${classList.length})`) : message.channel.send(`Zakum could not locate any guild members that play ${req}.`)
 	}
 
 });
