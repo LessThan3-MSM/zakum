@@ -3,8 +3,10 @@ const {prefix, token} = require('./config.json')
 const {lt3} = require("./guilds/lt3.json")
 const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
-var fs = require("fs");
 
+var fs = require("fs");
+var CronJob = require('cron').CronJob;
+var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.
 var timerChannels = require ('./timerchannels.json');
 
 let groups = [];
@@ -312,20 +314,17 @@ client.login(token);
 /************TIMERS******************/
 /** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
 /** This REQUIRES cron npm to be installed **/
-var CronJob = require('cron').CronJob;
-var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.	
-	
+
 /** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
 //17:30 server time post a message!
-var expoMsg = 'Type !join to join the Zakum Expedition Queue and type !join again to leave. @here';
-
-var expoTimer = new CronJob('30 17 * * *', function(){	
+var expoMsg = '@Guild Member I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.';
+var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
 				if(channel != undefined){
 					channel.send(expoMsg);
 				}
-			}	
+			}
 }, null, true, serverTimeZone);
 
 expoTimer.start();
@@ -365,11 +364,10 @@ function writeToTimerFile(channel){
 			exported = false;
         }
     }
-	
+
 	);
-	
+
 	if(exported){
 		channel.send(':thumbsup: Zakum has successfully modified the channel list.');
 	}
 }
-
