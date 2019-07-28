@@ -8,6 +8,7 @@ var fs = require("fs");
 var CronJob = require('cron').CronJob;
 var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.
 var timerChannels = require ('./timerchannels.json');
+const commands = require ('./commands.json');
 
 let groups = [];
 let pool = [];
@@ -190,6 +191,10 @@ client.on('message', message => {
 		message.channel.send('['+timerChannels.toString()+']');
 	}
 
+	if(message.content.substring(0,9).toLowerCase() === `${prefix}commands`){
+		listCommands(message.channel, isAdmin);
+	}
+
 });
 
 function formatGroupMessage(name, group) {
@@ -318,7 +323,8 @@ client.login(token);
 
 /** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
 //17:30 server time post a message!
-var expoMsg = '@Guild Member I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.';
+
+var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.';
 var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
@@ -371,4 +377,11 @@ function writeToTimerFile(channel){
 	if(exported){
 		channel.send(':thumbsup: Zakum has successfully modified the channel list.');
 	}
+}
+
+function listCommands(channel, isUserAdmin){
+	let helpMsg = '__Zakum Commands__ \n';
+	const commandsCanAccess = !isUserAdmin ? commands.filter(command => command.admin === false) : commands
+	commandsCanAccess.forEach(command => helpMsg += `**!${command.name}** ${command.required.length && `**{${command.required.join(", ")}}**`}  : ${command.description} \n` )
+	channel.send(helpMsg);
 }
