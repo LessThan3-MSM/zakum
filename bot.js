@@ -190,7 +190,7 @@ client.on('message', message => {
 	}else if(message.content.substring(0,12) === `${prefix}timerChList`){
 		message.channel.send('['+timerChannels.toString()+']');
 	}
-	
+
 	if(message.content.substring(0,9).toLowerCase() === `${prefix}commands`){
 		listCommands(message.channel, isAdmin);
 	}
@@ -380,20 +380,8 @@ function writeToTimerFile(channel){
 }
 
 function listCommands(channel, isUserAdmin){
-	var helpMsg = '__Zakum Commands__ \n';
-
-	for(var i = 0; i < commands.length; i++){
-		if(!(!isUserAdmin && commands[i].admin)){
-			helpMsg += '**!' + commands[i].command + ' '; 
-			for(var j = 0; j < commands[i].required.length; j++){
-				helpMsg += "{" + commands[i].required[j] + "} ";
-			}
-			for(var k = 0; k < commands[i].optional.length; k++){
-				helpMsg += "*{OPTIONAL: " + commands[i].optional[k] + "}* ";
-			}
-			helpMsg += '**: ' + commands[i].description + '\n';
-		}
-	}
-
+	let helpMsg = '__Zakum Commands__ \n';
+	const commandsCanAccess = !isUserAdmin ? commands.filter(command => command.admin === false) : commands
+	commandsCanAccess.forEach(command => helpMsg += `**!${command.name}** ${command.required.length && `**{${command.required.join(", ")}}**`}  : ${command.description} \n` )
 	channel.send(helpMsg);
 }
