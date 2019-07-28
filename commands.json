@@ -1,0 +1,100 @@
+[
+    {
+        "command": "class",
+        "admin": false,
+        "required": ["Name|Class"],
+        "optional": [],
+		"description": "Lists the class of the specified roster member *OR* Lists all roster members of the specified class."
+    },
+	{
+        "command": "groups",
+        "admin": false,
+        "required": [],
+        "optional": [],
+		"description": "Lists all available groups and their members."
+    },
+	{
+        "command": "join",
+        "admin": false,
+        "required": [],
+        "optional": [],
+		"description": "Enrolls/Unenrolls a guild roster member for the current expedition."
+    },
+	{
+        "command": "joined/pool",
+        "admin": false,
+        "required": [],
+        "optional": [],
+		"description": "Lists all members that have joined the current expedition."
+    },
+	{
+        "command": "lt3/roster",
+        "admin": false,
+        "required": [],
+        "optional": [],
+		"description": "Lists everyone on the guild roster."
+    },
+	{
+        "command": "add",
+        "admin": true,
+        "required": ["Discord ID", "Name", "Class", "Rating [1-10]"],
+        "optional": [],
+		"description": "Adds a member to the guild roster."
+    },
+	{
+        "command": "demote",
+        "admin": true,
+        "required": ["Name"],
+        "optional": [],
+		"description": "Demotes a leader to a member."
+    },
+	{
+        "command": "find",
+        "admin": true,
+        "required": ["Name"],
+        "optional": [],
+		"description": "Lists details for a guild roster member."
+    },
+	{
+        "command": "promote",
+        "admin": true,
+        "required": ["Name"],
+        "optional": [],
+		"description": "Promotes a member to a leader."
+    },
+	{
+        "command": "remove",
+        "admin": true,
+        "required": ["Name"],
+        "optional": [],
+		"description": "Removes a member from the guild roster."
+    },
+	{
+        "command": "reset",
+        "admin": true,
+        "required": [],
+        "optional": [],
+		"description": "The exposition is reset."
+    },
+	{
+        "command": "timerChAdd",
+        "admin": true,
+        "required": [],
+        "optional": [],
+		"description": "Adds the current channel to the timers list."
+    },
+	{
+        "command": "timerChList",
+        "admin": true,
+        "required": [],
+        "optional": [],
+		"description": "Lists all channels in the timers list."
+    },
+	{
+        "command": "timerChRemove",
+        "admin": true,
+        "required": [],
+        "optional": [],
+		"description": "Removes the current channel from the timers list."
+    }	
+]

@@ -6,6 +6,7 @@ const client = new Discord.Client();
 var fs = require("fs");
 
 var timerChannels = require ('./timerchannels.json');
+const commands = require ('./commands.json');
 
 let groups = [];
 let pool = [];
@@ -187,7 +188,7 @@ client.on('message', message => {
 		message.channel.send('['+timerChannels.toString()+']');
 	}
 	
-	if(message.content.substring(0,5).toLowerCase() === `${prefix}help` || message.content.substring(0,9).toLowerCase() === `${prefix}commands`){
+	if(message.content.substring(0,9).toLowerCase() === `${prefix}commands`){
 		listCommands(message.channel, isAdmin);
 	}
 
@@ -377,26 +378,21 @@ function writeToTimerFile(channel){
 	}
 }
 
-/** Adding below for command list helper **/
-//Executed: for any !zakum command.
 function listCommands(channel, isUserAdmin){
-	var helpMsg = '__Zakum listens and responds to your commands:__ \n';
-	helpMsg += '**!class {Name|Class}**: Lists the class of the specified roster member \n \t*OR* Lists all roster members of the specified class.\n';
-	helpMsg += '**!groups**: Lists all available groups and their members.\n';
-	helpMsg += '**!join**: Enrolls/Unenrolls a guild roster member for the current expedition.\n';
-	helpMsg += '**!joined**/**!pool**: Lists all members that have joined the current expedition.\n';
-	helpMsg += '**!lt3**/**!roster**: Lists everyone on the guild roster.\n';
-	if(isUserAdmin){
-		helpMsg += '\n__Admin commands__ \n';
-		helpMsg += '**!add {Discord ID} {Name} {Class} {Rating [1-10]}**: Adds a member to the guild roster.\n';
-		helpMsg += '**!demote**: Demotes a leader to a member.\n';
-		helpMsg += '**!find {Name}**: Lists details for a guild roster member.\n';
-		helpMsg += '**!promote**: Promotes a member to a leader.\n';
-		helpMsg += '**!remove {Name}**: Removes a member from the guild roster.\n';
-		helpMsg += '**!reset**: The exposition is reset.\n';
-		helpMsg += '**!timerChAdd**: Adds the current channel to the timers list.\n';
-		helpMsg += '**!timerChList**: Lists all channels in the timers list.\n';
-		helpMsg += '**!timerChRemove**: Removes the current channel from the timers list.\n';
+	var helpMsg = '__Zakum Commands__ \n';
+
+	for(var i = 0; i < commands.length; i++){
+		if(!(!isUserAdmin && commands[i].admin)){
+			helpMsg += '**!' + commands[i].command + ' '; 
+			for(var j = 0; j < commands[i].required.length; j++){
+				helpMsg += "{" + commands[i].required[j] + "} ";
+			}
+			for(var k = 0; k < commands[i].optional.length; k++){
+				helpMsg += "*{OPTIONAL: " + commands[i].optional[k] + "}* ";
+			}
+			helpMsg += '**: ' + commands[i].description + '\n';
+		}
 	}
+
 	channel.send(helpMsg);
 }
