@@ -111,12 +111,13 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,5) === `${prefix}find` && isAdmin) {
-		const personToFind = message.content.split(" ")[1].toLowerCase()
-		let member = null
-		if (personToFind){
-		 member = getRoster().find(member => member.name.toLowerCase() === personToFind)
+		const personToFind = message.content.split(" ")[1]
+		if (!personToFind) {
+			message.channel.send(`No input, please use like this: !find <IGN>`)
+			return;
 		}
-		member ? message.channel.send(JSON.stringify(member)) : message.channel.send(`Can't find ${personToFind} on the guild roster.`)
+		const foundMember = getRoster().find(member => member.name.toLowerCase() === personToFind.toLowerCase())
+		foundMember ? message.channel.send(JSON.stringify(foundMember)) : message.channel.send(`Zakum can't find ${personToFind} on the guild roster.`)
 	}
 
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
