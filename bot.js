@@ -238,7 +238,7 @@ function balance(pool, message){
 			var max = poolToJoin.sort((a,b) => b.rank-a.rank)[0].rank
 			const memberToJoin = poolToJoin.find(member => member.rank === max)
 			if(g0.length === 1 && g1.length === 1){
-				g0.push(memberToJoin)
+				leaders[0].rank > leaders[1].rank ? g1.push(memberToJoin) : g0.push(memberToJoin)
 			}
 			else if (g0.length === 10){
 				g1.push(memberToJoin)
