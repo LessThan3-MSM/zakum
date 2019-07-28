@@ -121,6 +121,11 @@ client.on('message', message => {
 		foundMember ? message.channel.send(JSON.stringify(foundMember)) : message.channel.send(`Zakum can't find ${personToFind} on the guild roster.`)
 	}
 
+	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
+		message.channel.send(`rebalancing...`)
+		balance(pool, message)
+	}
+
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
 		if (leaders.length === 2){
 			message.channel.send(`Zakum can't do this! There are already two expedition leaders.`)
@@ -231,31 +236,23 @@ function balance(pool, message){
 		while(poolToJoin.length){
 			let diff = computeDifference(g0, g1, false)
 			var max = poolToJoin.sort((a,b) => b.rank-a.rank)[0].rank
+			const memberToJoin = poolToJoin.find(member => member.rank === max)
 			if(g0.length === 1 && g1.length === 1){
-				const memberToJoin = poolToJoin.find(member => member.rank === max)
 				g0.push(memberToJoin)
-				poolToJoin = poolToJoin.filter(member => member !== memberToJoin)
 			}
 			else if (g0.length === 10){
-				const memberToJoin = poolToJoin.find(member => member.rank === max)
 				g1.push(memberToJoin)
-				poolToJoin = poolToJoin.filter(member => member !== memberToJoin)
 			}
 			else if (g1.length === 10){
-				const memberToJoin = poolToJoin.find(member => member.rank === max)
 				g0.push(memberToJoin)
-				poolToJoin = poolToJoin.filter(member => member !== memberToJoin)
 			}
 			else if (diff > 0) {
-				const memberToJoin = poolToJoin.find(member => member.rank === max)
 				g1.push(memberToJoin)
-				poolToJoin = poolToJoin.filter(member => member !== memberToJoin)
 			}
 			else {
-				const memberToJoin = poolToJoin.find(member => member.rank === max)
 				g0.push(memberToJoin)
-				poolToJoin = poolToJoin.filter(member => member !== memberToJoin)
 			}
+			poolToJoin = poolToJoin.filter(member => member !== memberToJoin)
 		}
 		groups[0] = g0
 		groups[1] = g1
