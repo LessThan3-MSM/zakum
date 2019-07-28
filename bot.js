@@ -218,7 +218,6 @@ function balance(pool, message){
 		groups[0] = [leaders[0], leaders[1], ...pool]
 	} else {
 		message.channel.send("Zakum has detected two groups! Balancing groups...")
-		let difference = 1000; // this being used?
 		let g0 = [leaders[0]]
 		let g1 = [leaders[1]]
 		let bishops = 	 pool.filter(person => person.role == 'bishop').sort((a,b) => b.rank-a.rank) 		// gimmie my bishes sorted by rank
@@ -231,7 +230,7 @@ function balance(pool, message){
 		*/
 		bishops.forEach(function(b){
 			if(!g0.map(g => g.role.toLowerCase()).includes('bishop')){ g0.push(b); }	// give g0 a bish if they don't have one
-			else if(!g1.map(g => g.role).includes('bishop')){ g1.push(b) } // give g1 a bish if they don't have one
+			else if(!g1.map(g => g.role.toLowerCase()).includes('bishop')){ g1.push(b) } // give g1 a bish if they don't have one
 			else{ poolToJoin.push(b) } // each group has one, back into the pool you go for normal distribution
 		})
 
