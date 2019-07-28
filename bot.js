@@ -186,6 +186,10 @@ client.on('message', message => {
 	}else if(message.content.substring(0,12) === `${prefix}timerChList`){
 		message.channel.send('['+timerChannels.toString()+']');
 	}
+	
+	if(message.content.substring(0,5).toLowerCase() === `${prefix}help` || message.content.substring(0,9).toLowerCase() === `${prefix}commands`){
+		listCommands(message.channel, isAdmin);
+	}
 
 });
 
@@ -317,7 +321,7 @@ var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify
 	
 /** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
 //17:30 server time post a message!
-var expoMsg = 'Type !join to join the Zakum Expedition Queue and type !join again to leave. @here';
+var expoMsg = 'Type !join to join the Zakum Expedition Queue and type !join again to leave. @everyone';
 
 var expoTimer = new CronJob('30 17 * * *', function(){	
 			for(var i = 0; i < timerChannels.length; i++){
@@ -373,3 +377,26 @@ function writeToTimerFile(channel){
 	}
 }
 
+/** Adding below for command list helper **/
+//Executed: for any !zakum command.
+function listCommands(channel, isUserAdmin){
+	var helpMsg = '__Zakum listens and responds to your commands:__ \n';
+	helpMsg += '**!class {Name|Class}**: Lists the class of the specified roster member \n \t*OR* Lists all roster members of the specified class.\n';
+	helpMsg += '**!groups**: Lists all available groups and their members.\n';
+	helpMsg += '**!join**: Enrolls/Unenrolls a guild roster member for the current expedition.\n';
+	helpMsg += '**!joined**/**!pool**: Lists all members that have joined the current expedition.\n';
+	helpMsg += '**!lt3**/**!roster**: Lists everyone on the guild roster.\n';
+	if(isUserAdmin){
+		helpMsg += '\n__Admin commands__ \n';
+		helpMsg += '**!add {Discord ID} {Name} {Class} {Rating [1-10]}**: Adds a member to the guild roster.\n';
+		helpMsg += '**!demote**: Demotes a leader to a member.\n';
+		helpMsg += '**!find {Name}**: Lists details for a guild roster member.\n';
+		helpMsg += '**!promote**: Promotes a member to a leader.\n';
+		helpMsg += '**!remove {Name}**: Removes a member from the guild roster.\n';
+		helpMsg += '**!reset**: The exposition is reset.\n';
+		helpMsg += '**!timerChAdd**: Adds the current channel to the timers list.\n';
+		helpMsg += '**!timerChList**: Lists all channels in the timers list.\n';
+		helpMsg += '**!timerChRemove**: Removes the current channel from the timers list.\n';
+	}
+	channel.send(helpMsg);
+}
