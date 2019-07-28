@@ -317,7 +317,7 @@ client.login(token);
 
 /** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
 //17:30 server time post a message!
-var expoMsg = 'I am Zakumbot, the expedition queue assistant-koom! Type !join to sign up for expeditions and type the command again to leave.';
+var expoMsg = '@Guild Member I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.';
 var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
