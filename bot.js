@@ -109,18 +109,15 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,5) === `${prefix}find` && isAdmin) {
-		if (message.content.split(" ")[1] === undefined) {
+		const personToFind = message.content.split(" ")[1]
+		if (!personToFind) {
 			message.channel.send(`No input, please use like this: !find <IGN>`)
+			return;
 		}
-		else {
-			const personToFind = message.content.split(" ")[1].toLowerCase()
-			let member = null
-			if (personToFind){
-			 member = getRoster().find(member => member.name.toLowerCase() === personToFind)
-			}
-			member ? message.channel.send(JSON.stringify(member)) : message.channel.send(`Can't find ${personToFind} on the guild roster.`)
-		}
+		const foundMember = getRoster().find(member => member.name.toLowerCase() === personToFind.toLowerCase())
+		foundMember ? message.channel.send(JSON.stringify(foundMember)) : message.channel.send(`Zakum can't find ${personToFind} on the guild roster.`)
 	}
+
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
 		if (leaders.length === 2){
 			message.channel.send(`Zakum can't do this! There are already two expedition leaders.`)
@@ -317,19 +314,19 @@ client.login(token);
 /** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
 /** This REQUIRES cron npm to be installed **/
 var CronJob = require('cron').CronJob;
-var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.	
-	
+var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.
+
 /** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
 //17:30 server time post a message!
 var expoMsg = 'Type !join to join the Zakum Expedition Queue and type !join again to leave. @here';
 
-var expoTimer = new CronJob('30 17 * * *', function(){	
+var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
 				if(channel != undefined){
 					channel.send(expoMsg);
 				}
-			}	
+			}
 }, null, true, serverTimeZone);
 
 expoTimer.start();
@@ -369,11 +366,10 @@ function writeToTimerFile(channel){
 			exported = false;
         }
     }
-	
+
 	);
-	
+
 	if(exported){
 		channel.send(':thumbsup: Zakum has successfully modified the channel list.');
 	}
 }
-
