@@ -4,6 +4,10 @@ const {lt3} = require("./guilds/lt3.json")
 const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
 
+/* importing functions from the commands dir */
+var add = require('./commands/add.js');
+var remove = require('./commands/remove.js');
+
 var fs = require("fs");
 var CronJob = require('cron').CronJob;
 var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.
@@ -35,45 +39,13 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,4) === `${prefix}add` && isAdmin){
-		const content = message.content.split(" ")
-		if(content.length !== 5) {
-			message.channel.send("Invalid member add format. Example: \`!add Horntail#1234 Horntail Bowmaster 5 \`")
-			return;
-		}
-		if (content[1].split("#").length !== 2){
-			message.channel.send("Invalid Discord ID. Example: \`Horntail#1234\`")
-			return;
-		}
-		const member = {"id":content[1],"name":content[2],"rank":parseInt(content[4]),"role":content[3],"leader":false}
-		const roster = getRoster()
-		if (roster.find(person => person.name.toLowerCase() === member.name.toLowerCase() )){
-			message.channel.send(`${member.name} already exists on the LessThan3 guild roster!`)
-			return;
-		}
-		roster.push(member)
-		console.log(roster)
-
-		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
-		    if (err) {
-		        console.error(err);
-		        return;
-		    };
-		    message.channel.send(`Successfully added ${member.name} to the LessThan3 guild roster!`)
-		});
+		let roster = getRoster();
+		add.addCommand(message, roster); // function located in /commands/add.js
 	}
 
 	if (message.content.substring(0,7) === `${prefix}remove` && isAdmin){
-		// make this better
-		const content = message.content.split(" ")
-		const kicked = content[1] && content[1].toLowerCase().trim();
-		const roster = getRoster().filter(member => member.name.toLowerCase() !== kicked)
-		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
-				if (err) {
-						console.error(err);
-						return;
-				};
-				message.channel.send(`Successfully removed ${kicked} from the LessThan3 guild roster!`)
-		});
+		let roster = getRoster();
+		remove.removeCommand(message, roster); // function located in /commands/remove.js
 	}
 
 	if (message.content === `${prefix}lt3` || message.content === `${prefix}roster`) {
