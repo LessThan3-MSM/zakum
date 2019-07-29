@@ -223,16 +223,15 @@ function balance(pool, message){
 		let bishops = 	 pool.filter(person => person.role == 'bishop').sort((a,b) => b.rank-a.rank) 		// gimmie my bishes sorted by rank
 		let poolToJoin = pool.filter(person => !person.leader && person.role.toLowerCase() != 'bishop') // gimmie my non-leaders/non-bishops
 
-		/* 
-			 ALLOCATE BISHOPS
-			 assumptions:
-			 - groups may have existing members in them
-		*/
-		bishops.forEach(function(b){
-			if(!g0.map(g => g.role.toLowerCase()).includes('bishop')){ g0.push(b); }	// give g0 a bish if they don't have one
-			else if(!g1.map(g => g.role.toLowerCase()).includes('bishop')){ g1.push(b) } // give g1 a bish if they don't have one
-			else{ poolToJoin.push(b) } // each group has one, back into the pool you go for normal distribution
+		// ALLOCATE BISHOPS
+		bishops.forEach(function(b, i){
+			prioritizeGroups([g0,g1]).forEach(function(group){
+				if(group.map(g => g.role.toLowerCase()).includes('bishop')) return;
+				group.push(b);
+				bishops.splice(i, 1);
+			})
 		})
+		bishops.forEach(b => poolToJoin.push(b)) // dump unused bishops back into pool
 
 		while(poolToJoin.length){
 			let diff = computeDifference(g0, g1, false)
@@ -266,6 +265,10 @@ function balance(pool, message){
 		groups[0] = g0
 		groups[1] = g1
 	}
+}
+
+function prioritizeGroups(groups){
+	return groups.sort((a,b) => a.reduce(function (acc, obj) { return acc + obj.rank; }, 0) - b.reduce(function (acc, obj) { return acc + obj.rank; }, 0))
 }
 
 function computeDifference(group1, group2, abs){
