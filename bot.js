@@ -7,6 +7,8 @@ const client = new Discord.Client();
 /* importing functions from the commands dir */
 var add = require('./commands/add.js');
 var remove = require('./commands/remove.js');
+var postRoster = require('./commands/postRoster.js');
+
 
 var fs = require("fs");
 var CronJob = require('cron').CronJob;
@@ -49,11 +51,10 @@ client.on('message', message => {
 	}
 
 	if (message.content === `${prefix}lt3` || message.content === `${prefix}roster`) {
+		// probably should just remove the `${prefix}lt3` above or change it to
+		// import from ./guilds/{filename} strip the .json for porability and customization for other guilds
 		let roster = getRoster()
-		let rosterMsg = ""
-		roster = roster.map(member => member.name).sort()
-		roster.forEach(member => rosterMsg += member + " " )
-		message.channel.send(`${rosterMsg} (${roster.length})`)
+		postRoster.postRoster(message, roster);
 	}
 
 	if (message.content === `${prefix}groups`) {
