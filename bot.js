@@ -14,16 +14,14 @@ var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify
 var timerChannels = require ('./timerchannels.json');
 const commands = require ('./commands.json');
 
-let groups = [];
+let groups = {};
 let pool = [];
 let waitlist = [];
 let leaders = [];
 
 client.once('ready', () => {
 	console.log('Ready!');
-	const initialLeaders = getRoster().filter(member => member.leader)
-	initialLeaders[0] && leaders.push(initialLeaders[0])
-	initialLeaders[1] && leaders.push(initialLeaders[1])
+	leaders = getRoster().filter(member => member.leader);
 });
 
 client.on('message', message => {
@@ -57,20 +55,18 @@ client.on('message', message => {
 	}
 
 	if (message.content === `${prefix}groups`) {
-		const group1 = formatGroupMessage("Group 1", groups[0] || pool)
-		const group2 = formatGroupMessage("Group 2", groups[1])
-		const waitlistGroup = formatGroupMessage("Waitlist", waitlist)
-		const differenceMsg = formatDifferenceMessage(computeDifference(groups[0], groups[1], true))
-		let msg = `Group 1: ${group1} (${group1.length})`
-		if (groups[1] && groups[1].length){
-			msg += `\nGroup 2: ${group2} (${group2.length})`
+		const groupSize = Object.keys(groups).length;
+		let msg = [];
+		for(i=1; i <= groupSize; i++){
+			var currGroup = groups['group'+i];
+			msg.push(`Group ${i}: ${formatGroupMessage(currGroup)} (Count: ${currGroup.length}, Strength: ${totalRank(currGroup)})`)
 		}
 		if (waitlist && waitlist.length){
-			msg += `\nWaitlist: ${waitlistGroup} (${waitlistGroup.length})`
+			msg.push(`Waitlist: ${formatGroupMessage(waitlist)} (Count: ${waitlist.length}, Strength: ${totalRank(waitlist)})`)
 		}
-		console.log("```" + msg + "```")
-		message.channel.send("```" + msg + "```")
-		groups[1] && groups[1].length && message.channel.send(`\`${differenceMsg}\``)
+		msg = msg.join("\n")
+		message.channel.send(msg)
+		message.channel.send(formatDifferenceMessage())
 	}
 
 	if (message.content.substring(0,5) === `${prefix}pool` || message.content.substring(0,7) === `${prefix}joined`) {
@@ -79,7 +75,7 @@ client.on('message', message => {
 
 	if (message.content.substring(0,6) === `${prefix}reset` && isAdmin) {
 		pool = [];
-		groups = [];
+		groups = {};
 		waitlist = [];
 	}
 
@@ -94,15 +90,11 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
-		message.channel.send(`rebalancing...`)
+		message.channel.send(`Rebalancing...`)
 		balance(pool, message)
 	}
 
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
-		if (leaders.length === 2){
-			message.channel.send(`Zakum can't do this! There are already two expedition leaders.`)
-			return;
-		}
 		const name = message.content.split(" ")[1]
 		let roster = getRoster()
 		let promoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
@@ -174,11 +166,12 @@ client.on('message', message => {
 
 });
 
-function formatGroupMessage(name, group) {
-	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name):[]
+function formatGroupMessage(group) {
+	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name).join(', '):[]
 }
 
-function formatDifferenceMessage(difference){
+function formatDifferenceMessage(){
+	let difference = computeDifference();
 	if(difference === 0){
 		return "Zakum has assembled absolutely perfect and balanced groups!"
 	}
@@ -194,61 +187,106 @@ function formatDifferenceMessage(difference){
 }
 
 function balance(pool, message){
-	groups[0] = [];
-	groups[1] = [];
-	if (pool.length <= 8){
-		groups[0] = [leaders[0], leaders[1], ...pool]
-	} else {
-		message.channel.send("Zakum has detected two groups! Balancing groups...")
-		let g0 = [leaders[0]]
-		let g1 = [leaders[1]]
-		let bishops = 	 pool.filter(person => person.role == 'bishop').sort((a,b) => b.rank-a.rank) 		// gimmie my bishes sorted by rank
-		let poolToJoin = pool.filter(person => !person.leader && person.role.toLowerCase() != 'bishop') // gimmie my non-leaders/non-bishops
-
-		// ALLOCATE BISHOPS
-		bishops.forEach(function(b, i){
-			prioritizeGroups([g0,g1]).forEach(function(group){
-				if(group.map(g => g.role.toLowerCase()).includes('bishop')) return;
-				group.push(b);
-				bishops.splice(i, 1);
-			})
-		})
-		bishops.forEach(b => poolToJoin.push(b)) // dump unused bishops back into pool
-
-		while(poolToJoin.length){
-			let diff = computeDifference(g0, g1, false)
-			var max = poolToJoin.sort((a,b) => b.rank-a.rank)[0].rank
-			const memberToJoin = poolToJoin.find(member => member.rank === max)
-			if(g0.length === 1 && g1.length === 1){
-				leaders[0].rank > leaders[1].rank ? g1.push(memberToJoin) : g0.push(memberToJoin)
-			}
-			else if (g0.length === 10){
-				g1.push(memberToJoin)
-			}
-			else if (g1.length === 10){
-				g0.push(memberToJoin)
-			}
-			else if (diff > 0) {
-				g1.push(memberToJoin)
-			}
-			else {
-				g0.push(memberToJoin)
-			}
-			poolToJoin = poolToJoin.filter(member => member !== memberToJoin)
-		}
-		groups[0] = g0
-		groups[1] = g1
+	if(pool.length <= 10){
+		groups['group1'] = pool;
+		return
 	}
+	let leaders = pool.filter(member => member.leader).sort((a,b) => b.rank-a.rank); 												 // gimmie my leaders sorted by rank
+	let bishops = pool.filter(member => member.role.toLowerCase() == 'bishop').sort((a,b) => b.rank-a.rank); // gimmie my bishops sorted by rank
+	let poolToJoin = pool.filter(member => !member.leader && member.role.toLowerCase() != 'bishop') 				 // gimmie my non-leaders/non-bishops
+	let groupCount = initializeGroups(leaders, bishops);
+	bishops = bishops.filter(member => !leaders.includes(member)) // update bishops to exclude leaders
+
+	// ALLOCATION
+	for(var group in groups){ groups[group].push(leaders.pop()) } // allocate leaders
+	for(var group in groups){
+		if(!groups[group].map(member => member.role.toLowerCase()).includes('bishop') && bishops.length > 0) groups[group].push(bishops.pop()) // allocate bishops		
+	}
+		
+	poolToJoin = poolToJoin.concat(leaders).concat(bishops).sort((a,b) => b.rank-a.rank); // add unused leaders and bishops back into pool and sort by rank
+
+	// MESSAGE GROUP STATUS
+	let msg = "Zakum has detected " + groupCount + " " + maybePluralize(groupCount, 'group') + "!";
+	if(groupCount > 1){ 
+		msg = msg.concat(" Balancing groups...") 
+	}
+	message.channel.send(msg)
+
+	/*
+		Group every else by rank, key is rank and value is array of members with corresponding rank
+		shape looks like
+		{
+			7: [{},{},{}]
+			8: [{},{}]
+			12: [{}]
+		}
+	*/
+	let ranked = poolToJoin.reduce(function(rv, x) {
+	  (rv[x['rank']] = rv[x['rank']] || []).push(x);
+	  return rv;
+	}, {});
+	let rankLevels = Object.keys(ranked).sort(function(a,b){return b-a}) // pull out available levels
+
+	// Iterate through each rank level, shuffle the member belonging to the rank, then delegate them to the group with the lowest point total
+	rankLevels.forEach(function(rank){
+		shuffle(ranked[rank]).forEach(function(selected){ // Make the results more unpredictable but still balanced
+			var foundGroup = false;
+			// groupsPrioritized().forEach(function(group){ // go through all the groups in order of priority
+			for(let group of groupsPrioritized()){ 
+				// if a max count hasn't been reached, dump them in
+				if(groups[group].length < 10){
+					groups[group].push(selected);
+					break;
+				}
+			};
+		})
+	})
+	// generate waitlist
+	waitlist = pool.filter(member => !flattenGroupsIds().includes(member.id))
 }
 
-function prioritizeGroups(groups){
-	return groups.sort((a,b) => a.reduce(function (acc, obj) { return acc + obj.rank; }, 0) - b.reduce(function (acc, obj) { return acc + obj.rank; }, 0))
+function initializeGroups(leaders, bishops){
+	let groupsBySize = Math.ceil(pool.length/7);
+	let maxGroups = Math.min(leaders.length, bishops.length, groupsBySize);
+	for(i=1; i <= maxGroups; i++){ groups['group'+i.toString()]=[] }
+	return Object.keys(groups).length;
+ }
+
+function flattenGroupsIds(){
+	return Object.values(groups).reduce(function(acc, obj){return acc.concat(obj)}).map(member => member.id);
 }
 
-function computeDifference(group1, group2, abs){
-	const g1 = group1 && group1.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
-	const g2 = group2 && group2.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
-	return abs ? Math.abs(g1-g2) : (g1-g2)
+function maybePluralize(count, noun){
+  return count > 1 ? noun.concat('s') : noun;
+}
+
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+}
+
+// always chooses group with lowest total rank
+function groupsPrioritized(){
+	let lowestRank = [];
+	for(var group in groups){
+		lowestRank.push([group, groups[group]]); // ex: ['group1', [{},{}]]
+	}
+	return lowestRank.sort((a,b) => totalRank(a[1]) - totalRank(b[1])).map(g => g[0]);
+}
+
+function computeDifference(){
+	let ranks = Object.values(groups).map(g => totalRank(g))
+	return Math.max(...ranks) - Math.min(...ranks)
+}
+
+function totalRank(group){
+	return group.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
 }
 
 function getRoster(){
@@ -286,10 +324,6 @@ function addMemberToPool(name, message, roster){
 			waitlist = waitlist.filter(member => member !== waitlist[0])
 		}
 		balance(pool, message)
-		return;
-	} else if (groups[0] && groups[1] && groups[0].length === 10 && groups[1].length === 10){
-		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
-		waitlist.push(joined)
 		return;
 	} else {
 		pool.push(joined)
