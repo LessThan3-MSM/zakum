@@ -10,6 +10,7 @@ const remove = require('./commands/remove.js');
 const postRoster = require('./commands/postRoster.js');
 const find = require('./commands/find.js');
 const promote = require('./commands/promote.js');
+const demote = require('./commands/demote.js');
 
 
 var fs = require("fs");
@@ -102,22 +103,20 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,8) === `${prefix}leaders` && isAdmin) {
-		message.channel.send(leaders[0]['name'] + ", " + leaders[1]['name']);
+		let roster = getRoster();
+		temp = []
+		roster.forEach(function(element) {
+  	if (element['leader']) {
+				temp.push(element['name']);
+			}
+	});
+		message.channel.send(temp);
 	}
 
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
 		const name = message.content.split(" ")[1]
 		let roster = getRoster()
-		let demoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
-		demoted.leader = false
-		leaders = leaders.filter(leader => leader.name.toLowerCase() !== name.toLowerCase())
-		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
-				if (err) {
-						console.error(err);
-						return;
-				};
-				message.channel.send(`Removed ${name} from expedition leaders!`)
-		});
+		demote.demoteCommand(message, roster, leaders, name);
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){
