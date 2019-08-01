@@ -5,10 +5,11 @@ const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
 
 /* importing functions from the commands dir */
-var add = require('./commands/add.js');
-var remove = require('./commands/remove.js');
-var postRoster = require('./commands/postRoster.js');
-var find = require('./commands/find.js');
+const add = require('./commands/add.js');
+const remove = require('./commands/remove.js');
+const postRoster = require('./commands/postRoster.js');
+const find = require('./commands/find.js');
+const promote = require('./commands/promote.js');
 
 
 var fs = require("fs");
@@ -86,32 +87,22 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,5) === `${prefix}find` && isAdmin) {
-		let roster = getRoster()
+		let roster = getRoster();
 		find.findCommand(message, roster);
 		}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
-		message.channel.send(`rebalancing...`)
-		balance(pool, message)
+		message.channel.send(`rebalancing...`);
+		balance(pool, message);
 	}
 
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
-		if (leaders.length === 2){
-			message.channel.send(`Zakum can't do this! There are already two expedition leaders.`)
-			return;
-		}
-		const name = message.content.split(" ")[1]
-		let roster = getRoster()
-		let promoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
-		promoted.leader = true
-		leaders.push(promoted)
-		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
-		    if (err) {
-		        console.error(err);
-		        return;
-		    };
-		    message.channel.send(`Promoted ${name} to expedition leader!`)
-		});
+		let roster = getRoster();
+		promote.promoteCommand(message, roster, leaders);
+	}
+
+	if (message.content.substring(0,8) === `${prefix}leaders` && isAdmin) {
+		message.channel.send(leaders[0]['name'] + ", " + leaders[1]['name']);
 	}
 
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
