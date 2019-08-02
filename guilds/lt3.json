@@ -8,6 +8,13 @@
             "leader": true
         },
         {
+            "id": "thallium#0472",
+            "name": "Arrondi",
+            "rank": 7,
+            "role": "bishop",
+            "leader": true
+        },
+        {
             "id": "awong617#6044",
             "name": "Chopixistick",
             "rank": 5,
@@ -306,13 +313,6 @@
             "name": "Subzob",
             "rank": 3,
             "role": "nightlord",
-            "leader": false
-        },
-        {
-            "id": "arrondi#6969",
-            "name": "Arrondi",
-            "rank": 5,
-            "role": "Bishop",
             "leader": false
         }
     ]
