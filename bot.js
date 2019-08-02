@@ -189,18 +189,23 @@ function balance(pool, message){
 		message.channel.send("Zakum has detected two groups! Balancing groups...")
 		let g0 = [leaders[0]]
 		let g1 = [leaders[1]]
-		let bishops = 	 pool.filter(person => person.role == 'bishop').sort((a,b) => b.rank-a.rank) 		// gimmie my bishes sorted by rank
+		let bishops = 	 pool.filter(person => !person.leader && person.role.toLowerCase() == 'bishop').sort((a,b) => b.rank-a.rank)  // gimmie my bishes sorted by rank
 		let poolToJoin = pool.filter(person => !person.leader && person.role.toLowerCase() != 'bishop') // gimmie my non-leaders/non-bishops
 
 		// ALLOCATE BISHOPS
-		bishops.forEach(function(b, i){
-			prioritizeGroups([g0,g1]).forEach(function(group){
-				if(group.map(g => g.role.toLowerCase()).includes('bishop')) return;
-				group.push(b);
-				bishops.splice(i, 1);
-			})
-		})
-		bishops.forEach(b => poolToJoin.push(b)) // dump unused bishops back into pool
+		let leftover = []
+		for(let bishop of bishops){
+			let pg = prioritizeGroups([g0,g1]);
+			if(!pg[0].map(g => g.role.toLowerCase()).includes('bishop')){ 
+				pg[0].push(bishop);
+			} else if(!pg[1].map(g => g.role.toLowerCase()).includes('bishop')){
+				pg[1].push(bishop);
+			}	else {
+				leftover.push(bishop);
+			}
+		}
+		// MERGE LEFTOVERS
+		poolToJoin = poolToJoin.concat(leftover)
 
 		while(poolToJoin.length){
 			let diff = computeDifference(g0, g1, false)
@@ -229,12 +234,16 @@ function balance(pool, message){
 }
 
 function prioritizeGroups(groups){
-	return groups.sort((a,b) => a.reduce(function (acc, obj) { return acc + obj.rank; }, 0) - b.reduce(function (acc, obj) { return acc + obj.rank; }, 0))
+	return groups.sort((a,b) => totalRank(a) - totalRank(b))
+}
+
+function totalRank(group){
+	return group.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
 }
 
 function computeDifference(group1, group2, abs){
-	const g1 = group1 && group1.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
-	const g2 = group2 && group2.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
+	const g1 = group1 && totalRank(group1);
+	const g2 = group2 && totalRank(group2);
 	return abs ? Math.abs(g1-g2) : (g1-g2)
 }
 
