@@ -2,24 +2,36 @@ var fs = require("fs");
 
 module.exports = {
   promoteCommand: function (message, roster, leaders) {
-    // if (leaders.length < 2) {
-    //   message.channel.send(`Zakum needs two expedition leaders/ groups.`)
-    //   return;
-    // }
-    // if (leaders.length === 2) {
-		// 	message.channel.send(`Zakum can't do this! There are already two expedition leaders.`)
-		// 	return;
-		// }
-		const name = message.content.split(" ")[1]
-		let promoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
-		promoted.leader = true
-		leaders.push(promoted)
-		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
-		    if (err) {
-		        console.error(err);
-		        return;
-		    };
-		    message.channel.send(`Promoted ${name} to expedition leader!`)
-		});
+    if(message.content.split(" ").length !== 2) {
+      message.channel.send("No input. Please use like so: !promote <IGN>")
+      return;
+    }
+		const name = message.content.split(" ")[1];
+
+    // i need help with checking if roster has member, doing ugly code to check
+    flag = 0;
+    roster.forEach(function(member) {
+      console.log(member.name);
+      if (member.name.localeCompare(name, undefined, { sensitivity: 'accent' }) === 0) {
+        flag = 1;
+      }
+    });
+
+    if (flag === 1){
+  		let promoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
+  		promoted.leader = true
+  		leaders.push(promoted)
+  		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
+  		    if (err) {
+  		        console.error(err);
+  		        return;
+  		    };
+  		    message.channel.send(`Promoted ${name} to expedition leader!`)
+  		});
+    }
+    else {
+      message.channel.send(name + " is not in your guild roster! Please try again");
+      return;
+    }
   }
 };

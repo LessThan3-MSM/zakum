@@ -5,12 +5,12 @@ const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
 
 /* importing functions from the commands dir */
-const add = require('./commands/add.js');
-const remove = require('./commands/remove.js');
-const postRoster = require('./commands/postRoster.js');
-const find = require('./commands/find.js');
-const promote = require('./commands/promote.js');
-const demote = require('./commands/demote.js');
+const add = require('./commands/add.js').addCommand;
+const remove = require('./commands/remove.js').removeCommand;
+const postRoster = require('./commands/postRoster.js').postRoster;
+const find = require('./commands/find.js').findCommand;
+const promote = require('./commands/promote.js').promoteCommand;
+const demote = require('./commands/demote.js').demoteCommand;
 
 
 var fs = require("fs");
@@ -45,19 +45,19 @@ client.on('message', message => {
 
 	if (message.content.substring(0,4) === `${prefix}add` && isAdmin){
 		let roster = getRoster();
-		add.addCommand(message, roster); // function located in /commands/add.js
+		add(message, roster);
 	}
 
 	if (message.content.substring(0,7) === `${prefix}remove` && isAdmin){
 		let roster = getRoster();
-		remove.removeCommand(message, roster); // function located in /commands/remove.js
+		remove(message, roster);
 	}
 
 	if (message.content === `${prefix}lt3` || message.content === `${prefix}roster`) {
 		// probably should just remove the `${prefix}lt3` above or change it to
 		// import from ./guilds/{filename} strip the .json for porability and customization for other guilds
 		let roster = getRoster()
-		postRoster.postRoster(message, roster);
+		postRoster(message, roster);
 	}
 
 	if (message.content === `${prefix}groups`) {
@@ -89,7 +89,7 @@ client.on('message', message => {
 
 	if (message.content.substring(0,5) === `${prefix}find` && isAdmin) {
 		let roster = getRoster();
-		find.findCommand(message, roster);
+		find(message, roster);
 		}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
@@ -99,24 +99,18 @@ client.on('message', message => {
 
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
 		let roster = getRoster();
-		promote.promoteCommand(message, roster, leaders);
+		promote(message, roster, leaders);
 	}
 
 	if (message.content.substring(0,8) === `${prefix}leaders` && isAdmin) {
 		let roster = getRoster();
-		temp = []
-		roster.forEach(function(element) {
-  	if (element['leader']) {
-				temp.push(element['name']);
-			}
-	});
-		message.channel.send(temp);
+		message.channel.send(roster.filter(member => member.leader).map(member => member.name).join(", "));
 	}
 
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
 		const name = message.content.split(" ")[1]
 		let roster = getRoster()
-		demote.demoteCommand(message, roster, leaders, name);
+		demote(message, roster, leaders, name);
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){
@@ -196,7 +190,7 @@ function balance(pool, message){
 		let leftover = []
 		for(let bishop of bishops){
 			let pg = prioritizeGroups([g0,g1]);
-			if(!pg[0].map(g => g.role.toLowerCase()).includes('bishop')){ 
+			if(!pg[0].map(g => g.role.toLowerCase()).includes('bishop')){
 				pg[0].push(bishop);
 			} else if(!pg[1].map(g => g.role.toLowerCase()).includes('bishop')){
 				pg[1].push(bishop);
