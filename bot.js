@@ -5,8 +5,13 @@ const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
 
 /* importing functions from the commands dir */
-var add = require('./commands/add.js');
-var remove = require('./commands/remove.js');
+const add = require('./commands/add.js').addCommand;
+const remove = require('./commands/remove.js').removeCommand;
+const postRoster = require('./commands/postRoster.js').postRoster;
+const find = require('./commands/find.js').findCommand;
+const promote = require('./commands/promote.js').promoteCommand;
+const demote = require('./commands/demote.js').demoteCommand;
+
 
 var fs = require("fs");
 var CronJob = require('cron').CronJob;
@@ -40,20 +45,19 @@ client.on('message', message => {
 
 	if (message.content.substring(0,4) === `${prefix}add` && isAdmin){
 		let roster = getRoster();
-		add.addCommand(message, roster); // function located in /commands/add.js
+		add(message, roster);
 	}
 
 	if (message.content.substring(0,7) === `${prefix}remove` && isAdmin){
 		let roster = getRoster();
-		remove.removeCommand(message, roster); // function located in /commands/remove.js
+		remove(message, roster);
 	}
 
 	if (message.content === `${prefix}lt3` || message.content === `${prefix}roster`) {
+		// probably should just remove the `${prefix}lt3` above or change it to
+		// import from ./guilds/{filename} strip the .json for porability and customization for other guilds
 		let roster = getRoster()
-		let rosterMsg = ""
-		roster = roster.map(member => member.name).sort()
-		roster.forEach(member => rosterMsg += member + " " )
-		message.channel.send(`${rosterMsg} (${roster.length})`)
+		postRoster(message, roster);
 	}
 
 	if (message.content === `${prefix}groups`) {
@@ -84,52 +88,29 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,5) === `${prefix}find` && isAdmin) {
-		const personToFind = message.content.split(" ")[1]
-		if (!personToFind) {
-			message.channel.send(`No input, please use like this: !find <IGN>`)
-			return;
+		let roster = getRoster();
+		find(message, roster);
 		}
-		const foundMember = getRoster().find(member => member.name.toLowerCase() === personToFind.toLowerCase())
-		foundMember ? message.channel.send(JSON.stringify(foundMember)) : message.channel.send(`Zakum can't find ${personToFind} on the guild roster.`)
-	}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
-		message.channel.send(`rebalancing...`)
-		balance(pool, message)
+		message.channel.send(`rebalancing...`);
+		balance(pool, message);
 	}
 
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
-		if (leaders.length === 2){
-			message.channel.send(`Zakum can't do this! There are already two expedition leaders.`)
-			return;
-		}
-		const name = message.content.split(" ")[1]
-		let roster = getRoster()
-		let promoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
-		promoted.leader = true
-		leaders.push(promoted)
-		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
-		    if (err) {
-		        console.error(err);
-		        return;
-		    };
-		    message.channel.send(`Promoted ${name} to expedition leader!`)
-		});
+		let roster = getRoster();
+		promote(message, roster, leaders);
+	}
+
+	if (message.content.substring(0,8) === `${prefix}leaders` && isAdmin) {
+		let roster = getRoster();
+		message.channel.send(roster.filter(member => member.leader).map(member => member.name).join(", "));
 	}
 
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
 		const name = message.content.split(" ")[1]
 		let roster = getRoster()
-		let demoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
-		demoted.leader = false
-		leaders = leaders.filter(leader => leader.name.toLowerCase() !== name.toLowerCase())
-		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
-				if (err) {
-						console.error(err);
-						return;
-				};
-				message.channel.send(`Removed ${name} from expedition leaders!`)
-		});
+		demote(message, roster, leaders, name);
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){
@@ -209,7 +190,7 @@ function balance(pool, message){
 		let leftover = []
 		for(let bishop of bishops){
 			let pg = prioritizeGroups([g0,g1]);
-			if(!pg[0].map(g => g.role.toLowerCase()).includes('bishop')){ 
+			if(!pg[0].map(g => g.role.toLowerCase()).includes('bishop')){
 				pg[0].push(bishop);
 			} else if(!pg[1].map(g => g.role.toLowerCase()).includes('bishop')){
 				pg[1].push(bishop);
