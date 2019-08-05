@@ -11,6 +11,7 @@ const postRoster = require('./commands/postRoster.js').postRoster;
 const find = require('./commands/find.js').findCommand;
 const promote = require('./commands/promote.js').promoteCommand;
 const demote = require('./commands/demote.js').demoteCommand;
+const swap = require('./commands/swap.js').swap;
 
 
 var fs = require("fs");
@@ -61,16 +62,17 @@ client.on('message', message => {
 	}
 
 	if (message.content === `${prefix}groups`) {
-		const group1 = formatGroupMessage("Group 1", groups[0] || pool)
-		const group2 = formatGroupMessage("Group 2", groups[1])
-		const waitlistGroup = formatGroupMessage("Waitlist", waitlist)
 		const differenceMsg = formatDifferenceMessage(computeDifference(groups[0], groups[1], true))
-		let msg = `Group 1: ${group1} (${group1.length})`
+		const chaosPinkBeanGroup = assemblePinkBeanGroup([...leaders, ...pool])
+		let msg = `Group 1: ${formatGroupMessage(groups[0] || leaders)} (${totalRank(groups[0] || leaders)})`
 		if (groups[1] && groups[1].length){
-			msg += `\nGroup 2: ${group2} (${group2.length})`
+			msg += `\nGroup 2: ${formatGroupMessage(groups[1])} (${totalRank(groups[1])})`
 		}
 		if (waitlist && waitlist.length){
-			msg += `\nWaitlist: ${waitlistGroup} (${waitlistGroup.length})`
+			msg += `\nWaitlist: ${formatGroupMessage(waitlist)} (${waitlist.length})`
+		}
+		if (chaosPinkBeanGroup && chaosPinkBeanGroup.length){
+			msg += `\nChaos Pink Bean Group: ${formatGroupMessage(chaosPinkBeanGroup)} (${totalRank(chaosPinkBeanGroup)})`
 		}
 		console.log("```" + msg + "```")
 		message.channel.send("```" + msg + "```")
@@ -153,10 +155,14 @@ client.on('message', message => {
 		listCommands(message.channel, isAdmin);
 	}
 
+	if(message.content.substring(0,5).toLowerCase() === `${prefix}swap` && isAdmin){
+		swap(message, groups)
+	}
+
 });
 
-function formatGroupMessage(name, group) {
-	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name):[]
+function formatGroupMessage(group) {
+	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name).join(", "):[]
 }
 
 function formatDifferenceMessage(difference){
@@ -288,6 +294,15 @@ function addMemberToPool(name, message, roster){
 	}
 }
 
+function assemblePinkBeanGroup(pool){
+	let group = pool.sort((a,b) => b.rank - a.rank).slice(0,10)
+	if(!group.find(member => member.role.toLowerCase() === "bishop")){
+		const bishop = pool.filter(member => member.role.toLowerCase() === "bishop")
+		group[9] = bishop && bishop.sort((a,b) => b.rank - a.rank)[0]
+	}
+	return group
+}
+
 client.login(token);
 
 /************TIMERS******************/
@@ -297,7 +312,7 @@ client.login(token);
 /** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
 //17:30 server time post a message!
 
-var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.';
+var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
 var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
