@@ -5,8 +5,9 @@ const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
 
 /* importing functions from the commands dir */
-var add = require('./commands/add.js');
-var remove = require('./commands/remove.js');
+const add = require('./commands/add.js');
+const remove = require('./commands/remove.js');
+const swap = require('./commands/swap.js').swap;
 
 var fs = require("fs");
 var CronJob = require('cron').CronJob;
@@ -172,6 +173,10 @@ client.on('message', message => {
 		listCommands(message.channel, isAdmin);
 	}
 
+	if(message.content.substring(0,5).toLowerCase() === `${prefix}swap` && isAdmin){
+		swap(message, groups)
+	}
+
 });
 
 function formatGroupMessage(name, group) {
@@ -209,7 +214,7 @@ function balance(pool, message){
 		let leftover = []
 		for(let bishop of bishops){
 			let pg = prioritizeGroups([g0,g1]);
-			if(!pg[0].map(g => g.role.toLowerCase()).includes('bishop')){ 
+			if(!pg[0].map(g => g.role.toLowerCase()).includes('bishop')){
 				pg[0].push(bishop);
 			} else if(!pg[1].map(g => g.role.toLowerCase()).includes('bishop')){
 				pg[1].push(bishop);
