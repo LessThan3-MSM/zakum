@@ -5,9 +5,14 @@ const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
 
 /* importing functions from the commands dir */
-const add = require('./commands/add.js');
-const remove = require('./commands/remove.js');
+const add = require('./commands/add.js').addCommand;
+const demote = require('./commands/demote.js').demoteCommand;
+const find = require('./commands/find.js').findCommand;
+const postRoster = require('./commands/postRoster.js').postRoster;
+const promote = require('./commands/promote.js').promoteCommand;
+const remove = require('./commands/remove.js').removeCommand;
 const swap = require('./commands/swap.js').swap;
+
 
 var fs = require("fs");
 var CronJob = require('cron').CronJob;
@@ -41,37 +46,36 @@ client.on('message', message => {
 
 	if (message.content.substring(0,4) === `${prefix}add` && isAdmin){
 		let roster = getRoster();
-		add.addCommand(message, roster); // function located in /commands/add.js
+		add(message, roster);
 	}
 
 	if (message.content.substring(0,7) === `${prefix}remove` && isAdmin){
 		let roster = getRoster();
-		remove.removeCommand(message, roster); // function located in /commands/remove.js
+		remove(message, roster);
 	}
 
 	if (message.content === `${prefix}lt3` || message.content === `${prefix}roster`) {
+		// probably should just remove the `${prefix}lt3` above or change it to
+		// import from ./guilds/{filename} strip the .json for porability and customization for other guilds
 		let roster = getRoster()
-		let rosterMsg = ""
-		roster = roster.map(member => member.name).sort()
-		roster.forEach(member => rosterMsg += member + " " )
-		message.channel.send(`${rosterMsg} (${roster.length})`)
+		postRoster(message, roster);
 	}
 
 	if (message.content === `${prefix}groups`) {
-		const group1 = formatGroupMessage("Group 1", groups[0] || pool)
-		const group2 = formatGroupMessage("Group 2", groups[1])
-		const waitlistGroup = formatGroupMessage("Waitlist", waitlist)
-		const differenceMsg = formatDifferenceMessage(computeDifference(groups[0], groups[1], true))
-		let msg = `Group 1: ${group1} (${group1.length})`
-		if (groups[1] && groups[1].length){
-			msg += `\nGroup 2: ${group2} (${group2.length})`
+		groups[0] = groups[0] || pool
+		const waitlistGroup = formatGroupMessage(waitlist)
+		const differenceMsg = formatDifferenceMessage(computeDifference(true))
+
+		let msg = [];
+		for(i=0; i < groups.length; i++){
+			msg.push(`Group ${i + 1}: ${formatGroupMessage(groups[i])} (${groups[i].length})`)
 		}
 		if (waitlist && waitlist.length){
-			msg += `\nWaitlist: ${waitlistGroup} (${waitlistGroup.length})`
+			msg.push(`Waitlist: ${waitlistGroup} (${waitlistGroup.length})`)
 		}
-		console.log("```" + msg + "```")
-		message.channel.send("```" + msg + "```")
-		groups[1] && groups[1].length && message.channel.send(`\`${differenceMsg}\``)
+		console.log(msg.join("\n"))
+		message.channel.send("```" + msg.join("\n") + "```")
+		if(groups.length > 1) message.channel.send(`\`${differenceMsg}\``)
 	}
 
 	if (message.content.substring(0,5) === `${prefix}pool` || message.content.substring(0,7) === `${prefix}joined`) {
@@ -85,52 +89,29 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,5) === `${prefix}find` && isAdmin) {
-		const personToFind = message.content.split(" ")[1]
-		if (!personToFind) {
-			message.channel.send(`No input, please use like this: !find <IGN>`)
-			return;
+		let roster = getRoster();
+		find(message, roster);
 		}
-		const foundMember = getRoster().find(member => member.name.toLowerCase() === personToFind.toLowerCase())
-		foundMember ? message.channel.send(JSON.stringify(foundMember)) : message.channel.send(`Zakum can't find ${personToFind} on the guild roster.`)
-	}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
-		message.channel.send(`rebalancing...`)
-		balance(pool, message)
+		message.channel.send(`rebalancing...`);
+		balance(pool, message);
 	}
 
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
-		if (leaders.length === 2){
-			message.channel.send(`Zakum can't do this! There are already two expedition leaders.`)
-			return;
-		}
-		const name = message.content.split(" ")[1]
-		let roster = getRoster()
-		let promoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
-		promoted.leader = true
-		leaders.push(promoted)
-		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
-		    if (err) {
-		        console.error(err);
-		        return;
-		    };
-		    message.channel.send(`Promoted ${name} to expedition leader!`)
-		});
+		let roster = getRoster();
+		promote(message, roster, leaders);
+	}
+
+	if (message.content.substring(0,8) === `${prefix}leaders` && isAdmin) {
+		let roster = getRoster();
+		message.channel.send(roster.filter(member => member.leader).map(member => member.name).join(", "));
 	}
 
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
 		const name = message.content.split(" ")[1]
 		let roster = getRoster()
-		let demoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
-		demoted.leader = false
-		leaders = leaders.filter(leader => leader.name.toLowerCase() !== name.toLowerCase())
-		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
-				if (err) {
-						console.error(err);
-						return;
-				};
-				message.channel.send(`Removed ${name} from expedition leaders!`)
-		});
+		demote(message, roster, leaders, name);
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){
@@ -179,7 +160,7 @@ client.on('message', message => {
 
 });
 
-function formatGroupMessage(name, group) {
+function formatGroupMessage(group) {
 	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name):[]
 }
 
@@ -226,7 +207,7 @@ function balance(pool, message){
 		poolToJoin = poolToJoin.concat(leftover)
 
 		while(poolToJoin.length){
-			let diff = computeDifference(g0, g1, false)
+			let diff = computeDifference(false)
 			var max = poolToJoin.sort((a,b) => b.rank-a.rank)[0].rank
 			const memberToJoin = poolToJoin.find(member => member.rank === max)
 			if(g0.length === 1 && g1.length === 1){
@@ -259,9 +240,10 @@ function totalRank(group){
 	return group.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
 }
 
-function computeDifference(group1, group2, abs){
-	const g1 = group1 && totalRank(group1);
-	const g2 = group2 && totalRank(group2);
+function computeDifference(abs){
+	let totalRanks = groups.map(group => totalRank(group))
+	const g1 = Math.max(...totalRanks);
+	const g2 = Math.min(...totalRanks);
 	return abs ? Math.abs(g1-g2) : (g1-g2)
 }
 
