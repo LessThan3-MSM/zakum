@@ -6,11 +6,12 @@ const client = new Discord.Client();
 
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
-const remove = require('./commands/remove.js').removeCommand;
-const postRoster = require('./commands/postRoster.js').postRoster;
-const find = require('./commands/find.js').findCommand;
-const promote = require('./commands/promote.js').promoteCommand;
 const demote = require('./commands/demote.js').demoteCommand;
+const find = require('./commands/find.js').findCommand;
+const postRoster = require('./commands/postRoster.js').postRoster;
+const promote = require('./commands/promote.js').promoteCommand;
+const remove = require('./commands/remove.js').removeCommand;
+const swap = require('./commands/swap.js').swap;
 
 
 var fs = require("fs");
@@ -151,6 +152,10 @@ client.on('message', message => {
 
 	if(message.content.substring(0,9).toLowerCase() === `${prefix}commands`){
 		listCommands(message.channel, isAdmin);
+	}
+
+	if(message.content.substring(0,5).toLowerCase() === `${prefix}swap` && isAdmin){
+		swap(message, groups)
 	}
 
 });
