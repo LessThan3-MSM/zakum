@@ -6,11 +6,11 @@ const client = new Discord.Client();
 
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
-const remove = require('./commands/remove.js').removeCommand;
-const postRoster = require('./commands/postRoster.js').postRoster;
-const find = require('./commands/find.js').findCommand;
-const promote = require('./commands/promote.js').promoteCommand;
 const demote = require('./commands/demote.js').demoteCommand;
+const find = require('./commands/find.js').findCommand;
+const postRoster = require('./commands/postRoster.js').postRoster;
+const promote = require('./commands/promote.js').promoteCommand;
+const remove = require('./commands/remove.js').removeCommand;
 const swap = require('./commands/swap.js').swap;
 
 
@@ -74,9 +74,9 @@ client.on('message', message => {
 		if (chaosPinkBeanGroup && chaosPinkBeanGroup.length){
 			msg += `\nChaos Pink Bean Group: ${formatGroupMessage(chaosPinkBeanGroup)} (${totalRank(chaosPinkBeanGroup)})`
 		}
-		console.log("```" + msg + "```")
-		message.channel.send("```" + msg + "```")
-		groups[1] && groups[1].length && message.channel.send(`\`${differenceMsg}\``)
+		console.log(msg.join("\n"))
+		message.channel.send("```" + msg.join("\n") + "```")
+		if(groups.length > 1) message.channel.send(`\`${differenceMsg}\``)
 	}
 
 	if (message.content.substring(0,5) === `${prefix}pool` || message.content.substring(0,7) === `${prefix}joined`) {
@@ -181,8 +181,6 @@ function formatDifferenceMessage(difference){
 }
 
 function balance(pool, message){
-	groups[0] = [];
-	groups[1] = [];
 	if (pool.length <= 8){
 		groups[0] = [leaders[0], leaders[1], ...pool]
 	} else {
@@ -208,7 +206,7 @@ function balance(pool, message){
 		poolToJoin = poolToJoin.concat(leftover)
 
 		while(poolToJoin.length){
-			let diff = computeDifference(g0, g1, false)
+			let diff = computeDifference(false)
 			var max = poolToJoin.sort((a,b) => b.rank-a.rank)[0].rank
 			const memberToJoin = poolToJoin.find(member => member.rank === max)
 			if(g0.length === 1 && g1.length === 1){
@@ -241,9 +239,10 @@ function totalRank(group){
 	return group.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
 }
 
-function computeDifference(group1, group2, abs){
-	const g1 = group1 && totalRank(group1);
-	const g2 = group2 && totalRank(group2);
+function computeDifference(abs){
+	let totalRanks = groups.map(group => totalRank(group))
+	const g1 = Math.max(...totalRanks);
+	const g2 = Math.min(...totalRanks);
 	return abs ? Math.abs(g1-g2) : (g1-g2)
 }
 
