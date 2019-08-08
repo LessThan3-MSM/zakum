@@ -180,8 +180,6 @@ function formatDifferenceMessage(difference){
 }
 
 function balance(pool, message){
-	groups[0] = [];
-	groups[1] = [];
 	if (pool.length <= 8){
 		groups[0] = [leaders[0], leaders[1], ...pool]
 	} else {
