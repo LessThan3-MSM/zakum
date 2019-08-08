@@ -74,8 +74,7 @@ client.on('message', message => {
 		if (chaosPinkBeanGroup && chaosPinkBeanGroup.length){
 			msg += `\nChaos Pink Bean Group: ${formatGroupMessage(chaosPinkBeanGroup)} (${totalRank(chaosPinkBeanGroup)})`
 		}
-		console.log(msg.join("\n"))
-		message.channel.send("```" + msg.join("\n") + "```")
+		message.channel.send("```" + msg + "```")
 		if(groups.length > 1) message.channel.send(`\`${differenceMsg}\``)
 	}
 
@@ -206,7 +205,7 @@ function balance(pool, message){
 		poolToJoin = poolToJoin.concat(leftover)
 
 		while(poolToJoin.length){
-			let diff = computeDifference(false)
+			let diff = computeDifference(g0, g1, false)
 			var max = poolToJoin.sort((a,b) => b.rank-a.rank)[0].rank
 			const memberToJoin = poolToJoin.find(member => member.rank === max)
 			if(g0.length === 1 && g1.length === 1){
@@ -239,10 +238,9 @@ function totalRank(group){
 	return group.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
 }
 
-function computeDifference(abs){
-	let totalRanks = groups.map(group => totalRank(group))
-	const g1 = Math.max(...totalRanks);
-	const g2 = Math.min(...totalRanks);
+function computeDifference(group1, group2, abs){
+	const g1 = group1 && totalRank(group1)
+	const g2 = group2 && totalRank(group2)
 	return abs ? Math.abs(g1-g2) : (g1-g2)
 }
 
@@ -316,6 +314,9 @@ var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
 				if(channel != undefined){
+					pool = [];
+					groups = [];
+					waitlist = [];
 					channel.send(expoMsg);
 				}
 			}
