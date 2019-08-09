@@ -3,7 +3,6 @@ const {prefix, token} = require('./config.json')
 const {lt3} = require("./guilds/lt3.json")
 const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
-const _ = require("lodash");
 
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
