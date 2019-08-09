@@ -3,6 +3,7 @@ const {prefix, token} = require('./config.json')
 const {lt3} = require("./guilds/lt3.json")
 const {MAPLE_STORY_CLASSES} = require("./constants.json")
 const client = new Discord.Client();
+const _ = require("lodash");
 
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
@@ -27,9 +28,8 @@ let leaders = [];
 
 client.once('ready', () => {
 	console.log('Ready!');
-	const initialLeaders = getRoster().filter(member => member.leader)
-	initialLeaders[0] && leaders.push(initialLeaders[0])
-	initialLeaders[1] && leaders.push(initialLeaders[1])
+	leaders = getRoster().filter(member => member.leader)
+	leaders.forEach((leader, index) => groups[index] = [leader])
 });
 
 client.on('message', message => {
@@ -64,18 +64,23 @@ client.on('message', message => {
 	if (message.content === `${prefix}groups`) {
 		const differenceMsg = formatDifferenceMessage(computeDifference(groups[0], groups[1], true))
 		const chaosPinkBeanGroup = assemblePinkBeanGroup([...leaders, ...pool])
-		let msg = `Group 1: ${formatGroupMessage(groups[0] || leaders)} (${totalRank(groups[0] || leaders)})`
-		if (groups[1] && groups[1].length){
-			msg += `\nGroup 2: ${formatGroupMessage(groups[1])} (${totalRank(groups[1])})`
-		}
-		if (waitlist && waitlist.length){
-			msg += `\nWaitlist: ${formatGroupMessage(waitlist)} (${waitlist.length})`
-		}
-		if (chaosPinkBeanGroup && chaosPinkBeanGroup.length){
-			msg += `\nChaos Pink Bean Group: ${formatGroupMessage(chaosPinkBeanGroup)} (${totalRank(chaosPinkBeanGroup)})`
-		}
-		message.channel.send("```" + msg + "```")
-		if(groups.length > 1) message.channel.send(`\`${differenceMsg}\``)
+
+		// let msg = `Group 1: ${formatGroupMessage(groups[0] || leaders)} (${totalRank(groups[0] || leaders)})`
+		// if (groups[1] && groups[1].length){
+		// 	msg += `\nGroup 2: ${formatGroupMessage(groups[1])} (${totalRank(groups[1])})`
+		// }
+		// if (waitlist && waitlist.length){
+		// 	msg += `\nWaitlist: ${formatGroupMessage(waitlist)} (${waitlist.length})`
+		// }
+		// if (chaosPinkBeanGroup && chaosPinkBeanGroup.length){
+		// 	msg += `\nChaos Pink Bean Group: ${formatGroupMessage(chaosPinkBeanGroup)} (${totalRank(chaosPinkBeanGroup)})`
+		// }
+		// message.channel.send("```" + msg + "```")
+		// if(groups.length > 1) message.channel.send(`\`${differenceMsg}\``)
+		let msg = "";
+		groups.forEach((group, key) => msg += `Group ${key+1}: ${formatGroupMessage(group)} (${totalRank(group)})\n`)
+		// message.channel.send(`Group 1: ${formatGroupMessage(_.flatten(groups))} (${totalRank(_.flatten(groups))})`)
+		message.channel.send(msg)
 	}
 
 	if (message.content.substring(0,5) === `${prefix}pool` || message.content.substring(0,7) === `${prefix}joined`) {
@@ -180,54 +185,22 @@ function formatDifferenceMessage(difference){
 }
 
 function balance(pool, message){
-	if (pool.length <= 8){
-		groups[0] = [leaders[0], leaders[1], ...pool]
-	} else {
-		message.channel.send("Zakum has detected two groups! Balancing groups...")
-		let g0 = [leaders[0]]
-		let g1 = [leaders[1]]
-		let bishops = 	 pool.filter(person => !person.leader && person.role.toLowerCase() == 'bishop').sort((a,b) => b.rank-a.rank)  // gimmie my bishes sorted by rank
-		let poolToJoin = pool.filter(person => !person.leader && person.role.toLowerCase() != 'bishop') // gimmie my non-leaders/non-bishops
 
-		// ALLOCATE BISHOPS
-		let leftover = []
-		for(let bishop of bishops){
-			let pg = prioritizeGroups([g0,g1]);
-			if(!pg[0].map(g => g.role.toLowerCase()).includes('bishop')){
-				pg[0].push(bishop);
-			} else if(!pg[1].map(g => g.role.toLowerCase()).includes('bishop')){
-				pg[1].push(bishop);
-			}	else {
-				leftover.push(bishop);
-			}
-		}
-		// MERGE LEFTOVERS
-		poolToJoin = poolToJoin.concat(leftover)
+		/**
+		TODO:
+		Handle scenario where 3 leaders but 2 groups
+		Reintroduce Bishop logic
+		Allow leaders to be promoted/demoted and rebalance groups
+		**/
 
-		while(poolToJoin.length){
-			let diff = computeDifference(g0, g1, false)
-			var max = poolToJoin.sort((a,b) => b.rank-a.rank)[0].rank
-			const memberToJoin = poolToJoin.find(member => member.rank === max)
-			if(g0.length === 1 && g1.length === 1){
-				leaders[0].rank > leaders[1].rank ? g1.push(memberToJoin) : g0.push(memberToJoin)
-			}
-			else if (g0.length === 10){
-				g1.push(memberToJoin)
-			}
-			else if (g1.length === 10){
-				g0.push(memberToJoin)
-			}
-			else if (diff > 0) {
-				g1.push(memberToJoin)
-			}
-			else {
-				g0.push(memberToJoin)
-			}
-			poolToJoin = poolToJoin.filter(member => member !== memberToJoin)
+		message.channel.send(`Balancing groups...`)
+		let [joining, weakest] = [pool.sort((a,b) => a.rank-b.rank), groups[0]]
+		while(joining.length){
+			groups.forEach(group => {
+				if(totalRank(group) < totalRank(weakest)) weakest = group
+			})
+			weakest.push(joining[joining.length-1]) && joining.pop()
 		}
-		groups[0] = g0
-		groups[1] = g1
-	}
 }
 
 function prioritizeGroups(groups){
@@ -280,14 +253,15 @@ function addMemberToPool(name, message, roster){
 		}
 		balance(pool, message)
 		return;
-	} else if (groups[0] && groups[1] && groups[0].length === 10 && groups[1].length === 10){
-		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
-		waitlist.push(joined)
-		return;
+	// } else if (groups[0] && groups[1] && groups[0].length === 10 && groups[1].length === 10){
+	// 	message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
+	// 	waitlist.push(joined)
+	// 	return;
 	} else {
+		if(joined.leader) return;
 		pool.push(joined)
 		balance(pool, message)
-		message.channel.send(`${name || message.author.username} has joined the Zakum Expedition Finder queue! :heart:`)
+		// message.channel.send(`${name || message.author.username} has joined the Zakum Expedition Finder queue! :heart:`)
 	}
 }
 
