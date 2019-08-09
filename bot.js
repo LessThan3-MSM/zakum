@@ -62,9 +62,12 @@ client.on('message', message => {
 
 	if (message.content === `${prefix}groups`) {
 		let [differenceMessage, chaosPinkBeanGroup, groupMessage] = [formatDifferenceMessage(computeDifference(groups[0], groups[1], true)), assemblePinkBeanGroup([...leaders, ...pool]), ""]
-		groups.length ? groups.forEach((group, key) => groupMessage += `Group ${key+1}: ${formatGroupMessage(group)} (${totalRank(group)})\n`) : groupMessage += `Group 1: ${formatGroupMessage(leaders)} (${totalRank(leaders)})`
-		if (chaosPinkBeanGroup && chaosPinkBeanGroup.length){
-			groupMessage += `\nChaos Pink Bean Group: ${formatGroupMessage(chaosPinkBeanGroup)} (${totalRank(chaosPinkBeanGroup)})`
+		groups.length ? groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
+		if(waitlist && waitlist.length){
+			groupMessage += formatGroupMessage("Waitlist", waitlist)
+		}
+		if (chaosPinkBeanGroup && chaosPinkBeanGroup.length === 10){
+			groupMessage += formatGroupMessage("Chaos Pink Bean Group", chaosPinkBeanGroup)
 		}
 		message.channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
 	}
@@ -151,8 +154,11 @@ client.on('message', message => {
 
 });
 
-function formatGroupMessage(group) {
-	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name).join(", "):[]
+function formatGroupMessage(name, group) {
+	if (!group) return;
+	let groupMsg = `${name}: ${group.sort((a,b) => b.rank - a.rank).map(member => member.name).join(", ")}`
+	let infoMsg = name !== "Waitlist" ? `(Count: ${group.length}, Strength: ${totalRank(group)})` : `(${group.length})`
+	return `${groupMsg} ${infoMsg} \n`
 }
 
 function formatDifferenceMessage(difference){
@@ -172,19 +178,23 @@ function formatDifferenceMessage(difference){
 
 function balance(pool, message){
 
-		/**
-		TODO:
-		Reintroduce Bishop logic
-		Allow leaders to be promoted/demoted and rebalance groups
-		**/
-
-		let [joining, weakest, total] = [pool.slice().sort((a,b) => a.rank-b.rank), [{rank: 100}], [...leaders, ...pool].length]
+		let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop").sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank-b.rank), [{rank: 100}], [...leaders, ...pool].length]
 		leaders.forEach((leader, index) => total > (10*index) ? groups[index] = [leader] : joining.push(leader))
 		while(joining.length){
-			groups.forEach(group => {
+			groups.filter(group => !group.full).forEach(group => {
 				if(totalRank(group) < totalRank(weakest)) weakest = group
 			})
-			weakest.push(joining[joining.length-1]) && joining.pop()
+		if(weakest.length === 10){
+			weakest.full = true
+			weakest = groups.filter(group => !group.full)[0]
+			continue;
+		}
+		weakest.filter(member => member.role === "bishop").length === 0 &&
+		bishops.length
+		  ? weakest.push(bishops[bishops.length - 1]) &&
+		    joining.splice(joining.indexOf(bishops[bishops.length - 1]), 1) &&
+		    bishops.pop()
+		  : weakest.push(joining[joining.length - 1]) && joining.pop();
 		}
 }
 
@@ -238,10 +248,10 @@ function addMemberToPool(name, message, roster){
 		}
 		balance(pool, message)
 		return;
-	// } else if (groups[0] && groups[1] && groups[0].length === 10 && groups[1].length === 10){
-	// 	message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
-	// 	waitlist.push(joined)
-	// 	return;
+	} else if ([...leaders, ...pool].length >= leaders.length * 10){
+		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
+		waitlist.push(joined)
+		return;
 	} else {
 		if(joined.leader) return;
 		pool.push(joined)
