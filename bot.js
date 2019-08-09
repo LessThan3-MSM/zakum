@@ -62,19 +62,19 @@ client.on('message', message => {
 	}
 
 	if (message.content === `${prefix}groups`) {
-		groups[0] = groups[0] || pool
-		const waitlistGroup = formatGroupMessage(waitlist)
-		const differenceMsg = formatDifferenceMessage(computeDifference(true))
-
-		let msg = [];
-		for(i=0; i < groups.length; i++){
-			msg.push(`Group ${i + 1}: ${formatGroupMessage(groups[i])} (${groups[i].length})`)
+		const differenceMsg = formatDifferenceMessage(computeDifference(groups[0], groups[1], true))
+		const chaosPinkBeanGroup = assemblePinkBeanGroup([...leaders, ...pool])
+		let msg = `Group 1: ${formatGroupMessage(groups[0] || leaders)} (${totalRank(groups[0] || leaders)})`
+		if (groups[1] && groups[1].length){
+			msg += `\nGroup 2: ${formatGroupMessage(groups[1])} (${totalRank(groups[1])})`
 		}
 		if (waitlist && waitlist.length){
-			msg.push(`Waitlist: ${waitlistGroup} (${waitlistGroup.length})`)
+			msg += `\nWaitlist: ${formatGroupMessage(waitlist)} (${waitlist.length})`
 		}
-		console.log(msg.join("\n"))
-		message.channel.send("```" + msg.join("\n") + "```")
+		if (chaosPinkBeanGroup && chaosPinkBeanGroup.length){
+			msg += `\nChaos Pink Bean Group: ${formatGroupMessage(chaosPinkBeanGroup)} (${totalRank(chaosPinkBeanGroup)})`
+		}
+		message.channel.send("```" + msg + "```")
 		if(groups.length > 1) message.channel.send(`\`${differenceMsg}\``)
 	}
 
@@ -161,7 +161,7 @@ client.on('message', message => {
 });
 
 function formatGroupMessage(group) {
-	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name):[]
+	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name).join(", "):[]
 }
 
 function formatDifferenceMessage(difference){
@@ -205,7 +205,7 @@ function balance(pool, message){
 		poolToJoin = poolToJoin.concat(leftover)
 
 		while(poolToJoin.length){
-			let diff = computeDifference(false)
+			let diff = computeDifference(g0, g1, false)
 			var max = poolToJoin.sort((a,b) => b.rank-a.rank)[0].rank
 			const memberToJoin = poolToJoin.find(member => member.rank === max)
 			if(g0.length === 1 && g1.length === 1){
@@ -238,10 +238,9 @@ function totalRank(group){
 	return group.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
 }
 
-function computeDifference(abs){
-	let totalRanks = groups.map(group => totalRank(group))
-	const g1 = Math.max(...totalRanks);
-	const g2 = Math.min(...totalRanks);
+function computeDifference(group1, group2, abs){
+	const g1 = group1 && totalRank(group1)
+	const g2 = group2 && totalRank(group2)
 	return abs ? Math.abs(g1-g2) : (g1-g2)
 }
 
@@ -292,6 +291,15 @@ function addMemberToPool(name, message, roster){
 	}
 }
 
+function assemblePinkBeanGroup(pool){
+	let group = pool.sort((a,b) => b.rank - a.rank).slice(0,10)
+	if(!group.find(member => member.role.toLowerCase() === "bishop")){
+		const bishop = pool.filter(member => member.role.toLowerCase() === "bishop")
+		group[9] = bishop && bishop.sort((a,b) => b.rank - a.rank)[0]
+	}
+	return group
+}
+
 client.login(token);
 
 /************TIMERS******************/
@@ -301,11 +309,14 @@ client.login(token);
 /** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
 //17:30 server time post a message!
 
-var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.';
+var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
 var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
 				if(channel != undefined){
+					pool = [];
+					groups = [];
+					waitlist = [];
 					channel.send(expoMsg);
 				}
 			}
