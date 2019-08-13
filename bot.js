@@ -176,8 +176,7 @@ function formatDifferenceMessage(difference){
 }
 
 function balance(pool, message){
-
-		let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop").sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank-b.rank), [{rank: 100}], [...leaders, ...pool].length]
+		let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop" && !member.leader).sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank-b.rank), [{rank: 100}], [...leaders, ...pool].length]
 		leaders.forEach((leader, index) => total > (10*index) ? groups[index] = [leader] : joining.push(leader))
 		while(joining.length){
 			groups.filter(group => !group.full).forEach(group => {
@@ -191,9 +190,8 @@ function balance(pool, message){
 		weakest.filter(member => member.role === "bishop").length === 0 &&
 		bishops.length
 		  ? weakest.push(bishops[bishops.length - 1]) &&
-		    joining.splice(joining.indexOf(bishops[bishops.length - 1]), 1) &&
-		    bishops.pop()
-		  : weakest.push(joining[joining.length - 1]) && joining.pop();
+		    joining.splice(joining.indexOf(bishops.pop()), 1)
+		  : weakest.push(joining.pop())
 		}
 }
 
