@@ -1,7 +1,7 @@
 var fs = require("fs");
 
 module.exports = {
-  addCommand: function (message, roster) {
+  addCommand: function (message, roster, rosterLoc = "./guilds/lt3.json") {
     const content = message.content.split(" ")
     if(content.length !== 5) {
       message.channel.send("Invalid member add format. Example: \`!add Horntail#1234 Horntail Bowmaster 5 \`")
@@ -19,7 +19,7 @@ module.exports = {
     roster.push(member)
     console.log(roster)
 
-    fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
+    fs.writeFile(rosterLoc, JSON.stringify({"lt3":roster}, null, 4), (err) => {
     if (err) {
         console.error(err);
         return;
