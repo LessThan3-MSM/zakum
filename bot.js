@@ -176,6 +176,7 @@ function formatDifferenceMessage(difference){
 }
 
 function balance(pool, message){
+		groups = [];
 		let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop" && !member.leader).sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank-b.rank), [{rank: 100}], [...leaders, ...pool].length]
 		leaders.forEach((leader, index) => total > (10*index) ? groups[index] = [leader] : joining.push(leader))
 		while(joining.length){
