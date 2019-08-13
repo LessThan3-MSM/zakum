@@ -154,6 +154,8 @@ client.on('message', message => {
 });
 
 function formatGroupMessage(name, group) {
+	console.log(group)
+	console.log(name)
 	if (!group) return;
 	let groupMsg = `${name}: ${group.sort((a,b) => b.rank - a.rank).map(member => member.name).join(", ")}`
 	let infoMsg = name !== "Waitlist" ? `(Count: ${group.length}, Strength: ${totalRank(group)})` : `(${group.length})`
@@ -259,10 +261,11 @@ function addMemberToPool(name, message, roster){
 }
 
 function assemblePinkBeanGroup(pool){
+	if (pool.length < 10) return;
 	let group = pool.sort((a,b) => b.rank - a.rank).slice(0,10)
-	if(!group.find(member => member.role.toLowerCase() === "bishop")){
-		const bishop = pool.filter(member => member.role.toLowerCase() === "bishop")
-		group[9] = bishop && bishop.sort((a,b) => b.rank - a.rank)[0]
+	if(!group.find(member => member.role.toLowerCase() === "bishop") && pool.find(member => member.role.toLowerCase() === "bishop")){
+		const bishop = pool.filter(member => member.role.toLowerCase() === "bishop").slice().sort((a,b) => a.rank - b.rank)
+		group[9] = bishop.pop()
 	}
 	return group
 }
