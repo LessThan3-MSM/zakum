@@ -263,11 +263,15 @@ function addMemberToPool(name, message, roster){
 function assemblePinkBeanGroup(pool){
 	if (pool.length < 10) return;
 	let group = pool.sort((a,b) => b.rank - a.rank).slice(0,10)
-	if(!group.find(member => member.role.toLowerCase() === "bishop") && pool.find(member => member.role.toLowerCase() === "bishop")){
-		const bishop = pool.filter(member => member.role.toLowerCase() === "bishop").slice().sort((a,b) => a.rank - b.rank)
+	if(!findByRole(group, 'bishop') && findByRole(pool, 'bishop')){
+		const bishop = findByRole(pool, 'bishop').slice().sort((a,b) => a.rank - b.rank)
 		group[9] = bishop.pop()
 	}
 	return group
+}
+
+function findByRole(group, role){
+  return group.find(member => member.role.toLowerCase() === role.toLowerCase())
 }
 
 client.login(token);
