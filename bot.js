@@ -104,7 +104,7 @@ client.on('message', message => {
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
 		const name = message.content.split(" ")[1]
 		let roster = getRoster()
-		demote(message, roster, leaders, name);
+		demote(message, roster);
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){
