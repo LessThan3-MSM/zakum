@@ -11,7 +11,7 @@ module.exports = {
       message.channel.send("Invalid Discord ID. Example: \`Horntail#1234\`")
       return;
     }
-    const member = {"id":content[1],"name":content[2],"rank":parseInt(content[4]),"role":content[3].toLowerCase(),"leader":false}
+    const member = {"id":content[1],"name":content[2],"rank":parseFloat(content[4]),"role":content[3].toLowerCase(),"leader":false}
     if (roster.find(person => person.name.toLowerCase() === member.name.toLowerCase() )){
       message.channel.send(`${member.name} already exists on the LessThan3 guild roster!`)
       return;

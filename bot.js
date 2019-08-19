@@ -12,6 +12,7 @@ const postRoster = require('./commands/postRoster.js').postRoster;
 const promote = require('./commands/promote.js').promoteCommand;
 const remove = require('./commands/remove.js').removeCommand;
 const swap = require('./commands/swap.js').swap;
+const update = require('./commands/update.js').update;
 
 
 var fs = require("fs");
@@ -81,7 +82,7 @@ client.on('message', message => {
 		waitlist = [];
 	}
 
-	if (message.content.substring(0,5) === `${prefix}find` && isAdmin) {
+	if (message.content.substring(0,5) === `${prefix}find`) {
 		let roster = getRoster();
 		find(message, roster);
 		}
@@ -151,6 +152,9 @@ client.on('message', message => {
 		swap(message, groups)
 	}
 
+	if(message.content.substring(0,7).toLowerCase() === `${prefix}update`){
+		update(message, getRoster(), MAPLE_STORY_CLASSES)
+	}
 });
 
 function formatGroupMessage(name, group) {
