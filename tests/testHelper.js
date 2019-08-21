@@ -7,7 +7,11 @@ module.exports = {
 	leaders: [],
 	mockSendCall: jest.fn(),
 	newMessage: function (str){
-		return { 
+		return {
+			author: {
+				username: "Buttloaf",
+				discriminator: "1234",
+			},
 			content: str,
 			channel: { send: this.mockSendCall }
 		}

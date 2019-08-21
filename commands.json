@@ -100,7 +100,7 @@
   {
     "name": "update",
     "admin": false,
-    "required": ["Type", "Value"],
+    "required": ["Name", "Type", "Value"],
     "optional": [],
     "description": "Updates a value (class, dps, id, name) for a member on the guild roster."
   },

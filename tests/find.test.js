@@ -29,6 +29,6 @@ describe("find", () => {
       }
 		];
 		find(mock.newMessage("!find Buttloaf"), roster)
-		expect(mock.mockSendCall).toBeCalledWith(JSON.stringify(roster[0]));
+		expect(mock.mockSendCall).toBeCalledWith(`\`\`\`ID: ${roster[0].id}\nName: ${roster[0].name}\nClass: ${roster[0].role}\nDPS: ${roster[0].rank}\`\`\``);
 	});
 });

@@ -2,84 +2,82 @@ var fs = require("fs");
 
 module.exports = {
   update: function (message, roster, classes) {
-    const [AVAILABLE_ARGS, content, id] = [["dps", "id", "name", "class"], message.content.split(" "), `${message.author.username}#${message.author.discriminator}`]
-    if(!AVAILABLE_ARGS.includes(content[1])) {
+    const content = message.content.split(" ")
+    const person = content.length >= 4 && roster.find(member => member.name.toLowerCase() === content[2].toLowerCase())
+    const [AVAILABLE_ARGS, type, id, value] = [
+      ["dps", "id", "name", "class"],
+      content[1].toLowerCase(),
+      content.length >= 4 ? person && person.id : `${message.author.username}#${message.author.discriminator}`,
+      content.slice(content.length >= 4 ? 3:2).join("")
+    ]
+    if(!AVAILABLE_ARGS.includes(type)) {
       message.channel.send("Invalid update format. Example: \`!update dps 5.35 \`")
       return;
-    } else if (!roster.find(person => person.name === content[2]) && !roster.find(person => person.id === id) ){
-      message.channel.send(`Cannot find ${id} on the guild roster! Try updating your id first!`)
+    } else if (!roster.find(member => member.id === id)){
+      message.channel.send(`Zakum cannot find ${id || content[2]} on the guild roster! Try updating your id first!`)
       return;
     } else {
-      update(message, content[1], content[2], roster, classes)
+      update(message, type, content, id, value, roster, classes)
     }
   }
 };
 
-function update(message, type, content, roster, classes){
+function update(message, type, content, id, value, roster, classes){
   switch(type){
     case "class":
-      updateClass(message, roster, classes)
+      updateClass(message, id, value, classes, roster)
       break;
     case "dps":
-      updateDps(message, content, roster)
+      updateDps(message, id, value, roster)
       break;
     case "id":
-      updateId(message, content, roster)
+      updateId(message, id, content.slice(content.length >= 4 ? 3:2).join(" "), roster)
       break;
     case "name":
-      updateName(message, content, roster)
+      updateName(message, id, value, roster)
       break;
   }
 }
 
-function updateClass(message, roster, classes){
-  const newRole = message.content.split(" ").slice(2).join('')
-  if (!classes.includes(newRole)){
-    message.channel.send(`Zakum tried his best but does not think that ${newRole} exists in MapleStory M.`)
+function updateClass(message, id, role, classes, roster){
+  if (!classes.includes(role)){
+    message.channel.send(`Zakum tried his best but does not think that ${role} exists in MapleStory M.`)
     return;
   }
-  roster.find(member => member.id === `${message.author.username}#${message.author.discriminator}`).role = newRole
-  updateRoster(roster, message, "class")
+  roster.find(member => member.id === id).role = role
+  updateRoster(roster, message, "class", id)
 }
 
-function updateDps(message, dps, roster){
+function updateDps(message, id, dps, roster){
   if (!dps || dps.length > 5 || !parseFloat(dps)){
     message.channel.send("Invalid dps value entered. Example: \`!update dps 13.37 \`")
     return;
   }
-  roster.find(member => member.id === `${message.author.username}#${message.author.discriminator}`).rank = dps
-  updateRoster(roster, message, "dps")
+  roster.find(member => member.id === id).rank = parseFloat(dps)
+  updateRoster(roster, message, "dps", id)
 }
 
-function updateId(message, name, roster){
-  const newId = `${message.author.username}#${message.author.discriminator}`
-  if (!name || name.includes('#')){
-    message.channel.send("Invalid name value entered. Example: \`!update id Zakum \`")
+function updateId(message, id, newId, roster){
+  if (!newId){
+    message.channel.send("Invalid new id entered. Example: \`!update id Zakum Zakum#1234 \`")
     return;
   }
-  else if (!roster.find(person => person.name.toLowerCase() === name.toLowerCase())){
-    message.channel.send(`Zakum tried his best but can't find ${name} on the guild roster!`)
-    return;
-  }
-  roster.find(member => member.name === name).id = newId
-  updateRoster(roster, message, "id")
+  newId = newId || `${message.author.username}#${message.author.discriminator}`
+  roster.find(member => member.id === id).id = newId
+  updateRoster(roster, message, "id", newId)
 }
 
-function updateName(message, name, roster){
-  if (!name || name.includes('#')){
-    message.channel.send("Invalid name value entered. Example: \`!update name Zakum \`")
-    return;
-  }
-  roster.find(member => member.id === `${message.author.username}#${message.author.discriminator}`).name = name
-  updateRoster(roster, message, "name")
+function updateName(message, id, newName, roster){
+  roster.find(member => member.id === id).name = newName
+  updateRoster(roster, message, "name", id)
 }
 
-function updateRoster(roster, message, type){
+function updateRoster(roster, message, type, id){
   fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
     if (err) {
         console.error(err);
         return;
     };
-    message.channel.send(`Successfully updated the ${type} of ${message.author.username}!`)
   })
+  message.channel.send(`Successfully updated the ${type} of ${roster.find(member => member.id === id).name}!`)
 }

@@ -152,7 +152,7 @@ client.on('message', message => {
 		swap(message, groups)
 	}
 
-	if(message.content.substring(0,7).toLowerCase() === `${prefix}update`){
+	if(message.content.substring(0,7).toLowerCase() === `${prefix}update` && isAdmin){
 		update(message, getRoster(), MAPLE_STORY_CLASSES)
 	}
 });
