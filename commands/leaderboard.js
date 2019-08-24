@@ -25,7 +25,13 @@ module.exports = {
     roster = roster.sort((a, b) => b.rank - a.rank);
     for (i = 0; i < amount; i++) {
       const place = i + 1
-      stringy += "#" + place + " " + roster[i].name + " ".repeat(Math.abs(roster[i].name.length - 13)) + roster[i].rank + "\n";
+      // anal about spacing. i need it to look like. discord doesnt allow tables.
+      if (place < 10) {
+        stringy += "#" + place + "   " + roster[i].name + " ".repeat(Math.abs(roster[i].name.length - 13)) + roster[i].rank + "\n";
+      }
+      else {
+        stringy += "#" + place + "  " + roster[i].name + " ".repeat(Math.abs(roster[i].name.length - 13)) + roster[i].rank + "\n";
+      }
     }
 
     stringy += "```";
