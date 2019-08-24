@@ -12,6 +12,7 @@ const postRoster = require('./commands/postRoster.js').postRoster;
 const promote = require('./commands/promote.js').promoteCommand;
 const remove = require('./commands/remove.js').removeCommand;
 const swap = require('./commands/swap.js').swap;
+const update = require('./commands/update.js').update;
 
 
 var fs = require("fs");
@@ -27,9 +28,7 @@ let leaders = [];
 
 client.once('ready', () => {
 	console.log('Ready!');
-	const initialLeaders = getRoster().filter(member => member.leader)
-	initialLeaders[0] && leaders.push(initialLeaders[0])
-	initialLeaders[1] && leaders.push(initialLeaders[1])
+	leaders = getRoster().filter(member => member.leader)
 });
 
 client.on('message', message => {
@@ -62,20 +61,15 @@ client.on('message', message => {
 	}
 
 	if (message.content === `${prefix}groups`) {
-		groups[0] = groups[0] || pool
-		const waitlistGroup = formatGroupMessage(waitlist)
-		const differenceMsg = formatDifferenceMessage(computeDifference(true))
-
-		let msg = [];
-		for(i=0; i < groups.length; i++){
-			msg.push(`Group ${i + 1}: ${formatGroupMessage(groups[i])} (${groups[i].length})`)
+		let [differenceMessage, chaosPinkBeanGroup, groupMessage] = [formatDifferenceMessage(computeDifference(groups[0], groups[1], true)), assemblePinkBeanGroup([...leaders, ...pool]), ""]
+		groups.length ? groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
+		if(waitlist && waitlist.length){
+			groupMessage += formatGroupMessage("Waitlist", waitlist)
 		}
-		if (waitlist && waitlist.length){
-			msg.push(`Waitlist: ${waitlistGroup} (${waitlistGroup.length})`)
+		if (chaosPinkBeanGroup && chaosPinkBeanGroup.length === 10){
+			groupMessage += formatGroupMessage("Chaos Pink Bean Group", chaosPinkBeanGroup)
 		}
-		console.log(msg.join("\n"))
-		message.channel.send("```" + msg.join("\n") + "```")
-		if(groups.length > 1) message.channel.send(`\`${differenceMsg}\``)
+		message.channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
 	}
 
 	if (message.content.substring(0,5) === `${prefix}pool` || message.content.substring(0,7) === `${prefix}joined`) {
@@ -88,7 +82,7 @@ client.on('message', message => {
 		waitlist = [];
 	}
 
-	if (message.content.substring(0,5) === `${prefix}find` && isAdmin) {
+	if (message.content.substring(0,5) === `${prefix}find`) {
 		let roster = getRoster();
 		find(message, roster);
 		}
@@ -111,7 +105,7 @@ client.on('message', message => {
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
 		const name = message.content.split(" ")[1]
 		let roster = getRoster()
-		demote(message, roster, leaders, name);
+		demote(message, roster);
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){
@@ -158,10 +152,18 @@ client.on('message', message => {
 		swap(message, groups)
 	}
 
+	if(message.content.substring(0,7).toLowerCase() === `${prefix}update` && isAdmin){
+		update(message, getRoster(), MAPLE_STORY_CLASSES)
+	}
 });
 
-function formatGroupMessage(group) {
-	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name):[]
+function formatGroupMessage(name, group) {
+	console.log(group)
+	console.log(name)
+	if (!group) return;
+	let groupMsg = `${name}: ${group.sort((a,b) => b.rank - a.rank).map(member => member.name).join(", ")}`
+	let infoMsg = name !== "Waitlist" ? `(Count: ${group.length}, Strength: ${totalRank(group)})` : `(${group.length})`
+	return `${groupMsg} ${infoMsg} \n`
 }
 
 function formatDifferenceMessage(difference){
@@ -180,56 +182,24 @@ function formatDifferenceMessage(difference){
 }
 
 function balance(pool, message){
-	groups[0] = [];
-	groups[1] = [];
-	if (pool.length <= 8){
-		groups[0] = [leaders[0], leaders[1], ...pool]
-	} else {
-		message.channel.send("Zakum has detected two groups! Balancing groups...")
-		let g0 = [leaders[0]]
-		let g1 = [leaders[1]]
-		let bishops = 	 pool.filter(person => !person.leader && person.role.toLowerCase() == 'bishop').sort((a,b) => b.rank-a.rank)  // gimmie my bishes sorted by rank
-		let poolToJoin = pool.filter(person => !person.leader && person.role.toLowerCase() != 'bishop') // gimmie my non-leaders/non-bishops
-
-		// ALLOCATE BISHOPS
-		let leftover = []
-		for(let bishop of bishops){
-			let pg = prioritizeGroups([g0,g1]);
-			if(!pg[0].map(g => g.role.toLowerCase()).includes('bishop')){
-				pg[0].push(bishop);
-			} else if(!pg[1].map(g => g.role.toLowerCase()).includes('bishop')){
-				pg[1].push(bishop);
-			}	else {
-				leftover.push(bishop);
-			}
+		groups = [];
+		let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop" && !member.leader).sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank-b.rank), [{rank: 100}], [...leaders, ...pool].length]
+		leaders.forEach((leader, index) => total > (10*index) ? groups[index] = [leader] : joining.push(leader))
+		while(joining.length){
+			groups.filter(group => !group.full).forEach(group => {
+				if(totalRank(group) < totalRank(weakest)) weakest = group
+			})
+		if(weakest.length === 10){
+			weakest.full = true
+			weakest = groups.filter(group => !group.full)[0]
+			continue;
 		}
-		// MERGE LEFTOVERS
-		poolToJoin = poolToJoin.concat(leftover)
-
-		while(poolToJoin.length){
-			let diff = computeDifference(false)
-			var max = poolToJoin.sort((a,b) => b.rank-a.rank)[0].rank
-			const memberToJoin = poolToJoin.find(member => member.rank === max)
-			if(g0.length === 1 && g1.length === 1){
-				leaders[0].rank > leaders[1].rank ? g1.push(memberToJoin) : g0.push(memberToJoin)
-			}
-			else if (g0.length === 10){
-				g1.push(memberToJoin)
-			}
-			else if (g1.length === 10){
-				g0.push(memberToJoin)
-			}
-			else if (diff > 0) {
-				g1.push(memberToJoin)
-			}
-			else {
-				g0.push(memberToJoin)
-			}
-			poolToJoin = poolToJoin.filter(member => member !== memberToJoin)
+		weakest.filter(member => member.role === "bishop").length === 0 &&
+		bishops.length
+		  ? weakest.push(bishops[bishops.length - 1]) &&
+		    joining.splice(joining.indexOf(bishops.pop()), 1)
+		  : weakest.push(joining.pop())
 		}
-		groups[0] = g0
-		groups[1] = g1
-	}
 }
 
 function prioritizeGroups(groups){
@@ -240,10 +210,9 @@ function totalRank(group){
 	return group.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
 }
 
-function computeDifference(abs){
-	let totalRanks = groups.map(group => totalRank(group))
-	const g1 = Math.max(...totalRanks);
-	const g2 = Math.min(...totalRanks);
+function computeDifference(group1, group2, abs){
+	const g1 = group1 && totalRank(group1)
+	const g2 = group2 && totalRank(group2)
 	return abs ? Math.abs(g1-g2) : (g1-g2)
 }
 
@@ -283,15 +252,30 @@ function addMemberToPool(name, message, roster){
 		}
 		balance(pool, message)
 		return;
-	} else if (groups[0] && groups[1] && groups[0].length === 10 && groups[1].length === 10){
+	} else if ([...leaders, ...pool].length >= leaders.length * 10){
 		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
 		waitlist.push(joined)
 		return;
 	} else {
+		if(joined.leader) return;
 		pool.push(joined)
 		balance(pool, message)
 		message.channel.send(`${name || message.author.username} has joined the Zakum Expedition Finder queue! :heart:`)
 	}
+}
+
+function assemblePinkBeanGroup(pool){
+	if (pool.length < 10) return;
+	let group = pool.sort((a,b) => b.rank - a.rank).slice(0,10)
+	if(!findByRole(group, 'bishop') && findByRole(pool, 'bishop')){
+		const bishop = findByRole(pool, 'bishop').slice().sort((a,b) => a.rank - b.rank)
+		group[9] = bishop.pop()
+	}
+	return group
+}
+
+function findByRole(group, role){
+  return group.find(member => member.role.toLowerCase() === role.toLowerCase())
 }
 
 client.login(token);
@@ -303,11 +287,14 @@ client.login(token);
 /** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
 //17:30 server time post a message!
 
-var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.';
+var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
 var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
 				if(channel != undefined){
+					pool = [];
+					groups = [];
+					waitlist = [];
 					channel.send(expoMsg);
 				}
 			}

@@ -96,5 +96,19 @@
     "required": [],
     "optional": [],
     "description": "Removes the current channel from the timers list."
+  },
+  {
+    "name": "update",
+    "admin": false,
+    "required": ["Name", "Type", "Value"],
+    "optional": [],
+    "description": "Updates a value (class, dps, id, name) for a member on the guild roster."
+  },
+  {
+    "name": "swap",
+    "admin": true,
+    "required": ["Member 1", "Member 2"],
+    "optional": [],
+    "description": "Swaps two guild members between two expedition groups!"
   }
 ]
