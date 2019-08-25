@@ -13,6 +13,7 @@ const promote = require('./commands/promote.js').promoteCommand;
 const remove = require('./commands/remove.js').removeCommand;
 const swap = require('./commands/swap.js').swap;
 const update = require('./commands/update.js').update;
+const leaderboard = require('./commands/leaderboard.js').leaderboard;
 
 
 var fs = require("fs");
@@ -106,6 +107,11 @@ client.on('message', message => {
 		const name = message.content.split(" ")[1]
 		let roster = getRoster()
 		demote(message, roster);
+	}
+
+	if (message.content.substring(0,12) === `${prefix}leaderboard`) {
+		let roster = getRoster()
+		leaderboard(message, roster)
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){

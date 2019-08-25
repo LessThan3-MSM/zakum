@@ -110,5 +110,12 @@
     "required": ["Member 1", "Member 2"],
     "optional": [],
     "description": "Swaps two guild members between two expedition groups!"
+  },
+  {
+    "name": "leaderboard",
+    "admin": false,
+    "required": [],
+    "optional": [],
+    "description": "Lists the top 10 dps or if an integer (X) is given, top X on the roster"
   }
 ]
