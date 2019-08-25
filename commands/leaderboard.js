@@ -1,41 +1,26 @@
-var fs = require("fs");
-
 module.exports = {
   leaderboard: function (message, roster) {
 
-    if(message.content.split(" ").length !== 2) { // we want users to input how many
-      message.channel.send("Please use like so: !leaderboard <positive integer>");
+    if(message.content.split(" ").length > 2) {
+      message.channel.send("Invalid format. Example: \`!leaderboard 5 \`");
       return;
     }
 
-    let stringy = "List of beautiful whales <3\n```";
-    let amount = message.content.split(" ")[1];
-    amount = Math.min(amount, roster.length); //prevents out of index errors
+    let amount = 10;
+    if (message.content.split(" ")[1]) {
+      amount = Math.min(message.content.split(" ")[1], roster.length); //prevents out of index errors
+    }
 
-    if (!parseInt(amount)) { //for NaN inputs
-      message.channel.send("Use a positive WHOLE number you twat");
+    if (!parseInt(amount) || parseInt(amount) < 1) { //for NaN inputs and <= 0 inputs
+      message.channel.send("Invalid input. Example: \`!leaderboard 5 \`");
       return;
     }
 
-    if (parseInt(amount) < 1) { // for 0 or negatives
-      message.channel.send("Stop it. Use a positive WHOLE number");
-      return;
-    }
+    message.channel.send(`\`\`\`${roster.sort((a, b) => b.rank - a.rank)
+          .map((member,index) => `#${index+1} ${" ".repeat(Math.abs((index+1).toString().length - 2))} ${member.name} ${" ".repeat(Math.abs(member.name.length - 12))} ${member.rank}`)
+          .slice(0, amount)
+          .join('\n')}\`\`\``);
 
-    roster = roster.sort((a, b) => b.rank - a.rank);
-    for (i = 0; i < amount; i++) {
-      const place = i + 1
-      // anal about spacing. i need it to look like. discord doesnt allow tables.
-      if (place < 10) {
-        stringy += "#" + place + "   " + roster[i].name + " ".repeat(Math.abs(roster[i].name.length - 13)) + roster[i].rank + "\n";
-      }
-      else {
-        stringy += "#" + place + "  " + roster[i].name + " ".repeat(Math.abs(roster[i].name.length - 13)) + roster[i].rank + "\n";
-      }
-    }
-
-    stringy += "```";
-    message.channel.send(stringy);
 		return;
   }
 };
