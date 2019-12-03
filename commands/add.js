@@ -17,8 +17,7 @@ module.exports = {
       return;
     }
     roster.push(member)
-    console.log(roster)
-
+    
     fs.writeFile(rosterLoc, JSON.stringify({"lt3":roster}, null, 4), (err) => {
       if (err) {
           console.error(err);

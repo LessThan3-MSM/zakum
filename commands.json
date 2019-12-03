@@ -100,9 +100,9 @@
   {
     "name": "update",
     "admin": false,
-    "required": ["Name", "Type", "Value"],
+    "required": ["Type", "Name", "Value"],
     "optional": [],
-    "description": "Updates a value (class, dps, id, name) for a member on the guild roster."
+    "description": "Updates a value (class, dps, id, multiplier, name) for a member on the guild roster."
   },
   {
     "name": "swap",

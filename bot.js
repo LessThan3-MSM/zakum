@@ -105,8 +105,8 @@ client.on('message', message => {
 
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
 		const name = message.content.split(" ")[1]
-		let roster = getRoster()
-		demote(message, roster);
+		leaders = leaders.filter(member => member.name.toLowerCase() !== name.toLowerCase())
+		demote(message, getRoster());
 	}
 
 	if (message.content.substring(0,12) === `${prefix}leaderboard`) {
@@ -164,10 +164,8 @@ client.on('message', message => {
 });
 
 function formatGroupMessage(name, group) {
-	console.log(group)
-	console.log(name)
 	if (!group) return;
-	let groupMsg = `${name}: ${group.sort((a,b) => b.rank - a.rank).map(member => member.name).join(", ")}`
+	let groupMsg = `${name}: ${group.sort((a,b) => b.rank*(name === "Chaos Pink Bean Group" ? 1 : (b.multiplier || 1)) - a.rank*(name === "Chaos Pink Bean Group" ? 1 : (a.multiplier || 1))).map(member => member.name).join(", ")}`
 	let infoMsg = name !== "Waitlist" ? `(Count: ${group.length}, Strength: ${totalRank(group).toFixed(1)})` : `(${group.length})`
 	return `${groupMsg} ${infoMsg} \n`
 }
@@ -189,7 +187,7 @@ function formatDifferenceMessage(difference){
 
 function balance(pool, message){
 		groups = [];
-		let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop" && !member.leader).sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank-b.rank), [{rank: 100}], [...leaders, ...pool].length]
+		let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop" && !member.leader).sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank*(a.multiplier || 1) - b.rank*(b.multiplier || 1)), [{rank: 100}], [...leaders, ...pool].length]
 		leaders.forEach((leader, index) => total > (10*index) ? groups[index] = [leader] : joining.push(leader))
 		while(joining.length){
 			groups.filter(group => !group.full).forEach(group => {
@@ -208,12 +206,16 @@ function balance(pool, message){
 		}
 }
 
+function getNextDps(){
+
+}
+
 function prioritizeGroups(groups){
 	return groups.sort((a,b) => totalRank(a) - totalRank(b))
 }
 
 function totalRank(group){
-	return group.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
+	return group.reduce(function (acc, obj) { return acc + obj.rank * (obj.multiplier || 1); }, 0);
 }
 
 function computeDifference(group1, group2, abs){
@@ -294,7 +296,7 @@ client.login(token);
 //17:30 server time post a message!
 
 var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
-var expoTimer = new CronJob('30 17 * * *', function(){
+var expoTimer = new CronJob('30 16 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
 				if(channel != undefined){
@@ -354,6 +356,6 @@ function writeToTimerFile(channel){
 function listCommands(channel, isUserAdmin){
 	let helpMsg = '__Zakum Commands__ \n';
 	const commandsCanAccess = !isUserAdmin ? commands.filter(command => command.admin === false) : commands
-	commandsCanAccess.forEach(command => helpMsg += `**!${command.name}** ${command.required.length && `**{${command.required.join(", ")}}**`}  : ${command.description} \n` )
+	commandsCanAccess.forEach(command => helpMsg += `**!${command.name}** ${command.required && `**{${command.required.join(", ")}}**`}  : ${command.description} \n` )
 	channel.send(helpMsg);
 }

@@ -9,7 +9,7 @@ module.exports = {
 		}
 		const foundMember = roster.find(member => member.name.toLowerCase() === personToFind.toLowerCase())
 		foundMember
-      ? message.channel.send(`\`\`\`ID: ${foundMember.id}\nName: ${foundMember.name}\nClass: ${foundMember.role}\nDPS: ${foundMember.rank}\`\`\``)
+      ? message.channel.send(`\`\`\`ID: ${foundMember.id}\nName: ${foundMember.name}\nClass: ${foundMember.role}\nDPS: ${foundMember.rank}\nMultiplier: ${foundMember.multiplier || 1}\`\`\``)
       : message.channel.send(`Zakum can't find ${personToFind} on the guild roster.`)
   }
 };
