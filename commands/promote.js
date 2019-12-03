@@ -11,7 +11,6 @@ module.exports = {
     // i need help with checking if roster has member, doing ugly code to check
     flag = 0;
     roster.forEach(function(member) {
-      console.log(member.name);
       if (member.name.localeCompare(name, undefined, { sensitivity: 'accent' }) === 0) {
         flag = 1;
       }

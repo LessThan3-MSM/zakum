@@ -10,7 +10,6 @@ module.exports = {
     let demoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
     if (demoted != undefined) {
   		demoted.leader = false
-  		leaders = roster.filter(member => member.leader && (member.name.toLowerCase() !== name.toLowerCase()))
   		fs.writeFile(rosterLoc, JSON.stringify({"lt3":roster}, null, 4), (err) => {
   				if (err) {
   						console.error(err);

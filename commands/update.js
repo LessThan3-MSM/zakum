@@ -5,7 +5,7 @@ module.exports = {
     const content = message.content.split(" ")
     const person = content.length >= 4 && roster.find(member => member.name.toLowerCase() === content[2].toLowerCase())
     const [AVAILABLE_ARGS, type, id, value] = [
-      ["dps", "id", "name", "class"],
+      ["dps", "id", "name", "class", "multiplier"],
       content[1].toLowerCase(),
       content.length >= 4 ? person && person.id : `${message.author.username}#${message.author.discriminator}`,
       content.slice(content.length >= 4 ? 3:2).join("")
@@ -35,6 +35,9 @@ function update(message, type, content, id, value, roster, classes){
       break;
     case "name":
       updateName(message, id, value, roster)
+      break;
+    case "multiplier":
+      updateMulti(message, id, value, roster)
       break;
   }
 }
@@ -70,6 +73,15 @@ function updateId(message, id, newId, roster){
 function updateName(message, id, newName, roster){
   roster.find(member => member.id === id).name = newName
   updateRoster(roster, message, "name", id)
+}
+
+function updateMulti(message, id, newMulti, roster){
+  if (!newMulti || newMulti.length > 3 || !parseFloat(newMulti)){
+    message.channel.send("Invalid multiplier value entered. Example: \`!update multiplier 2.0 \`")
+    return;
+  }
+  roster.find(member => member.id === id).multiplier = parseFloat(newMulti)
+  updateRoster(roster, message, "multiplier", id)
 }
 
 function updateRoster(roster, message, type, id){
