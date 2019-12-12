@@ -18,7 +18,7 @@ const leaderboard = require('./commands/leaderboard.js').leaderboard;
 
 var fs = require("fs");
 var CronJob = require('cron').CronJob;
-var serverTimeZone = 'America/Anchorage'; //This is Scania's Server time. Modify as needed.
+var serverTimeZone = 'Pacific/Pitcairn'; //This is Scania's Server time. Modify as needed.
 var timerChannels = require ('./timerchannels.json');
 const commands = require ('./commands.json');
 
@@ -296,7 +296,7 @@ client.login(token);
 //17:30 server time post a message!
 
 var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
-var expoTimer = new CronJob('30 16 * * *', function(){
+var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
 				if(channel != undefined){
