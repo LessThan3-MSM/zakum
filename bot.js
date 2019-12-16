@@ -147,7 +147,7 @@ client.on('message', message => {
 	}
 
 	if(message.content.substring(0,5).toLowerCase() === `${prefix}swap` && isAdmin){
-		swap(message, groups)
+		swap(message, groups, waitlist)
 	}
 
 	if(message.content.substring(0,7).toLowerCase() === `${prefix}update` && isAdmin){

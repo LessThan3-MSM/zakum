@@ -1,7 +1,7 @@
 var fs = require("fs");
 
 module.exports = {
-  swap: function (message, groups) {
+  swap: function (message, groups, waitlist) {
     message.channel.send("Zakum used **Swap!**")
     let params = message.content.split(" ")
     if(!(groups.length > 1) || params.length !== 3){
