@@ -14,12 +14,12 @@ const remove = require('./commands/remove.js').removeCommand;
 const swap = require('./commands/swap.js').swap;
 const update = require('./commands/update.js').update;
 const leaderboard = require('./commands/leaderboard.js').leaderboard;
+const listCommands = require('./commands/commands.js').listCommands;
 
 var fs = require("fs");
 var CronJob = require('cron').CronJob;
 var serverTimeZone = 'Pacific/Pitcairn'; //This is Scania's Server time. Modify as needed.
 var timerChannels = require ('./timerchannels.json');
-const commands = require ('./commands.json');
 
 let groups = [];
 let pool = [];
@@ -325,11 +325,4 @@ function writeToTimerFile(channel){
 	if(exported){
 		channel.send(':thumbsup: Zakum has successfully modified the channel list.');
 	}
-}
-
-function listCommands(channel, isUserAdmin){
-	let helpMsg = '__Zakum Commands__ \n';
-	const commandsCanAccess = !isUserAdmin ? commands.filter(command => command.admin === false) : commands
-	commandsCanAccess.forEach(command => helpMsg += `**!${command.name}** ${command.required && `**{${command.required.join(", ")}}**`}  : ${command.description} \n` )
-	channel.send(helpMsg);
 }
