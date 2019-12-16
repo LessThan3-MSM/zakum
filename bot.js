@@ -15,7 +15,6 @@ const swap = require('./commands/swap.js').swap;
 const update = require('./commands/update.js').update;
 const leaderboard = require('./commands/leaderboard.js').leaderboard;
 
-
 var fs = require("fs");
 var CronJob = require('cron').CronJob;
 var serverTimeZone = 'Pacific/Pitcairn'; //This is Scania's Server time. Modify as needed.
@@ -62,13 +61,10 @@ client.on('message', message => {
 	}
 
 	if (message.content === `${prefix}groups`) {
-		let [differenceMessage, chaosPinkBeanGroup, groupMessage] = [formatDifferenceMessage(computeDifference(groups[0], groups[1], true)), assemblePinkBeanGroup([...leaders, ...pool]), ""]
+		let [differenceMessage, groupMessage] = [formatDifferenceMessage(computeDifference(groups[0], groups[1], true)), ""]
 		groups.length ? groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
 		if(waitlist && waitlist.length){
 			groupMessage += formatGroupMessage("Waitlist", waitlist)
-		}
-		if (chaosPinkBeanGroup && chaosPinkBeanGroup.length === 10){
-			groupMessage += formatGroupMessage("Chaos Pink Bean Group", chaosPinkBeanGroup)
 		}
 		message.channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
 	}
@@ -86,7 +82,7 @@ client.on('message', message => {
 	if (message.content.substring(0,5) === `${prefix}find`) {
 		let roster = getRoster();
 		find(message, roster);
-		}
+	}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
 		message.channel.send(`rebalancing...`);
@@ -206,14 +202,6 @@ function balance(pool, message){
 		}
 }
 
-function getNextDps(){
-
-}
-
-function prioritizeGroups(groups){
-	return groups.sort((a,b) => totalRank(a) - totalRank(b))
-}
-
 function totalRank(group){
 	return group.reduce(function (acc, obj) { return acc + obj.rank * (obj.multiplier || 1); }, 0);
 }
@@ -270,20 +258,6 @@ function addMemberToPool(name, message, roster){
 		balance(pool, message)
 		message.channel.send(`${name || message.author.username} has joined the Zakum Expedition Finder queue! :heart:`)
 	}
-}
-
-function assemblePinkBeanGroup(pool){
-	if (pool.length < 10) return;
-	let group = pool.sort((a,b) => b.rank - a.rank).slice(0,10)
-	if(!group.find(member => member.role.toLowerCase() === "bishop") && pool.find(member => member.role.toLowerCase() === "bishop")){
-		const bishop = pool.filter(member => member.role.toLowerCase() === "bishop").slice().sort((a,b) => a.rank - b.rank)
-		group[9] = bishop.pop()
-	}
-	return group
-}
-
-function findByRole(group, role){
-  return group.find(member => member.role.toLowerCase() === role.toLowerCase())
 }
 
 client.login(token);
