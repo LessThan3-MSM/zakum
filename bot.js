@@ -7,16 +7,17 @@ const client = new Discord.Client();
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
 const balance = require('./commands/balance.js').balance;
+const listCommands = require('./commands/commands.js').listCommands;
 const demote = require('./commands/demote.js').demoteCommand;
 const find = require('./commands/find.js').findCommand;
 const groupCommand = require('./commands/groups.js').groupCommand;
+const joined = require('./commands/joined.js').joined;
+const leaderboard = require('./commands/leaderboard.js').leaderboard;
 const postRoster = require('./commands/postRoster.js').postRoster;
 const promote = require('./commands/promote.js').promoteCommand;
 const remove = require('./commands/remove.js').removeCommand;
 const swap = require('./commands/swap.js').swap;
 const update = require('./commands/update.js').update;
-const leaderboard = require('./commands/leaderboard.js').leaderboard;
-const listCommands = require('./commands/commands.js').listCommands;
 
 var fs = require("fs");
 var CronJob = require('cron').CronJob;
@@ -67,7 +68,7 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,5) === `${prefix}pool` || message.content.substring(0,7) === `${prefix}joined`) {
-		pool.length && message.channel.send(pool.map(joined => joined.name).sort())
+		joined(message, pool);
 	}
 
 	if (message.content.substring(0,6) === `${prefix}reset` && isAdmin) {
