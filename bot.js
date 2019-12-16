@@ -98,9 +98,7 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
-		const name = message.content.split(" ")[1]
-		leaders = leaders.filter(member => member.name.toLowerCase() !== name.toLowerCase())
-		demote(message, getRoster());
+		leaders = demote(message, getRoster(), leaders);
 	}
 
 	if (message.content.substring(0,12) === `${prefix}leaderboard`) {

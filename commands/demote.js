@@ -1,7 +1,7 @@
 var fs = require("fs");
 
 module.exports = {
-  demoteCommand: function (message, roster, rosterLoc = "./guilds/lt3.json") {
+  demoteCommand: function (message, roster, leaders, rosterLoc = "./guilds/lt3.json") {
     if(message.content.split(" ").length !== 2) {
       message.channel.send("No input. Please use like so: !demote <IGN>")
       return;
@@ -21,5 +21,6 @@ module.exports = {
       message.channel.send(name + " is not in your guild roster! Please try again");
       return;
     }
+    return leaders.filter(member => member.name.toLowerCase() !== name.toLowerCase())
   }
 };
