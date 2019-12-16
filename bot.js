@@ -6,6 +6,7 @@ const client = new Discord.Client();
 
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
+const balance = require('./commands/balance.js').balance;
 const demote = require('./commands/demote.js').demoteCommand;
 const find = require('./commands/find.js').findCommand;
 const groupCommand = require('./commands/groups.js').groupCommand;
@@ -81,8 +82,8 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
-		message.channel.send(`rebalancing...`);
-		balance(pool, message);
+		groups = balance(pool, leaders);
+		message.channel.send(`Zakum has successfully rebalanced the groups.`);
 	}
 
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
@@ -155,27 +156,6 @@ client.on('message', message => {
 	}
 });
 
-function balance(pool, message){
-		groups = [];
-		let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop" && !member.leader).sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank*(a.multiplier || 1) - b.rank*(b.multiplier || 1)), [{rank: 100}], [...leaders, ...pool].length]
-		leaders.forEach((leader, index) => total > (10*index) ? groups[index] = [leader] : joining.push(leader))
-		while(joining.length){
-			groups.filter(group => !group.full).forEach(group => {
-				if(totalRank(group) < totalRank(weakest)) weakest = group
-			})
-		if(weakest.length === 10){
-			weakest.full = true
-			weakest = groups.filter(group => !group.full)[0]
-			continue;
-		}
-		weakest.filter(member => member.role === "bishop").length === 0 &&
-		bishops.length
-		  ? weakest.push(bishops[bishops.length - 1]) &&
-		    joining.splice(joining.indexOf(bishops.pop()), 1)
-		  : weakest.push(joining.pop())
-		}
-}
-
 function totalRank(group){
 	return group.reduce(function (acc, obj) { return acc + obj.rank * (obj.multiplier || 1); }, 0);
 }
@@ -214,7 +194,7 @@ function addMemberToPool(name, message, roster){
 			pool.push(waitlist[0])
 			waitlist = waitlist.filter(member => member !== waitlist[0])
 		}
-		balance(pool, message)
+		groups = balance(pool, leaders)
 		return;
 	} else if ([...leaders, ...pool].length >= leaders.length * 10){
 		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
@@ -223,7 +203,7 @@ function addMemberToPool(name, message, roster){
 	} else {
 		if(joined.leader) return;
 		pool.push(joined)
-		balance(pool, message)
+		groups = balance(pool, leaders)
 		message.channel.send(`${name || message.author.username} has joined the Zakum Expedition Finder queue! :heart:`)
 	}
 }
