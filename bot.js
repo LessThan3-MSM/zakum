@@ -8,6 +8,7 @@ const client = new Discord.Client();
 const add = require('./commands/add.js').addCommand;
 const demote = require('./commands/demote.js').demoteCommand;
 const find = require('./commands/find.js').findCommand;
+const groupCommand = require('./commands/groups.js').groupCommand;
 const postRoster = require('./commands/postRoster.js').postRoster;
 const promote = require('./commands/promote.js').promoteCommand;
 const remove = require('./commands/remove.js').removeCommand;
@@ -61,12 +62,7 @@ client.on('message', message => {
 	}
 
 	if (message.content === `${prefix}groups`) {
-		let [differenceMessage, groupMessage] = [formatDifferenceMessage(computeDifference(groups[0], groups[1], true)), ""]
-		groups.length ? groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
-		if(waitlist && waitlist.length){
-			groupMessage += formatGroupMessage("Waitlist", waitlist)
-		}
-		message.channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
+		groupCommand(message, groups, pool, waitlist, leaders);
 	}
 
 	if (message.content.substring(0,5) === `${prefix}pool` || message.content.substring(0,7) === `${prefix}joined`) {
@@ -159,28 +155,6 @@ client.on('message', message => {
 	}
 });
 
-function formatGroupMessage(name, group) {
-	if (!group) return;
-	let groupMsg = `${name}: ${group.sort((a,b) => b.rank*(name === "Chaos Pink Bean Group" ? 1 : (b.multiplier || 1)) - a.rank*(name === "Chaos Pink Bean Group" ? 1 : (a.multiplier || 1))).map(member => member.name).join(", ")}`
-	let infoMsg = name !== "Waitlist" ? `(Count: ${group.length}, Strength: ${totalRank(group).toFixed(1)})` : `(${group.length})`
-	return `${groupMsg} ${infoMsg} \n`
-}
-
-function formatDifferenceMessage(difference){
-	if(difference === 0){
-		return "Zakum has assembled absolutely perfect and balanced groups!"
-	}
-	else if (difference > 0 && difference < 2){
-		return "Zakum has put together wonderful groups for the expedition!"
-	}
-	else if (difference > 2 && difference < 4){
-		return "Zakum created balanced groups for the expedition!"
-	}
-	else {
-		return "Zakum tried his best to balance groups :("
-	}
-}
-
 function balance(pool, message){
 		groups = [];
 		let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop" && !member.leader).sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank*(a.multiplier || 1) - b.rank*(b.multiplier || 1)), [{rank: 100}], [...leaders, ...pool].length]
@@ -204,12 +178,6 @@ function balance(pool, message){
 
 function totalRank(group){
 	return group.reduce(function (acc, obj) { return acc + obj.rank * (obj.multiplier || 1); }, 0);
-}
-
-function computeDifference(group1, group2, abs){
-	const g1 = group1 && totalRank(group1)
-	const g2 = group2 && totalRank(group2)
-	return abs ? Math.abs(g1-g2) : (g1-g2)
 }
 
 function getRoster(){
@@ -270,6 +238,7 @@ client.login(token);
 //17:30 server time post a message!
 
 var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
+
 var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
@@ -316,7 +285,7 @@ function writeToTimerFile(channel){
     function (err) {
         if (err) {
             channel.send(':scream: Unable to add timer channel.');
-			exported = false;
+						exported = false;
         }
     }
 

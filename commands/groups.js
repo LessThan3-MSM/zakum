@@ -1,8 +1,10 @@
 var fs = require("fs");
 
 function formatGroupMessage(name, group) {
-  // console.log(typeof(group));
-	return group ? group.sort((a,b) => b.rank - a.rank).map(member => member.name):[]
+	if (!group) return;
+	let groupMsg = `${name}: ${group.sort((a,b) => b.rank*(b.multiplier || 1) - a.rank*(a.multiplier || 1)).map(member => member.name).join(", ")}`
+	let infoMsg = name !== "Waitlist" ? `(Count: ${group.length}, Strength: ${totalRank(group).toFixed(1)})` : `(${group.length})`
+	return `${groupMsg} ${infoMsg} \n`
 }
 
 function formatDifferenceMessage(difference){
@@ -21,33 +23,24 @@ function formatDifferenceMessage(difference){
 }
 
 function computeDifference(group1, group2, abs){
-	const g1 = group1 && group1.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
-	const g2 = group2 && group2.reduce(function (acc, obj) { return acc + obj.rank; }, 0);
+	const g1 = group1 && totalRank(group1);
+	const g2 = group2 && totalRank(group2);
 	return abs ? Math.abs(g1-g2) : (g1-g2)
 }
 
+function totalRank(group){
+	return group.reduce(function (acc, obj) { return acc + obj.rank * (obj.multiplier || 1); }, 0);
+}
+
 module.exports = {
-  formGroups: function (message, roster, groups, pool, waitlist) {
-    console.log("GROUPS ", groups);
-    console.log("POOL", pool);
-    console.log("WAITLIST", waitlist);
-    const group1 = formatGroupMessage("Group 1", groups[0] || pool);
-		const group2 = formatGroupMessage("Group 2", groups[1]);
-		const waitlistGroup = formatGroupMessage("Waitlist", waitlist);
-		const differenceMsg = formatDifferenceMessage(computeDifference(groups[0], groups[1], true));
+  groupCommand: function (message, groups, pool, waitlist, leaders) {
+		let [differenceMessage, groupMessage] = [formatDifferenceMessage(computeDifference(groups[0], groups[1], true)), ""]
+		groups.length ? groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
 
-    let msg = `Group 1: ${group1} (${group1.length})`;
-
-    if (groups[1] && groups[1].length) {
-			msg += `\nGroup 2: ${group2} (${group2.length})`;
+		if(waitlist && waitlist.length){
+			groupMessage += formatGroupMessage("Waitlist", waitlist)
 		}
 
-		if (waitlist && waitlist.length) {
-			msg += `\nWaitlist: ${waitlistGroup} (${waitlistGroup.length})`;
-		}
-
-		console.log("```" + msg + "```");
-		message.channel.send("```" + msg + "```");
-		groups[1] && groups[1].length && message.channel.send(`\`${differenceMsg}\``);
+		message.channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
   }
 };
