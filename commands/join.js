@@ -19,8 +19,7 @@ function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups)
 	if(waitlist && waitlist.find( member => member.id === joined.id  )){
 		message.channel.send(`Removed ${name || message.author.username} from the Zakum Expedition Finder waitlist.`)
 		waitlist = waitlist.filter(member => member.id !== joined.id)
-	}
-	else if (pool.find( member => member.id === joined.id  )){
+	} else if (pool.find( member => member.id === joined.id  )){
 		pool = pool.filter(member => member.id !== joined.id)
 		message.channel.send(`Removed ${name || message.author.username} from the Zakum Expedition Finder queue.`)
 		if(waitlist && waitlist.length){
@@ -32,7 +31,6 @@ function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups)
 	} else if ([...leaders, ...pool].length >= leaders.length * 10){
 		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
 		waitlist.push(joined)
-		return;
 	} else {
 		if(joined.leader) return;
 		pool.push(joined)
