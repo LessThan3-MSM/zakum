@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const {prefix, token} = require('./config.json')
-const {MAPLE_STORY_CLASSES} = require("./constants.json")
+const {TOKEN} = require('./config.json')
+const {PREFIX, MAPLE_STORY_CLASSES} = require("./constants.json")
 
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
@@ -39,79 +39,79 @@ client.on('message', message => {
 
 	if (message.author.bot) return;
 
-  if (message.content.substring(0,5) === `${prefix}join` && message.content.substring(0,7) !== `${prefix}joined` ) {
+  if (message.content.substring(0,5) === `${PREFIX}join` && message.content.substring(0,7) !== `${PREFIX}joined` ) {
 		join(message, getRoster(message.guild.id), waitlist, pool, getLeaders(message.guild.id), groups);
 	}
 
-	if (message.content.substring(0,4) === `${prefix}add` && isAdmin){
+	if (message.content.substring(0,4) === `${PREFIX}add` && isAdmin){
 		add(message, getRoster(message.guild.id));
 	}
 
-	if (message.content.substring(0,7) === `${prefix}remove` && isAdmin){
+	if (message.content.substring(0,7) === `${PREFIX}remove` && isAdmin){
 		remove(message, getRoster(message.guild.id));
 	}
 
-	if (message.content === `${prefix}lt3` || message.content === `${prefix}roster`) {
+	if (message.content === `${PREFIX}lt3` || message.content === `${PREFIX}roster`) {
 		postRoster(message, getRoster(message.guild.id));
 	}
 
-	if (message.content === `${prefix}groups`) {
+	if (message.content === `${PREFIX}groups`) {
 		groupCommand(message, groups, pool, waitlist, getLeaders(message.guild.id));
 	}
 
-	if (message.content.substring(0,5) === `${prefix}pool` || message.content.substring(0,7) === `${prefix}joined`) {
+	if (message.content.substring(0,5) === `${PREFIX}pool` || message.content.substring(0,7) === `${PREFIX}joined`) {
 		joined(message, pool);
 	}
 
-	if (message.content.substring(0,6) === `${prefix}reset` && isAdmin) {
+	if (message.content.substring(0,6) === `${PREFIX}reset` && isAdmin) {
 			reset(message.channel, pool, groups, waitlist);
 	}
 
-	if (message.content.substring(0,5) === `${prefix}find`) {
+	if (message.content.substring(0,5) === `${PREFIX}find`) {
 		find(message, getRoster(message.guild.id));
 	}
 
-	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
+	if (message.content.substring(0,8) === `${PREFIX}balance` && isAdmin) {
 		balance(pool, getLeaders(message.guild.id), groups, true, message.channel);
 	}
 
-	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
+	if (message.content.substring(0,8) === `${PREFIX}promote` && isAdmin) {
 		promote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
 	}
 
-	if (message.content.substring(0,8) === `${prefix}leaders` && isAdmin) {
+	if (message.content.substring(0,8) === `${PREFIX}leaders` && isAdmin) {
 		leadersCommand(message.channel, getRoster(message.guild.id));
 	}
 
-	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
+	if (message.content.substring(0,7) === `${PREFIX}demote` && isAdmin) {
 		demote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
 	}
 
-	if (message.content.substring(0,12) === `${prefix}leaderboard`) {
+	if (message.content.substring(0,12) === `${PREFIX}leaderboard`) {
 		leaderboard(message, getRoster(message.guild.id))
 	}
 
-	if(message.content.substring(0,6) === `${prefix}class`){
+	if(message.content.substring(0,6) === `${PREFIX}class`){
 		findByClass(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES);
 	}
 
-	if(message.content.substring(0,11) === `${prefix}timerChAdd`){
+	if(message.content.substring(0,11) === `${PREFIX}timerChAdd`){
 		addTimerCh(message, isAdmin);
-	}else if(message.content.substring(0,14) === `${prefix}timerChRemove`){
+	}else if(message.content.substring(0,14) === `${PREFIX}timerChRemove`){
 		removeTimerCh(message, isAdmin);
-	}else if(message.content.substring(0,12) === `${prefix}timerChList`){
+	}else if(message.content.substring(0,12) === `${PREFIX}timerChList`){
 		listTimerCh(message.channel);
 	}
 
-	if(message.content.substring(0,9).toLowerCase() === `${prefix}commands`){
+	if(message.content.substring(0,9).toLowerCase() === `${PREFIX}commands`){
 		listCommands(message.channel, isAdmin);
 	}
 
-	if(message.content.substring(0,5).toLowerCase() === `${prefix}swap` && isAdmin){
+	if(message.content.substring(0,5).toLowerCase() === `${PREFIX}swap` && isAdmin){
 		swap(message, groups, waitlist)
 	}
 
-	if(message.content.substring(0,7).toLowerCase() === `${prefix}update` && isAdmin){
+	if(message.content.substring(0,7).toLowerCase() === `${PREFIX}update` && isAdmin){
 		update(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES)
 	}
 });
@@ -139,7 +139,7 @@ function getAdmins(guildID){
 	return admins[guildID];
 }
 
-client.login(token);
+client.login(TOKEN);
 
 /************TIMERS******************/
 /** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
