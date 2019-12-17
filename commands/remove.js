@@ -2,7 +2,6 @@ var fs = require("fs");
 
 module.exports = {
   removeCommand: function (message, roster) {
-    // make this better
 		const content = message.content.split(" ")
 		const kicked = content[1] && content[1].toLowerCase().trim();
 		const newRoster = roster.filter(member => member.name.toLowerCase() !== kicked)
