@@ -117,5 +117,12 @@
     "required": [],
     "optional": [],
     "description": "Lists the top 10 dps or if an integer (X) is given, top X on the roster"
+  },
+  {
+    "name": "toggleexpos",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Enables/Disables expedition sign-ups."
   }
 ]

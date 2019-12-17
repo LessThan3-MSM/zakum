@@ -26,6 +26,7 @@ const listTimerCh = require('./commands/timers.js').listTimerCh;
 const removeTimerCh = require('./commands/timers.js').removeTimerCh;
 const getTimerCh = require('./commands/timers.js').getTimerCh;
 const update = require('./commands/update.js').update;
+const toggleexpos = require('./commands/timers.js').toggleexpos;
 
 var fs = require("fs");
 
@@ -64,7 +65,7 @@ client.on('message', message => {
 				findByClass(message, getRoster(message), MAPLE_STORY_CLASSES);
 				return;
 			case "timerchlist":
-				listTimerCh(message.channel);
+				listTimerCh(message);
 				return;
 			case "commands":
 				listCommands(message.channel, isAdmin);
@@ -105,6 +106,9 @@ client.on('message', message => {
 						return;
 					case "update":
 						update(message, getRoster(message), MAPLE_STORY_CLASSES)
+						return;
+					case "toggleexpos":
+						toggleexpos(message.guild.id, message.channel);
 						return;
 					}
 				}
@@ -155,19 +159,28 @@ client.login(TOKEN);
 var CronJob = require('cron').CronJob; /** Timers REQUIRE cron npm to be installed **/
 
 var serverTimeZone = 'Pacific/Pitcairn'; //This is Scania's Server time. Modify as needed.
-var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
+var enbMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
+var disMsg = '@everyone Expedition sign-ups are currently disabled.';
 
 var expoTimer = new CronJob('30 17 * * *', function(){
 	var timerChannels = getTimerCh();
-			for(var i = 0; i < timerChannels.length; i++){
-				var channel = client.channels.get(timerChannels[i]);
-				if(channel != undefined){
+
+	for(key in timerChannels) {
+		for(var i =0; i< timerChannels[key].timerChannels.length; i++){
+			var channel = client.channels.get(timerChannels[key].timerChannels[i]);
+			if(channel != undefined){
+				if(timerChannels[key].enabled){
 					pool.length = 0;
 					groups.length = 0;
 					waitlist.length = 0;
-					channel.send(expoMsg);
+					channel.send(enbMsg);
+				}else{
+					channel.send(disMsg);
 				}
 			}
+		}
+	}
+
 }, null, true, serverTimeZone);
 
 expoTimer.start();
