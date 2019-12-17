@@ -44,16 +44,16 @@ client.on('message', message => {
 		switch(commands[0]){
 			case "pool":
 			case "joined":
-				joined(message, pool);
+				joined(message, getPool(message.guild.id));
 				return;
 			case "join":
-				join(message, getRoster(message), waitlist, pool, getLeaders(message), groups);
+				join(message, getRoster(message), getWaitlist(message.guild.id), getPool(message.guild.id), getLeaders(message), getGroups(message.guild.id));
 				return;
 			case "roster":
 				postRoster(message, getRoster(message));
 				return;
 			case "groups":
-				groupCommand(message, groups, pool, waitlist, getLeaders(message));
+				groupCommand(message, getGroups(message.guild.id), getPool(message.guild.id), getWaitlist(message.guild.id), getLeaders(message));
 				return;
 			case "find":
 				find(message, getRoster(message));
@@ -87,10 +87,10 @@ client.on('message', message => {
 						remove(message, getRoster(message), message.guild.id);
 						return;
 					case "reset":
-						reset(message.channel, pool, groups, waitlist);
+						reset(message.channel, getPool(message.guild.id), getGroups(message.guild.id), getWaitlist(message.guild.id));
 						return;
 					case "balance":
-						balance(pool, getLeaders(message), groups, true, message.channel);
+						balance(getPool(message.guild.id), getLeaders(message), getGroups(message.guild.id), true, message.channel);
 						return;
 					case "promote":
 						promote(message, getRoster(message), getLeaders(message), message.guild.id);
@@ -102,7 +102,7 @@ client.on('message', message => {
 						demote(message, getRoster(message), getLeaders(message), message.guild.id);
 						return;
 					case "swap":
-						swap(message, groups, waitlist)
+						swap(message, getGroups(message.guild.id), getWaitlist(message.guild.id))
 						return;
 					case "update":
 						update(message, getRoster(message), MAPLE_STORY_CLASSES)
@@ -117,6 +117,21 @@ client.on('message', message => {
 
 			}
 });
+
+function getWaitlist(guildID){
+		if(waitlist[guildID] == undefined) { waitlist[guildID] = [] ;}
+		return waitlist[guildID];
+}
+
+function getPool(guildID){
+		if(pool[guildID] == undefined) { pool[guildID] = [] ;}
+		return pool[guildID];
+}
+
+function getGroups(guildID){
+		if(groups[guildID] == undefined) { groups[guildID] = [] ;}
+		return groups[guildID];
+}
 
 function getLeaders(message){
 	return getRoster(message).filter(member => member.leader);
@@ -170,9 +185,9 @@ var expoTimer = new CronJob('30 17 * * *', function(){
 			var channel = client.channels.get(timerChannels[key].timerChannels[i]);
 			if(channel != undefined){
 				if(timerChannels[key].enabled){
-					pool.length = 0;
-					groups.length = 0;
-					waitlist.length = 0;
+					getPool(key).length = 0;
+					getGroups(key).length = 0;
+					getWaitlist(key).length = 0;
 					channel.send(enbMsg);
 				}else{
 					channel.send(disMsg);
