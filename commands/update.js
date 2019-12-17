@@ -85,7 +85,7 @@ function updateMulti(message, id, newMulti, roster){
 }
 
 function updateRoster(roster, message, type, id){
-  fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
+  fs.writeFile("./guilds/"+message.guild.id+".json", JSON.stringify({"members":roster}, null, 4), (err) => {
     if (err) {
         console.error(err);
         return;

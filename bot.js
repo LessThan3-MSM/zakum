@@ -36,83 +36,82 @@ let waitlist = [];
 client.on('message', message => {
 	if (message.author.bot) return;
 
-	const isAdmin = isGuildAdmin(message.member._roles, message.guild.id);
+	if(message.content.substring(0, PREFIX.length) === PREFIX){
+		const isAdmin = isGuildAdmin(message.member._roles, message.guild.id);
+		var commands = message.content.substring(PREFIX.length).toLowerCase().split(' ');
 
-  if (message.content.substring(0,5) === `${PREFIX}join` && message.content.substring(0,7) !== `${PREFIX}joined` ) {
-		join(message, getRoster(message.guild.id), waitlist, pool, getLeaders(message.guild.id), groups);
-	}
+		switch(commands[0]){
+			case "pool":
+			case "joined":
+				joined(message, pool);
+				return;
+			case "join":
+				join(message, getRoster(message.guild.id), waitlist, pool, getLeaders(message.guild.id), groups);
+				return;
+			case "roster":
+				postRoster(message, getRoster(message.guild.id));
+				return;
+			case "groups":
+				groupCommand(message, groups, pool, waitlist, getLeaders(message.guild.id));
+				return;
+			case "find":
+				find(message, getRoster(message.guild.id));
+				return;
+			case "leaderboard":
+				leaderboard(message, getRoster(message.guild.id))
+				return;
+			case "class":
+				findByClass(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES);
+				return;
+			case "timerchlist":
+				listTimerCh(message.channel);
+				return;
+			case "commands":
+				listCommands(message.channel, isAdmin);
+				return;
+			}
 
-	if (message.content.substring(0,4) === `${PREFIX}add` && isAdmin){
-		add(message, getRoster(message.guild.id));
-	}
+			if(isAdmin){
+				switch(commands[0]){
+					case "add":
+						add(message, getRoster(message.guild.id), message.guild.id);
+						return;
+					case "timerchadd":
+						addTimerCh(message);
+						return;
+					case "timerchremove":
+						removeTimerCh(message);
+						return;
+					case "remove":
+						remove(message, getRoster(message.guild.id), message.guild.id);
+						return;
+					case "reset":
+						reset(message.channel, pool, groups, waitlist);
+						return;
+					case "balance":
+						balance(pool, getLeaders(message.guild.id), groups, true, message.channel);
+						return;
+					case "promote":
+						promote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
+						return;
+					case "leaders":
+						leadersCommand(message.channel, getRoster(message.guild.id));
+						return;
+					case "demote":
+						demote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
+						return;
+					case "swap":
+						swap(message, groups, waitlist)
+						return;
+					case "update":
+						update(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES)
+						return;
+					}
+				}
 
-	if (message.content.substring(0,7) === `${PREFIX}remove` && isAdmin){
-		remove(message, getRoster(message.guild.id));
-	}
+				message.channel.send("Zakum either does not recognize that command, or you are not privileged as a " + ADMIN_ROLE + ".");
 
-	if (message.content === `${PREFIX}lt3` || message.content === `${PREFIX}roster`) {
-		postRoster(message, getRoster(message.guild.id));
-	}
-
-	if (message.content === `${PREFIX}groups`) {
-		groupCommand(message, groups, pool, waitlist, getLeaders(message.guild.id));
-	}
-
-	if (message.content.substring(0,5) === `${PREFIX}pool` || message.content.substring(0,7) === `${PREFIX}joined`) {
-		joined(message, pool);
-	}
-
-	if (message.content.substring(0,6) === `${PREFIX}reset` && isAdmin) {
-			reset(message.channel, pool, groups, waitlist);
-	}
-
-	if (message.content.substring(0,5) === `${PREFIX}find`) {
-		find(message, getRoster(message.guild.id));
-	}
-
-	if (message.content.substring(0,8) === `${PREFIX}balance` && isAdmin) {
-		balance(pool, getLeaders(message.guild.id), groups, true, message.channel);
-	}
-
-	if (message.content.substring(0,8) === `${PREFIX}promote` && isAdmin) {
-		promote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
-	}
-
-	if (message.content.substring(0,8) === `${PREFIX}leaders` && isAdmin) {
-		leadersCommand(message.channel, getRoster(message.guild.id));
-	}
-
-	if (message.content.substring(0,7) === `${PREFIX}demote` && isAdmin) {
-		demote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
-	}
-
-	if (message.content.substring(0,12) === `${PREFIX}leaderboard`) {
-		leaderboard(message, getRoster(message.guild.id))
-	}
-
-	if(message.content.substring(0,6) === `${PREFIX}class`){
-		findByClass(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES);
-	}
-
-	if(message.content.substring(0,11) === `${PREFIX}timerChAdd`){
-		addTimerCh(message, isAdmin);
-	}else if(message.content.substring(0,14) === `${PREFIX}timerChRemove`){
-		removeTimerCh(message, isAdmin);
-	}else if(message.content.substring(0,12) === `${PREFIX}timerChList`){
-		listTimerCh(message.channel);
-	}
-
-	if(message.content.substring(0,9).toLowerCase() === `${PREFIX}commands`){
-		listCommands(message.channel, isAdmin);
-	}
-
-	if(message.content.substring(0,5).toLowerCase() === `${PREFIX}swap` && isAdmin){
-		swap(message, groups, waitlist)
-	}
-
-	if(message.content.substring(0,7).toLowerCase() === `${PREFIX}update` && isAdmin){
-		update(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES)
-	}
+			}
 });
 
 function getLeaders(guildID){

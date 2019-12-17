@@ -43,19 +43,11 @@ function writeToTimerFile(channel){
 }
 
 module.exports = {
-  addTimerCh: function (message, isAdmin) {
-    if(!isAdmin){
-			message.channel.send(`Zakum is unable to acquiesce to the demands of a regular user.`);
-		}else{
-			addCh(message);
-		}
+  addTimerCh: function (message) {
+		addCh(message);
   },
-  removeTimerCh: function (message, isAdmin){
-    if(!isAdmin){
-      message.channel.send(`Zakum is unable to acquiesce to the demands of a regular user.`);
-    }else{
-      removeCh(message);
-    }
+  removeTimerCh: function (message){
+    removeCh(message);
   },
   listTimerCh: function (channel){
     channel.send('['+timerChannels.toString()+']');

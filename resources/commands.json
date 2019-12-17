@@ -28,7 +28,7 @@
     "description": "Lists all members that have joined the current expedition."
   },
   {
-    "name": "lt3/roster",
+    "name": "roster",
     "admin": false,
     "required": [],
     "optional": [],
@@ -77,21 +77,21 @@
     "description": "The expedition groups are reset."
   },
   {
-    "name": "timerChAdd",
+    "name": "timerchadd",
     "admin": true,
     "required": [],
     "optional": [],
     "description": "Adds the current channel to the timers list."
   },
   {
-    "name": "timerChList",
+    "name": "timerchlist",
     "admin": true,
     "required": [],
     "optional": [],
     "description": "Lists all channels in the timers list."
   },
   {
-    "name": "timerChRemove",
+    "name": "timerchremove",
     "admin": true,
     "required": [],
     "optional": [],
