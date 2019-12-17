@@ -13,6 +13,7 @@ const find = require('./commands/find.js').findCommand;
 const groupCommand = require('./commands/groups.js').groupCommand;
 const joined = require('./commands/joined.js').joined;
 const leaderboard = require('./commands/leaderboard.js').leaderboard;
+const leadersCommand = require('./commands/leaders.js').leaders;
 const postRoster = require('./commands/postRoster.js').postRoster;
 const promote = require('./commands/promote.js').promoteCommand;
 const remove = require('./commands/remove.js').removeCommand;
@@ -92,8 +93,7 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,8) === `${prefix}leaders` && isAdmin) {
-		let roster = getRoster();
-		message.channel.send(roster.filter(member => member.leader).map(member => member.name).join(", "));
+		leadersCommand(message.channel, getRoster());
 	}
 
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
