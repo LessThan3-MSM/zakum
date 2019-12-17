@@ -33,38 +33,31 @@ var fs = require("fs");
 let groups = [];
 let pool = [];
 let waitlist = [];
-let leaders = [];
-
-client.once('ready', () => {
-	console.log('Ready!');
-	leaders = getRoster().filter(member => member.leader)
-});
 
 client.on('message', message => {
 
-	const DISCORD_ID = `${message.author.username}#${message.author.discriminator}`
-	const isAdmin = getAdmins().find(admin => admin === DISCORD_ID)
+	const isAdmin = isGuildAdmin(message);
 
 	if (message.author.bot) return;
 
   if (message.content.substring(0,5) === `${prefix}join` && message.content.substring(0,7) !== `${prefix}joined` ) {
-		join(message, getRoster(), waitlist, pool, leaders, groups);
+		join(message, getRoster(message.guild.id), waitlist, pool, getLeaders(message.guild.id), groups);
 	}
 
 	if (message.content.substring(0,4) === `${prefix}add` && isAdmin){
-		add(message, getRoster());
+		add(message, getRoster(message.guild.id));
 	}
 
 	if (message.content.substring(0,7) === `${prefix}remove` && isAdmin){
-		remove(message, getRoster());
+		remove(message, getRoster(message.guild.id));
 	}
 
 	if (message.content === `${prefix}lt3` || message.content === `${prefix}roster`) {
-		postRoster(message, getRoster());
+		postRoster(message, getRoster(message.guild.id));
 	}
 
 	if (message.content === `${prefix}groups`) {
-		groupCommand(message, groups, pool, waitlist, leaders);
+		groupCommand(message, groups, pool, waitlist, getLeaders(message.guild.id));
 	}
 
 	if (message.content.substring(0,5) === `${prefix}pool` || message.content.substring(0,7) === `${prefix}joined`) {
@@ -76,31 +69,31 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,5) === `${prefix}find`) {
-		find(message, getRoster());
+		find(message, getRoster(message.guild.id));
 	}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
-		balance(pool, leaders, groups, true, message.channel);
+		balance(pool, getLeaders(message.guild.id), groups, true, message.channel);
 	}
 
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
-		promote(message, getRoster(), leaders);
+		promote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
 	}
 
 	if (message.content.substring(0,8) === `${prefix}leaders` && isAdmin) {
-		leadersCommand(message.channel, getRoster());
+		leadersCommand(message.channel, getRoster(message.guild.id));
 	}
 
 	if (message.content.substring(0,7) === `${prefix}demote` && isAdmin) {
-		leaders = demote(message, getRoster(), leaders);
+		demote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
 	}
 
 	if (message.content.substring(0,12) === `${prefix}leaderboard`) {
-		leaderboard(message, getRoster())
+		leaderboard(message, getRoster(message.guild.id))
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){
-		findByClass(message, getRoster(), MAPLE_STORY_CLASSES);
+		findByClass(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES);
 	}
 
 	if(message.content.substring(0,11) === `${prefix}timerChAdd`){
@@ -120,16 +113,31 @@ client.on('message', message => {
 	}
 
 	if(message.content.substring(0,7).toLowerCase() === `${prefix}update` && isAdmin){
-		update(message, getRoster(), MAPLE_STORY_CLASSES)
+		update(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES)
 	}
 });
 
-function getRoster(){
-	return JSON.parse(fs.readFileSync('./guilds/lt3.json', 'utf8')).lt3
+function getLeaders(guildID){
+	return getRoster(guildID).filter(member => member.leader);
 }
 
-function getAdmins(){
-	return JSON.parse(fs.readFileSync('./config.json', 'utf8')).admins
+function getRoster(guildID){
+	return JSON.parse(fs.readFileSync('./guilds/' + guildID +'.json', 'utf8')).members
+}
+
+function isGuildAdmin(message){
+	var admins = getAdmins(message.guild.id);
+	if(admins != undefined){
+		const discordID = `${message.author.username}#${message.author.discriminator}` //user's discord ID
+		return admins.find(admin => admin === discordID)
+	} else {
+		return false;
+	}
+}
+
+function getAdmins(guildID){
+	var admins = JSON.parse(fs.readFileSync('./guilds/admins.json', 'utf8'));
+	return admins[guildID];
 }
 
 client.login(token);

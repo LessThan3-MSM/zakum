@@ -1,7 +1,7 @@
 var fs = require("fs");
 
 module.exports = {
-  demoteCommand: function (message, roster, leaders, rosterLoc = "./guilds/lt3.json") {
+  demoteCommand: function (message, roster, leaders, guildID) {
     if(message.content.split(" ").length !== 2) {
       message.channel.send("No input. Please use like so: !demote <IGN>")
       return;
@@ -10,7 +10,7 @@ module.exports = {
     let demoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
     if (demoted != undefined) {
   		demoted.leader = false
-  		fs.writeFile(rosterLoc, JSON.stringify({"lt3":roster}, null, 4), (err) => {
+  		fs.writeFile("./guilds/" + guildID + ".json", JSON.stringify({"members":roster}, null, 4), (err) => {
   				if (err) {
   						console.error(err);
   						return;

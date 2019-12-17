@@ -1,7 +1,7 @@
 var fs = require("fs");
 
 module.exports = {
-  promoteCommand: function (message, roster, leaders) {
+  promoteCommand: function (message, roster, leaders, guildID) {
     if(message.content.split(" ").length !== 2) {
       message.channel.send("No input. Please use like so: !promote <IGN>")
       return;
@@ -20,7 +20,7 @@ module.exports = {
   		let promoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
   		promoted.leader = true
   		leaders.push(promoted)
-  		fs.writeFile("./guilds/lt3.json", JSON.stringify({"lt3":roster}, null, 4), (err) => {
+  		fs.writeFile("./guilds/" + guildID + ".json", JSON.stringify({"members":roster}, null, 4), (err) => {
   		    if (err) {
   		        console.error(err);
   		        return;

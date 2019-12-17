@@ -1,0 +1,366 @@
+{
+    "lt3": [
+        {
+            "id": "thallium#0472",
+            "name": "Arrondi",
+            "rank": 14.5,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "jacqio#4320",
+            "name": "Klossi",
+            "rank": 19.7,
+            "role": "bowmaster",
+            "leader": false
+        },
+        {
+            "id": "Focus#6445",
+            "name": "iFocus",
+            "rank": 8,
+            "role": "evan",
+            "leader": false,
+            "multiplier": 1
+        },
+        {
+            "id": "RecNeps#4810",
+            "name": "IceRec",
+            "rank": 9.2,
+            "role": "icelightning",
+            "leader": false,
+            "multiplier": 1.5
+        },
+        {
+            "id": "Cardozo#2372",
+            "name": "Cardozo",
+            "rank": 8.3,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "Josh#1379",
+            "name": "Croagunk",
+            "rank": 6.6,
+            "role": "aran",
+            "leader": false
+        },
+        {
+            "id": "Zumi#4836",
+            "name": "Mezumi",
+            "rank": 10.1,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "angelxeternity#1099",
+            "name": "omgeez",
+            "rank": 5.2,
+            "role": "buccaneer",
+            "leader": false
+        },
+        {
+            "id": "jacquejk#9898",
+            "name": "Camelia",
+            "rank": 2,
+            "role": "bowmaster",
+            "leader": false
+        },
+        {
+            "id": "Nikolai#9619",
+            "name": "Nikolai",
+            "rank": 6.7,
+            "role": "darkknight",
+            "leader": false
+        },
+        {
+            "id": "Smileforseleen#9642",
+            "name": "Smile1",
+            "rank": 2,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "xiaohotototo#1315",
+            "name": "Hotohori",
+            "rank": 7.5,
+            "role": "windarcher",
+            "leader": false
+        },
+        {
+            "id": "Heartbeat#8164",
+            "name": "Iliana",
+            "rank": 8.8,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "LuciousCurls#0001",
+            "name": "LuciousCurls",
+            "rank": 6.7,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "Giggs#1234",
+            "name": "GiggityG00",
+            "rank": 2,
+            "role": "aran",
+            "leader": false,
+            "multiplier": 0.5
+        },
+        {
+            "id": "Bombshell â¥#0330",
+            "name": "xBombshell",
+            "rank": 1,
+            "role": "shadower",
+            "leader": false
+        },
+        {
+            "id": "SoRomantic#4455",
+            "name": "SoRomantic",
+            "rank": 8.2,
+            "role": "phantom",
+            "leader": false
+        },
+        {
+            "id": "Kevin (LuckAdes)#1963",
+            "name": "LuckAdes",
+            "rank": 3.4,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "Fidgets#8755",
+            "name": "BabyDrags",
+            "rank": 10.7,
+            "role": "Evan",
+            "leader": false,
+            "multiplier": 2
+        },
+        {
+            "id": "SammyPhantom#5919",
+            "name": "SammyPhantom",
+            "rank": 18.5,
+            "role": "phantom",
+            "leader": false
+        },
+        {
+            "id": "XxDragonKing#3276",
+            "name": "XxDragonKing",
+            "rank": 4,
+            "role": "evan",
+            "leader": false,
+            "multiplier": 2
+        },
+        {
+            "id": "awong617#6044",
+            "name": "Lappu",
+            "rank": 17.7,
+            "role": "windarcher",
+            "leader": true
+        },
+        {
+            "id": "Upperechelon#7216",
+            "name": "NoIntro",
+            "rank": 13,
+            "role": "phantom",
+            "leader": false
+        },
+        {
+            "id": "Jacqi#1234",
+            "name": "Jacqi",
+            "rank": 7.3,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "Tara#9863",
+            "name": "Stiletto",
+            "rank": 24,
+            "role": "shadower",
+            "leader": false,
+            "multiplier": 0.6
+        },
+        {
+            "id": "whtsleepy#1434",
+            "name": "Whtsleepy",
+            "rank": 3.4,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "Khel#7646",
+            "name": "Khel",
+            "rank": 12.7,
+            "role": "evan",
+            "leader": true,
+            "multiplier": 2
+        },
+        {
+            "id": "XxMagicKing#123",
+            "name": "XxMagicKing",
+            "rank": 1,
+            "role": "bishop",
+            "leader": false,
+            "multiplier": 0.5
+        },
+        {
+            "id": "Vincent Huynh#7151",
+            "name": "Snow",
+            "rank": 2,
+            "role": "phantom",
+            "leader": false
+        },
+        {
+            "id": "m1nds3t#1365",
+            "name": "m1nds3t",
+            "rank": 5.3,
+            "role": "shadower",
+            "leader": false
+        },
+        {
+            "id": "Subzob#8232",
+            "name": "Subzob",
+            "rank": 12.4,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "Panna#1234",
+            "name": "Panna",
+            "rank": 1,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "Byn#4729",
+            "name": "Byn3",
+            "rank": 2,
+            "role": "bishop",
+            "leader": false,
+            "multiplier": 0.5
+        },
+        {
+            "id": "Kellie#7385",
+            "name": "RKellie",
+            "rank": 4.1,
+            "role": "shadower",
+            "leader": false,
+            "multiplier": 0.5
+        },
+        {
+            "id": "Gabriel Cadenas/Crarlan#3707",
+            "name": "Crarlan",
+            "rank": 1,
+            "role": "icelightning",
+            "leader": false
+        },
+        {
+            "id": "XxDub786xX#4392",
+            "name": "XxBowKing",
+            "rank": 1,
+            "role": "windarcher",
+            "leader": false
+        },
+        {
+            "id": "BloodySins#3975",
+            "name": "BloodyPhan",
+            "rank": 11.6,
+            "role": "phantom",
+            "leader": false
+        },
+        {
+            "id": "beastfromthewest#0428",
+            "name": "Bftw",
+            "rank": 14.2,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "winfluencer#9284",
+            "name": "Winfluencer",
+            "rank": 4.9,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "sori#9532",
+            "name": "Kirick",
+            "rank": 14,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "Hyroflame#8445",
+            "name": "Hyroflame",
+            "rank": 1,
+            "role": "hero",
+            "leader": false
+        },
+        {
+            "id": "UltralightReam#8368",
+            "name": "Furhire",
+            "rank": 4.2,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "Haru#9649",
+            "name": "Midnightdew",
+            "rank": 18.3,
+            "role": "nightwalker",
+            "leader": false,
+            "multiplier": 0.6
+        },
+        {
+            "id": "Nomammeshuey (DonJulio)#2019",
+            "name": "Nomammshuey",
+            "rank": 2.6,
+            "role": "bowmaster",
+            "leader": false
+        },
+        {
+            "id": "Kingsy#1473",
+            "name": "Kingsy",
+            "rank": 8.7,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "Daniel109#6725",
+            "name": "LakeForest",
+            "rank": 8,
+            "role": "shadower",
+            "leader": false,
+            "multiplier": 0.5
+        },
+        {
+            "id": "privatemedia#0987",
+            "name": "PrivateMedia",
+            "rank": 1,
+            "role": "bowmaster",
+            "leader": false
+        },
+        {
+            "id": "HarlowAran(Ash/Ashley)#1366",
+            "name": "HarlowAran",
+            "rank": 11,
+            "role": "aran",
+            "leader": false
+        },
+        {
+            "id": "flom#2886",
+            "name": "Lindsaay",
+            "rank": 7.9,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "Ishie#5096",
+            "name": "Xboed",
+            "rank": 4.4,
+            "role": "marksman",
+            "leader": false
+        }
+    ]
+}
