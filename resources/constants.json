@@ -1,5 +1,6 @@
 {
   "PREFIX": "!",
+  "ADMIN_ROLE": "zakum-admin",
   "MAPLE_STORY_CLASSES": [
     "darkknight",
     "bowmaster",

@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const {PREFIX, MAPLE_STORY_CLASSES} = require("./resources/constants.json")
+const {PREFIX, ADMIN_ROLE, MAPLE_STORY_CLASSES} = require("./resources/constants.json")
 const {TOKEN} = require('./resources/config.json')
 
 /* importing functions from the commands dir */
@@ -34,10 +34,9 @@ let pool = [];
 let waitlist = [];
 
 client.on('message', message => {
-
-	const isAdmin = isGuildAdmin(message);
-
 	if (message.author.bot) return;
+
+	const isAdmin = isGuildAdmin(message.member._roles, message.guild.id);
 
   if (message.content.substring(0,5) === `${PREFIX}join` && message.content.substring(0,7) !== `${PREFIX}joined` ) {
 		join(message, getRoster(message.guild.id), waitlist, pool, getLeaders(message.guild.id), groups);
@@ -124,19 +123,13 @@ function getRoster(guildID){
 	return JSON.parse(fs.readFileSync('./guilds/' + guildID +'.json', 'utf8')).members
 }
 
-function isGuildAdmin(message){
-	var admins = getAdmins(message.guild.id);
-	if(admins != undefined){
-		const discordID = `${message.author.username}#${message.author.discriminator}` //user's discord ID
-		return admins.find(admin => admin === discordID)
-	} else {
-		return false;
+function isGuildAdmin(roleList, guildID){
+	for(var i = 0; i < roleList.length; i++){
+		if(ADMIN_ROLE === client.guilds.get(guildID).roles.get(roleList[i]).name){
+			return true;
+		}
 	}
-}
-
-function getAdmins(guildID){
-	var admins = JSON.parse(fs.readFileSync('./guilds/admins.json', 'utf8'));
-	return admins[guildID];
+	return false;
 }
 
 client.login(TOKEN);
