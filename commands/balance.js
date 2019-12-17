@@ -1,4 +1,3 @@
-var fs = require("fs");
 
 function totalRank(group){
 	return group.reduce(function (acc, obj) { return acc + obj.rank * (obj.multiplier || 1); }, 0);

@@ -16,6 +16,7 @@ const leaderboard = require('./commands/leaderboard.js').leaderboard;
 const postRoster = require('./commands/postRoster.js').postRoster;
 const promote = require('./commands/promote.js').promoteCommand;
 const remove = require('./commands/remove.js').removeCommand;
+const reset = require('./commands/reset.js').reset;
 const swap = require('./commands/swap.js').swap;
 const update = require('./commands/update.js').update;
 
@@ -72,9 +73,7 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,6) === `${prefix}reset` && isAdmin) {
-		pool = [];
-		groups = [];
-		waitlist = [];
+			reset(message.channel, pool, groups, waitlist);
 	}
 
 	if (message.content.substring(0,5) === `${prefix}find`) {
