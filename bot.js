@@ -46,22 +46,22 @@ client.on('message', message => {
 				joined(message, pool);
 				return;
 			case "join":
-				join(message, getRoster(message.guild.id), waitlist, pool, getLeaders(message.guild.id), groups);
+				join(message, getRoster(message), waitlist, pool, getLeaders(message), groups);
 				return;
 			case "roster":
-				postRoster(message, getRoster(message.guild.id));
+				postRoster(message, getRoster(message));
 				return;
 			case "groups":
-				groupCommand(message, groups, pool, waitlist, getLeaders(message.guild.id));
+				groupCommand(message, groups, pool, waitlist, getLeaders(message));
 				return;
 			case "find":
-				find(message, getRoster(message.guild.id));
+				find(message, getRoster(message));
 				return;
 			case "leaderboard":
-				leaderboard(message, getRoster(message.guild.id))
+				leaderboard(message, getRoster(message))
 				return;
 			case "class":
-				findByClass(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES);
+				findByClass(message, getRoster(message), MAPLE_STORY_CLASSES);
 				return;
 			case "timerchlist":
 				listTimerCh(message.channel);
@@ -74,7 +74,7 @@ client.on('message', message => {
 			if(isAdmin){
 				switch(commands[0]){
 					case "add":
-						add(message, getRoster(message.guild.id), message.guild.id);
+						add(message, getRoster(message), message.guild.id);
 						return;
 					case "timerchadd":
 						addTimerCh(message);
@@ -83,28 +83,28 @@ client.on('message', message => {
 						removeTimerCh(message);
 						return;
 					case "remove":
-						remove(message, getRoster(message.guild.id), message.guild.id);
+						remove(message, getRoster(message), message.guild.id);
 						return;
 					case "reset":
 						reset(message.channel, pool, groups, waitlist);
 						return;
 					case "balance":
-						balance(pool, getLeaders(message.guild.id), groups, true, message.channel);
+						balance(pool, getLeaders(message), groups, true, message.channel);
 						return;
 					case "promote":
-						promote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
+						promote(message, getRoster(message), getLeaders(message), message.guild.id);
 						return;
 					case "leaders":
-						leadersCommand(message.channel, getRoster(message.guild.id));
+						leadersCommand(message.channel, getRoster(message));
 						return;
 					case "demote":
-						demote(message, getRoster(message.guild.id), getLeaders(message.guild.id), message.guild.id);
+						demote(message, getRoster(message), getLeaders(message), message.guild.id);
 						return;
 					case "swap":
 						swap(message, groups, waitlist)
 						return;
 					case "update":
-						update(message, getRoster(message.guild.id), MAPLE_STORY_CLASSES)
+						update(message, getRoster(message), MAPLE_STORY_CLASSES)
 						return;
 					}
 				}
@@ -114,12 +114,29 @@ client.on('message', message => {
 			}
 });
 
-function getLeaders(guildID){
-	return getRoster(guildID).filter(member => member.leader);
+function getLeaders(message){
+	return getRoster(message).filter(member => member.leader);
 }
 
-function getRoster(guildID){
-	return JSON.parse(fs.readFileSync('./guilds/' + guildID +'.json', 'utf8')).members
+function getRoster(message){
+	var roster;
+	try{
+		roster = JSON.parse(fs.readFileSync('./guilds/' + message.guild.id +'.json', 'utf8')).members;
+	} catch (err) {
+		roster = createNewGuild(message.guild.id, message.channel);
+	}
+
+	return roster;
+}
+
+function createNewGuild(guildID, channel){
+	var roster = [];
+	fs.writeFileSync("./guilds/" + guildID + ".json", JSON.stringify({"members":roster}, null, 4), function (err) {
+		if (err){
+			channel.send(":scream: We were unable to find or create a roster. Please contact an admin.");
+		}
+	});
+	return roster;
 }
 
 function isGuildAdmin(roleList, guildID){
