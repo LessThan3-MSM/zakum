@@ -12,6 +12,7 @@ const listCommands = require('./commands/commands.js').listCommands;
 const demote = require('./commands/demote.js').demoteCommand;
 const find = require('./commands/find.js').findCommand;
 const groupCommand = require('./commands/groups.js').groupCommand;
+const join = require('./commands/join.js').join;
 const joined = require('./commands/joined.js').joined;
 const leaderboard = require('./commands/leaderboard.js').leaderboard;
 const leadersCommand = require('./commands/leaders.js').leaders;
@@ -42,11 +43,7 @@ client.on('message', message => {
 	const isAdmin = getAdmins().find(admin => admin === DISCORD_ID)
 	if (message.author.bot) return;
   if (message.content.substring(0,5) === `${prefix}join` && message.content.substring(0,7) !== `${prefix}joined` ) {
-			const roster = getRoster()
-			message.content.split(" ").forEach(function (joiner, index){
-			message.content.split(" ").length === 1 && addMemberToPool(null, message, roster)
-			message.content.split(" ").length > 1 && joiner.length > 1 && index !== 0 && addMemberToPool(joiner, message, roster)
-		})
+		join(message, getRoster(), waitlist, pool, leaders, groups);
 	}
 
 	if (message.content.substring(0,4) === `${prefix}add` && isAdmin){
@@ -84,7 +81,7 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
-		groups = balance(pool, leaders);
+		balance(pool, leaders, groups);
 		message.channel.send(`Zakum has successfully rebalanced the groups.`);
 	}
 
@@ -147,46 +144,6 @@ function getAdmins(){
 	return JSON.parse(fs.readFileSync('./config.json', 'utf8')).admins
 }
 
-function addMemberToPool(name, message, roster){
-	let user = null;
-	if (name){
-		const added = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
-		user = added ? added.id:null
-	} else {
-		user = message.author.username + "#" + message.author.discriminator
-	}
-
-	const joined = roster.find(member => member.id === user)
-	if (!joined){
-		message.channel.send(`${name || message.author.username} does not appear to be on the guild roster. Please contact your guild leader to get added to the roster.`)
-		return;
-	}
-
-	if(waitlist && waitlist.find( member => member.id === joined.id  )){
-		message.channel.send(`Removed ${name || message.author.username} from the Zakum Expedition Finder waitlist.`)
-		waitlist = waitlist.filter(member => member.id !== joined.id)
-	}
-	else if (pool.find( member => member.id === joined.id  )){
-		pool = pool.filter(member => member.id !== joined.id)
-		message.channel.send(`Removed ${name || message.author.username} from the Zakum Expedition Finder queue.`)
-		if(waitlist && waitlist.length){
-			pool.push(waitlist[0])
-			waitlist = waitlist.filter(member => member !== waitlist[0])
-		}
-		groups = balance(pool, leaders)
-		return;
-	} else if ([...leaders, ...pool].length >= leaders.length * 10){
-		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
-		waitlist.push(joined)
-		return;
-	} else {
-		if(joined.leader) return;
-		pool.push(joined)
-		groups = balance(pool, leaders)
-		message.channel.send(`${name || message.author.username} has joined the Zakum Expedition Finder queue! :heart:`)
-	}
-}
-
 client.login(token);
 
 /************TIMERS******************/
@@ -202,9 +159,9 @@ var expoTimer = new CronJob('30 17 * * *', function(){
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
 				if(channel != undefined){
-					pool = [];
-					groups = [];
-					waitlist = [];
+					pool.length = 0;
+					groups.length = 0;
+					waitlist.length = 0;
 					channel.send(expoMsg);
 				}
 			}
