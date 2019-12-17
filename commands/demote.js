@@ -21,6 +21,6 @@ module.exports = {
       message.channel.send(name + " is not in your guild roster! Please try again");
       return;
     }
-    return leaders.filter(member => member.name.toLowerCase() !== name.toLowerCase())
+    return leaders.filter(member => member.name.toLowerCase() !== name.toLowerCase());
   }
 };

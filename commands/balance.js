@@ -4,7 +4,7 @@ function totalRank(group){
 }
 
 module.exports = {
-  balance: function (pool, leaders, groups) {
+  balance: function (pool, leaders, groups, sendMsg, channel) {
       groups.length = 0;
 
     let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop" && !member.leader).sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank*(a.multiplier || 1) - b.rank*(b.multiplier || 1)), [{rank: 100}], [...leaders, ...pool].length]
@@ -23,6 +23,10 @@ module.exports = {
       ? weakest.push(bishops[bishops.length - 1]) &&
         joining.splice(joining.indexOf(bishops.pop()), 1)
       : weakest.push(joining.pop())
+    }
+
+    if(sendMsg){
+      channel.send(`Zakum has successfully rebalanced the groups.`);
     }
   }
 };

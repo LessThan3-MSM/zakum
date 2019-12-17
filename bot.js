@@ -1,8 +1,9 @@
 const Discord = require('discord.js');
+const client = new Discord.Client();
+
 const {prefix, token} = require('./config.json')
 const {lt3} = require("./guilds/lt3.json")
 const {MAPLE_STORY_CLASSES} = require("./constants.json")
-const client = new Discord.Client();
 
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
@@ -21,12 +22,13 @@ const promote = require('./commands/promote.js').promoteCommand;
 const remove = require('./commands/remove.js').removeCommand;
 const reset = require('./commands/reset.js').reset;
 const swap = require('./commands/swap.js').swap;
+const addTimerCh = require('./commands/timers.js').addTimerCh;
+const listTimerCh = require('./commands/timers.js').listTimerCh;
+const removeTimerCh = require('./commands/timers.js').removeTimerCh;
+const getTimerCh = require('./commands/timers.js').getTimerCh;
 const update = require('./commands/update.js').update;
 
 var fs = require("fs");
-var CronJob = require('cron').CronJob;
-var serverTimeZone = 'Pacific/Pitcairn'; //This is Scania's Server time. Modify as needed.
-var timerChannels = require ('./timerchannels.json');
 
 let groups = [];
 let pool = [];
@@ -39,28 +41,26 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
+
 	const DISCORD_ID = `${message.author.username}#${message.author.discriminator}`
 	const isAdmin = getAdmins().find(admin => admin === DISCORD_ID)
+
 	if (message.author.bot) return;
+
   if (message.content.substring(0,5) === `${prefix}join` && message.content.substring(0,7) !== `${prefix}joined` ) {
 		join(message, getRoster(), waitlist, pool, leaders, groups);
 	}
 
 	if (message.content.substring(0,4) === `${prefix}add` && isAdmin){
-		let roster = getRoster();
-		add(message, roster);
+		add(message, getRoster());
 	}
 
 	if (message.content.substring(0,7) === `${prefix}remove` && isAdmin){
-		let roster = getRoster();
-		remove(message, roster);
+		remove(message, getRoster());
 	}
 
 	if (message.content === `${prefix}lt3` || message.content === `${prefix}roster`) {
-		// probably should just remove the `${prefix}lt3` above or change it to
-		// import from ./guilds/{filename} strip the .json for porability and customization for other guilds
-		let roster = getRoster()
-		postRoster(message, roster);
+		postRoster(message, getRoster());
 	}
 
 	if (message.content === `${prefix}groups`) {
@@ -76,18 +76,15 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,5) === `${prefix}find`) {
-		let roster = getRoster();
-		find(message, roster);
+		find(message, getRoster());
 	}
 
 	if (message.content.substring(0,8) === `${prefix}balance` && isAdmin) {
-		balance(pool, leaders, groups);
-		message.channel.send(`Zakum has successfully rebalanced the groups.`);
+		balance(pool, leaders, groups, true, message.channel);
 	}
 
 	if (message.content.substring(0,8) === `${prefix}promote` && isAdmin) {
-		let roster = getRoster();
-		promote(message, roster, leaders);
+		promote(message, getRoster(), leaders);
 	}
 
 	if (message.content.substring(0,8) === `${prefix}leaders` && isAdmin) {
@@ -99,8 +96,7 @@ client.on('message', message => {
 	}
 
 	if (message.content.substring(0,12) === `${prefix}leaderboard`) {
-		let roster = getRoster()
-		leaderboard(message, roster)
+		leaderboard(message, getRoster())
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){
@@ -108,19 +104,11 @@ client.on('message', message => {
 	}
 
 	if(message.content.substring(0,11) === `${prefix}timerChAdd`){
-		if(!isAdmin){
-			message.channel.send(`Zakum is unable to acquiesce to the demands of a regular user.`);
-		}else{
-			addTimerCh(message.channel);
-		}
+		addTimerCh(message, isAdmin);
 	}else if(message.content.substring(0,14) === `${prefix}timerChRemove`){
-		if(!isAdmin){
-			message.channel.send(`Zakum is unable to acquiesce to the demands of a regular user.`);
-		}else{
-			removeTimerCh(message.channel);
-		}
+		removeTimerCh(message, isAdmin);
 	}else if(message.content.substring(0,12) === `${prefix}timerChList`){
-		message.channel.send('['+timerChannels.toString()+']');
+		listTimerCh(message.channel);
 	}
 
 	if(message.content.substring(0,9).toLowerCase() === `${prefix}commands`){
@@ -148,14 +136,13 @@ client.login(token);
 
 /************TIMERS******************/
 /** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
-/** This REQUIRES cron npm to be installed **/
+var CronJob = require('cron').CronJob; /** Timers REQUIRE cron npm to be installed **/
 
-/** Tommy - feel free to move wherever. Could include a file? Not sure how that works. To Test! **/
-//17:30 server time post a message!
-
+var serverTimeZone = 'Pacific/Pitcairn'; //This is Scania's Server time. Modify as needed.
 var expoMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
 
 var expoTimer = new CronJob('30 17 * * *', function(){
+	var timerChannels = getTimerCh();
 			for(var i = 0; i < timerChannels.length; i++){
 				var channel = client.channels.get(timerChannels[i]);
 				if(channel != undefined){
@@ -168,46 +155,3 @@ var expoTimer = new CronJob('30 17 * * *', function(){
 }, null, true, serverTimeZone);
 
 expoTimer.start();
-
-function addTimerCh(channel){
-	if(timerChannels.indexOf(channel.id) === -1) {
-		timerChannels.push(channel.id);
-		writeToTimerFile(channel);
-    } else {
-		channel.send(':scream: This channel already exists and cannot be added again.');
-	}
-}
-
-function removeTimerCh(channel){
-	var removed = false;
-	timerChannels = timerChannels.filter(function(value, index, arr){
-		if(value == channel.id){
-			removed = true;
-		}
-		return value != channel.id;
-	});
-	if(removed){
-		writeToTimerFile(channel);
-	} else {
-		channel.send(':scream: This channel does not currently exist and cannot be removed.');
-	}
-}
-
-function writeToTimerFile(channel){
-	var exported = true;
-	require('fs').writeFile(
-		'./timerchannels.json', JSON.stringify(timerChannels, null, 4), 'utf-8',
-
-    function (err) {
-        if (err) {
-            channel.send(':scream: Unable to add timer channel.');
-						exported = false;
-        }
-    }
-
-	);
-
-	if(exported){
-		channel.send(':thumbsup: Zakum has successfully modified the channel list.');
-	}
-}

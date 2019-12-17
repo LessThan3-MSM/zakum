@@ -33,7 +33,7 @@ function totalRank(group){
 }
 
 module.exports = {
-  groupCommand: function (message, groups, pool, waitlist, leaders) {
+  groupCommand: function (message, groups, pool, waitlist, leaders) {		
 		let [differenceMessage, groupMessage] = [formatDifferenceMessage(computeDifference(groups[0], groups[1], true)), ""]
 		groups.length ? groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
 
