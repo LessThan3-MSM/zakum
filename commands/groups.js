@@ -1,7 +1,14 @@
 function formatGroupMessage(name, group) {
 	if (!group) return;
 	let groupMsg = `${name}: ${group.sort((a,b) => b.rank*(b.multiplier || 1) - a.rank*(a.multiplier || 1)).map(member => member.name).join(", ")}`
-	let infoMsg = name !== "Waitlist" ? `(Count: ${group.length}, Strength: ${totalRank(group).toFixed(1)})` : `(${group.length})`
+	let infoMsg = `(Count: ${group.length}, Strength: ${totalRank(group).toFixed(1)})`
+	return `${groupMsg} ${infoMsg} \n`
+}
+
+function formatWaitlistMessage(group) {
+	if (!group) return;
+	let groupMsg = `Waitlist: ${group.map(member => member.name).join(", ")}`
+	let infoMsg = `(${group.length})`
 	return `${groupMsg} ${infoMsg} \n`
 }
 
@@ -36,7 +43,7 @@ module.exports = {
 		groups.length ? groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
 
 		if(waitlist && waitlist.length){
-			groupMessage += formatGroupMessage("Waitlist", waitlist)
+			groupMessage += formatWaitlistMessage(waitlist)
 		}
 
 		message.channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
