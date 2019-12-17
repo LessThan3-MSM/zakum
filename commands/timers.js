@@ -1,4 +1,4 @@
-var TIMER_LOC = "./timerchannels.json";
+var TIMER_LOC = "./resources/timerchannels.json";
 var timerChannels = require ("." + TIMER_LOC);
 
 function addCh(message){

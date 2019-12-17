@@ -1,4 +1,4 @@
-const commands = require ('../commands.json'); //list of all the commands used.
+const commands = require ('../resources/commands.json'); //list of all the commands used.
 
 module.exports = {
   listCommands: function (channel, isUserAdmin) {

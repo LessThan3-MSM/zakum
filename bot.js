@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const {TOKEN} = require('./config.json')
-const {PREFIX, MAPLE_STORY_CLASSES} = require("./constants.json")
+const {PREFIX, MAPLE_STORY_CLASSES} = require("./resources/constants.json")
+const {TOKEN} = require('./resources/config.json')
 
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
