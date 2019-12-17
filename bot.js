@@ -7,6 +7,7 @@ const client = new Discord.Client();
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
 const balance = require('./commands/balance.js').balance;
+const findByClass = require('./commands/class.js').findByClass;
 const listCommands = require('./commands/commands.js').listCommands;
 const demote = require('./commands/demote.js').demoteCommand;
 const find = require('./commands/find.js').findCommand;
@@ -106,23 +107,7 @@ client.on('message', message => {
 	}
 
 	if(message.content.substring(0,6) === `${prefix}class`){
-		const args = message.content
-		const req = args.split(" ").slice(1).join('')
-		const roster = getRoster()
-		const member = roster.find(member => member.name.toLowerCase() === req.toLowerCase())
-
-		if(member && member.name.toLowerCase().includes(req.toLowerCase())){
-			message.channel.send(`${member.name} plays ${member.role.substring(0,1).toUpperCase() + member.role.substring(1)}. That's a really cool class!`)
-			return;
-		}
-
-		if(!MAPLE_STORY_CLASSES.includes(req.toLowerCase())){
-			message.channel.send(`Zakum tried his best but does not think that ${req} exists in MapleStory M.`)
-			return;
-		}
-
-		const classList = roster.filter(member => member.role.toLowerCase() === req.toLowerCase()).map(member => member.name)
-		classList && classList.length ? message.channel.send(`${classList.join(', ')} (${classList.length})`) : message.channel.send(`Zakum could not locate any guild members that play ${req}.`)
+		findByClass(message, getRoster(), MAPLE_STORY_CLASSES);
 	}
 
 	if(message.content.substring(0,11) === `${prefix}timerChAdd`){
@@ -153,10 +138,6 @@ client.on('message', message => {
 		update(message, getRoster(), MAPLE_STORY_CLASSES)
 	}
 });
-
-function totalRank(group){
-	return group.reduce(function (acc, obj) { return acc + obj.rank * (obj.multiplier || 1); }, 0);
-}
 
 function getRoster(){
 	return JSON.parse(fs.readFileSync('./guilds/lt3.json', 'utf8')).lt3
