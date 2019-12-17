@@ -1,5 +1,3 @@
-var fs = require("fs");
-
 module.exports = {
   findCommand: function (message, roster) {
     const personToFind = message.content.split(" ")[1]
