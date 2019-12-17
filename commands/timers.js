@@ -25,7 +25,7 @@ function removeCh(message){
 		 return value != channel;
 	 });
   }
-  
+
 	if(removed){
 		writeToTimerFile(message.channel, true);
 	} else {
@@ -74,5 +74,8 @@ module.exports = {
     }else{
       message.channel.send('No timer channels exist for this server. Use !timerchadd to add some.');
     }
+  },
+  isguilddisabled: function(guildID){
+    return timerChannels[guildID] == undefined || timerChannels[guildID].enabled;
   }
 };

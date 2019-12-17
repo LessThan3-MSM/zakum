@@ -1,4 +1,5 @@
 const balance = require('./balance.js').balance;
+const isguilddisabled = require('./timers.js').isguilddisabled;
 
 function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups){
 	let user = null;
@@ -42,9 +43,13 @@ function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups)
 
 module.exports = {
   join: function (message, roster, waitlist, pool, leaders, groups) {
+		if(isguilddisabled(message.guild.id)){
 		message.content.split(" ").forEach(function (joiner, index){
 			message.content.split(" ").length === 1 && addMemberToPool(null, message, roster, waitlist, pool, leaders, groups)
 			message.content.split(" ").length > 1 && joiner.length > 1 && index !== 0 && addMemberToPool(joiner, message, roster, waitlist, pool, leaders, groups)
 		})
+	}else{
+		message.channel.send(":thumbsdown: Expeditions are disabled.");
+	}
   }
 };
