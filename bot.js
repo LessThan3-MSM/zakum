@@ -112,9 +112,6 @@ client.on('message', message => {
 						return;
 					}
 				}
-				if(!commands[0].startsWith("party")){ //only because of partybot :( this check could go away if zakum changes his prefix to something besides "!"
-					message.channel.send("Zakum either does not recognize that command, or you are not privileged as a " + ADMIN_ROLE + ".");
-				}
 			}
 });
 
