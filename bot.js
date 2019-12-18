@@ -102,7 +102,7 @@ client.on('message', message => {
 						demote(message, getRoster(message), getLeaders(message), message.guild.id);
 						return;
 					case "swap":
-						swap(message, getGroups(message.guild.id), getWaitlist(message.guild.id))
+						waitlist[message.guild.id] = swap(message, getGroups(message.guild.id), getWaitlist(message.guild.id))
 						return;
 					case "update":
 						update(message, getRoster(message), MAPLE_STORY_CLASSES)
