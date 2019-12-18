@@ -51,8 +51,6 @@ module.exports = {
       groups[swapGroups[1].groupId].push(swapGroups[0].member)
     }
     message.channel.send("*It was super effective!*")
-    console.log("Waitlist isn't saving - why?")
-    console.log(waitlist);
     return waitlist;
   }
 };
