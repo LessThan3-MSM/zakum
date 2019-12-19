@@ -13,9 +13,11 @@ function addMemberToPool(name, message, roster, leaders, guildData){
 	const joined = roster.find(member => member.id === user)
 	if (!joined){
 		message.channel.send(`${name || message.author.username} does not appear to be on the guild roster. Please contact your guild leader to get added to the roster.`)
+		return;
 	}
 	if(joined.leader){
 		message.channel.send(`${name || message.author.username} is a leader. Only regular members may join.`)
+		return;
 	}
 
 	if(guildData.waitlist && guildData.waitlist.find( member => member.id === joined.id  )){
