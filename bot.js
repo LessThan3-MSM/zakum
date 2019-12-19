@@ -47,7 +47,7 @@ client.on('message', message => {
 				joined(message, getPool(message.guild.id));
 				return;
 			case "join":
-				join(message, getRoster(message), getWaitlist(message.guild.id), getPool(message.guild.id), getLeaders(message), getGroups(message.guild.id));
+				pool[message.guild.id] = join(message, getRoster(message), getWaitlist(message.guild.id), getPool(message.guild.id), getLeaders(message), getGroups(message.guild.id));
 				return;
 			case "roster":
 				postRoster(message, getRoster(message));

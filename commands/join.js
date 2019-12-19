@@ -31,7 +31,6 @@ function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups)
 			waitlist = waitlist.filter(member => member !== waitlist[0])
 		}
 		balance(pool, leaders, groups, false, null)
-		return;
 	} else if ([...leaders, ...pool].length >= leaders.length * 10){
 		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
 		waitlist.push(joined)
@@ -40,17 +39,22 @@ function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups)
 		balance(pool, leaders, groups, false, null)
 		message.channel.send(`${name || message.author.username} has joined the Zakum Expedition Finder queue! :heart:`)
 	}
+	return pool;
 }
 
 module.exports = {
   join: function (message, roster, waitlist, pool, leaders, groups) {
 		if(isguilddisabled(message.guild.id)){
 		message.content.split(" ").forEach(function (joiner, index){
-			message.content.split(" ").length === 1 && addMemberToPool(null, message, roster, waitlist, pool, leaders, groups)
-			message.content.split(" ").length > 1 && joiner.length > 1 && index !== 0 && addMemberToPool(joiner, message, roster, waitlist, pool, leaders, groups)
+			if(message.content.split(" ").length === 1){
+				pool = addMemberToPool(null, message, roster, waitlist, pool, leaders, groups)
+			}else if(message.content.split(" ").length > 1 && joiner.length > 1 && index !== 0){
+				pool = addMemberToPool(joiner, message, roster, waitlist, pool, leaders, groups)
+			}
 		})
 	}else{
 		message.channel.send(":thumbsdown: Expeditions are disabled.");
 	}
+	return pool;
   }
 };

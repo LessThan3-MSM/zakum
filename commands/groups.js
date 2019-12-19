@@ -34,7 +34,10 @@ function computeDifference(group1, group2, abs){
 }
 
 function totalRank(group){
-	return group.reduce(function (acc, obj) { return acc + obj.rank * (obj.multiplier || 1); }, 0);
+	return group.reduce(function (acc, obj) {
+		var rank = isNaN(obj.rank) ? 0 : obj.rank; 
+		return acc + rank * (obj.multiplier || 1);
+	}, 0);
 }
 
 module.exports = {
