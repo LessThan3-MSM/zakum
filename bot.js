@@ -96,7 +96,7 @@ client.on('message', message => {
 						balance(getLeaders(message), getGuildData(message.guild.id), true, message.channel);
 						return;
 					case "promote":
-						promote(message, getRoster(message), getLeaders(message), message.guild.id);
+						promote(message, getRoster(message), getLeaders(message), message.guild.id, getGuildData(message.guild.id));
 						return;
 					case "leaders":
 						leadersCommand(message.channel, getRoster(message));

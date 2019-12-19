@@ -15,6 +15,9 @@ module.exports = {
     if (roster.find(person => person.name.toLowerCase() === member.name.toLowerCase() )){
       message.channel.send(`${member.name} already exists on the guild roster!`)
       return;
+    }else if(roster.find(person => person.id.toLowerCase() === member.id.toLowerCase() )){
+      message.channel.send(`${member.id} already exists on the guild roster!`)
+      return;
     }
     roster.push(member)
 

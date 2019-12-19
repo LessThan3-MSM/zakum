@@ -1,7 +1,8 @@
+const balance = require('./balance.js').balance;
 var fs = require("fs");
 
 module.exports = {
-  promoteCommand: function (message, roster, leaders, guildID) {
+  promoteCommand: function (message, roster, leaders, guildID, guildData) {
     if(message.content.split(" ").length !== 2) {
       message.channel.send("No input. Please use like so: !promote <IGN>")
       return;
@@ -27,6 +28,12 @@ module.exports = {
   		    };
   		    message.channel.send(`Promoted ${name} to expedition leader!`)
   		});
+
+      if (guildData.pool.find( member => member.id === promoted.id  )){ //remove leader from pool if there.
+    		  guildData.pool = guildData.pool.filter(member => member.id !== promoted.id)
+      }
+      
+      balance(leaders, guildData, false, null) //re-balance
     }
     else {
       message.channel.send(name + " is not in your guild roster! Please try again");

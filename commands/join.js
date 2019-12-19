@@ -26,10 +26,6 @@ function addMemberToPool(name, message, roster, leaders, guildData){
 	} else if (guildData.pool.find( member => member.id === joined.id  )){
 		guildData.pool = guildData.pool.filter(member => member.id !== joined.id)
 		message.channel.send(`Removed ${name || message.author.username} from the Zakum Expedition Finder queue.`)
-		if(guildData.waitlist && guildData.waitlist.length){
-			guildData.pool.push(guildData.waitlist[0])
-			guildData.waitlist = guildData.waitlist.filter(member => member !== guildData.waitlist[0])
-		}
 		balance(leaders, guildData, false, null)
 	} else if ([...leaders, ...guildData.pool].length >= leaders.length * 10){
 		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
