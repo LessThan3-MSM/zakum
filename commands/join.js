@@ -15,6 +15,10 @@ function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups)
 		message.channel.send(`${name || message.author.username} does not appear to be on the guild roster. Please contact your guild leader to get added to the roster.`)
 		return;
 	}
+	if(joined.leader){
+		message.channel.send(`${name || message.author.username} is a leader. Only regular members may use !join.`)
+		return;
+	}
 
 	if(waitlist && waitlist.find( member => member.id === joined.id  )){
 		message.channel.send(`Removed ${name || message.author.username} from the Zakum Expedition Finder waitlist.`)
@@ -32,7 +36,6 @@ function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups)
 		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
 		waitlist.push(joined)
 	} else {
-		if(joined.leader) return;
 		pool.push(joined)
 		balance(pool, leaders, groups, false, null)
 		message.channel.send(`${name || message.author.username} has joined the Zakum Expedition Finder queue! :heart:`)
