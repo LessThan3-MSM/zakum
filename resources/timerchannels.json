@@ -3,12 +3,16 @@
         "enabled": false,
         "timerChannels": [
             "495314040810373140"
-        ]
+        ],
+        "enabledMsg": "@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.",
+        "disabledMsg": "@everyone Expedition sign-ups are currently disabled."
     },
     "578374186217766941": {
-        "enabled": true,
+        "enabled": false,
         "timerChannels": [
             "604133794274082837"
-        ]
+        ],
+        "enabledMsg": " @everyone SIGN UP FOR EXPOS.",
+        "disabledMsg": "@everyone hi what's up"
     }
 }

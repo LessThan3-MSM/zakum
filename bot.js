@@ -25,8 +25,10 @@ const addTimerCh = require('./commands/timers.js').addTimerCh;
 const listTimerCh = require('./commands/timers.js').listTimerCh;
 const removeTimerCh = require('./commands/timers.js').removeTimerCh;
 const getTimerCh = require('./commands/timers.js').getTimerCh;
-const update = require('./commands/update.js').update;
+const setTimerMsg = require('./commands/timers.js').setTimerMsg;
+const listTimerMsg = require('./commands/timers.js').listTimerMsg;
 const toggleexpos = require('./commands/timers.js').toggleexpos;
+const update = require('./commands/update.js').update;
 
 var fs = require("fs");
 
@@ -70,6 +72,9 @@ client.on('message', message => {
 			case "commands":
 				listCommands(message.channel, isAdmin);
 				return;
+			case "listtimermsg":
+				listTimerMsg(message);
+				return;
 			}
 
 			if(isAdmin){
@@ -109,6 +114,12 @@ client.on('message', message => {
 						return;
 					case "toggleexpos":
 						toggleexpos(message.guild.id, message.channel);
+						return;
+					case "settimerenbmsg":
+						setTimerMsg(message, true);
+						return;
+					case "settimerdismsg":
+						setTimerMsg(message, false);
 						return;
 					}
 				}
@@ -169,10 +180,7 @@ client.login(TOKEN);
 /************TIMERS******************/
 /** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
 var CronJob = require('cron').CronJob; /** Timers REQUIRE cron npm to be installed **/
-
 var serverTimeZone = 'Pacific/Pitcairn'; //This is Scania's Server time. Modify as needed.
-var enbMsg = '@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!';
-var disMsg = '@everyone Expedition sign-ups are currently disabled.';
 
 var expoTimer = new CronJob('30 17 * * *', function(){
 	var timerChannels = getTimerCh();
@@ -185,9 +193,9 @@ var expoTimer = new CronJob('30 17 * * *', function(){
 					getPool(key).length = 0;
 					getGroups(key).length = 0;
 					getWaitlist(key).length = 0;
-					channel.send(enbMsg);
+					channel.send(timerChannels[key].enabledMsg);
 				}else{
-					channel.send(disMsg);
+					channel.send(timerChannels[key].disabledMsg);
 				}
 			}
 		}

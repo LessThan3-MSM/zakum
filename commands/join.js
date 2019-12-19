@@ -1,5 +1,5 @@
 const balance = require('./balance.js').balance;
-const isguilddisabled = require('./timers.js').isguilddisabled;
+const isguildenabled = require('./timers.js').isguildenabled;
 
 function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups){
 	let user = null;
@@ -44,7 +44,7 @@ function addMemberToPool(name, message, roster, waitlist, pool, leaders, groups)
 
 module.exports = {
   join: function (message, roster, waitlist, pool, leaders, groups) {
-		if(isguilddisabled(message.guild.id)){
+		if(isguildenabled(message.guild.id)){
 		message.content.split(" ").forEach(function (joiner, index){
 			if(message.content.split(" ").length === 1){
 				pool = addMemberToPool(null, message, roster, waitlist, pool, leaders, groups)

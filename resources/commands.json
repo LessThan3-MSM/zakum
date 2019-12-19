@@ -124,5 +124,26 @@
     "required": [],
     "optional": [],
     "description": "Enables/Disables expedition sign-ups."
+  },
+  {
+    "name": "listtimermsg",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Lists the messages that will display when a timer is triggered."
+  },
+  {
+    "name": "settimerenbmsg",
+    "admin": true,
+    "required": ["Message"],
+    "optional": [],
+    "description": "Sets the timer message that will display when expos are enabled."
+  },
+  {
+    "name": "settimerdismsg",
+    "admin": true,
+    "required": ["Message"],
+    "optional": [],
+    "description": "Sets the timer message that will display when expos are disabled."
   }
 ]
