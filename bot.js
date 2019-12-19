@@ -102,7 +102,7 @@ client.on('message', message => {
 						leadersCommand(message.channel, getRoster(message));
 						return;
 					case "demote":
-						demote(message, getRoster(message), getLeaders(message), message.guild.id);
+						demote(message, getRoster(message), getLeaders(message), message.guild.id, getGuildData(message.guild.id));
 						return;
 					case "swap":
 						swap(message, getGuildData(message.guild.id))

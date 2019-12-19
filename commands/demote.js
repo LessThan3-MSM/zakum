@@ -1,7 +1,8 @@
+const balance = require('./balance.js').balance;
 var fs = require("fs");
 
 module.exports = {
-  demoteCommand: function (message, roster, leaders, guildID) {
+  demoteCommand: function (message, roster, leaders, guildID, guildData) {
     if(message.content.split(" ").length !== 2) {
       message.channel.send("No input. Please use like so: !demote <IGN>")
       return;
@@ -21,6 +22,8 @@ module.exports = {
       message.channel.send(name + " is not in your guild roster! Please try again");
       return;
     }
-    return leaders.filter(member => member.name.toLowerCase() !== name.toLowerCase());
+    leaders = leaders.filter(member => member.name.toLowerCase() !== name.toLowerCase());
+    balance(leaders, guildData, false, null)
+    return;
   }
 };

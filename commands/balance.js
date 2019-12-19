@@ -16,10 +16,16 @@ module.exports = {
 		var minBishopsPerGroup = Math.floor(bishops.length/groups.length);
 		var maxCapacity = (groups.length * 10) - groups.length; //total num spots - num leader spots = total available spots
 
-		while(joining.length < maxCapacity && guildData.waitlist.length > 0){ //if there are any spots in the groups (due to someone leaving queue, promote/demote leaders)
-			joining.push(guildData.waitlist[0])
-			pool.push(guildData.waitlist[0])
-			guildData.waitlist = guildData.waitlist.filter(member => member !== guildData.waitlist[0])
+		while(joining.length < maxCapacity && guildData.waitlist.length > 0){ //if there are any spots in the groups (due to someone leaving queue, leader promotion)
+			var firstWaitingMember = guildData.waitlist.shift();
+			joining.push(firstWaitingMember)
+			pool.push(firstWaitingMember)
+		}
+
+		while(joining.length > maxCapacity){//if there are too many people in the pool due to a leader demotion..
+			var lastPoolMember = pool.pop();
+			guildData.waitlist.unshift(lastPoolMember);
+			joining = joining.filter(member => member !== lastPoolMember)
 		}
 
 		while(joining.length){
