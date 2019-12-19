@@ -11,7 +11,7 @@ module.exports = {
       content.slice(content.length >= 4 ? 3:2).join("")
     ]
     if(!AVAILABLE_ARGS.includes(type)) {
-      message.channel.send("Invalid update format. Example: \`!update dps name 5.35 \`")
+      message.channel.send("Invalid update format. Example: \`!update [dps|id|name|class|multiplier] name value \`")
       return;
     } else if (!roster.find(member => member.id === id)){
       message.channel.send(`Zakum cannot find ${id || content[2]} on the guild roster! Try updating your id first!`)
