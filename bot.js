@@ -23,13 +23,13 @@ const remove = require('./commands/remove.js').removeCommand;
 const reset = require('./commands/reset.js').reset;
 const swap = require('./commands/swap.js').swap;
 const addTimerCh = require('./commands/timers.js').addTimerCh;
-const listTimerCh = require('./commands/timers.js').listTimerCh;
 const removeTimerCh = require('./commands/timers.js').removeTimerCh;
 const getTimerCh = require('./commands/timers.js').getTimerCh;
 const setTimerMsg = require('./commands/timers.js').setTimerMsg;
 const listTimerMsg = require('./commands/timers.js').listTimerMsg;
 const toggleexpos = require('./commands/timers.js').toggleexpos;
 const update = require('./commands/update.js').update;
+const setAmPmExpos = require('./commands/timers.js').setAmPmExpos;
 
 var fs = require("fs");
 
@@ -68,13 +68,10 @@ client.on('message', message => {
 			case "class":
 				findByClass(message, getRoster(message), MAPLE_STORY_CLASSES);
 				return;
-			case "timerchlist":
-				listTimerCh(message);
-				return;
 			case "commands":
 				listCommands(message.channel, isAdmin);
 				return;
-			case "listtimermsg":
+			case "timers":
 				listTimerMsg(message);
 				return;
 			}
@@ -122,6 +119,9 @@ client.on('message', message => {
 						return;
 					case "settimerdismsg":
 						setTimerMsg(message, false);
+						return;
+					case "setexpo":
+						setAmPmExpos(message);
 						return;
 					}
 				}
@@ -174,24 +174,30 @@ client.login(TOKEN);
 var CronJob = require('cron').CronJob; /** Timers REQUIRE cron npm to be installed **/
 var serverTimeZone = 'Pacific/Pitcairn'; //This is Scania's Server time. Modify as needed.
 
-var expoTimer = new CronJob('30 17 * * *', function(){
+var expoTimer = new CronJob('30 17,9 * * *', function(){
 	var timerChannels = getTimerCh();
 
 	for(key in timerChannels) {
-		for(var i =0; i< timerChannels[key].timerChannels.length; i++){
-			var channel = client.channels.get(timerChannels[key].timerChannels[i]);
-			if(channel != undefined){
-				if(timerChannels[key].enabled){
+		var serverTime = new Date().toLocaleString("en-US", {timeZone: serverTimeZone});
+		serverTime = new Date(serverTime);
+		if((serverTime.getHours() == 17 && timerChannels[key].pmExpos) ||
+				(serverTime.getHours() == 9 && timerChannels[key].amExpos)){
 					var guildData = getGuildData(key);
 					guildData.pool.length = 0;
 					guildData.groups.length = 0;
 					guildData.waitlist.length = 0;
-					channel.send(timerChannels[key].enabledMsg);
-				}else{
-					channel.send(timerChannels[key].disabledMsg);
+
+					for(var i =0; i< timerChannels[key].timerChannels.length; i++){
+						var channel = client.channels.get(timerChannels[key].timerChannels[i]);
+						if(channel != undefined){
+							if(timerChannels[key].enabled){
+								channel.send(timerChannels[key].enabledMsg);
+							}else{
+								channel.send(timerChannels[key].disabledMsg);
+							}
+						}
+					}
 				}
-			}
-		}
 	}
 
 }, null, true, serverTimeZone);

@@ -1,10 +1,31 @@
 [
   {
+    "name": "add",
+    "admin": true,
+    "required": ["Discord ID", "Name", "Class", "Rating [1-10]"],
+    "optional": [],
+    "description": "Adds a member to the guild roster."
+  },
+  {
     "name": "class",
     "admin": false,
     "required": ["Name|Class"],
     "optional": [],
     "description": "Lists the class of the specified roster member *OR* Lists all roster members of the specified class."
+  },
+  {
+    "name": "demote",
+    "admin": true,
+    "required": ["Name"],
+    "optional": [],
+    "description": "Demotes a leader to a member."
+  },
+  {
+    "name": "find",
+    "admin": true,
+    "required": ["Name"],
+    "optional": [],
+    "description": "Lists details for a guild roster member."
   },
   {
     "name": "groups",
@@ -35,32 +56,11 @@
     "description": "Lists all members that have joined the current expedition."
   },
   {
-    "name": "roster",
+    "name": "leaderboard",
     "admin": false,
     "required": [],
     "optional": [],
-    "description": "Lists everyone on the guild roster."
-  },
-  {
-    "name": "add",
-    "admin": true,
-    "required": ["Discord ID", "Name", "Class", "Rating [1-10]"],
-    "optional": [],
-    "description": "Adds a member to the guild roster."
-  },
-  {
-    "name": "demote",
-    "admin": true,
-    "required": ["Name"],
-    "optional": [],
-    "description": "Demotes a leader to a member."
-  },
-  {
-    "name": "find",
-    "admin": true,
-    "required": ["Name"],
-    "optional": [],
-    "description": "Lists details for a guild roster member."
+    "description": "Lists the top 10 dps or if an integer (X) is given, top X on the roster"
   },
   {
     "name": "promote",
@@ -84,60 +84,18 @@
     "description": "The expedition groups are reset."
   },
   {
-    "name": "timerchadd",
-    "admin": true,
-    "required": [],
-    "optional": [],
-    "description": "Adds the current channel to the timers list."
-  },
-  {
-    "name": "timerchlist",
-    "admin": true,
-    "required": [],
-    "optional": [],
-    "description": "Lists all channels in the timers list."
-  },
-  {
-    "name": "timerchremove",
-    "admin": true,
-    "required": [],
-    "optional": [],
-    "description": "Removes the current channel from the timers list."
-  },
-  {
-    "name": "update",
-    "admin": false,
-    "required": ["Type", "Name", "Value"],
-    "optional": [],
-    "description": "Updates a value (class, dps, id, multiplier, name) for a member on the guild roster."
-  },
-  {
-    "name": "swap",
-    "admin": true,
-    "required": ["Member 1", "Member 2"],
-    "optional": [],
-    "description": "Swaps two guild members between two expedition groups!"
-  },
-  {
-    "name": "leaderboard",
+    "name": "roster",
     "admin": false,
     "required": [],
     "optional": [],
-    "description": "Lists the top 10 dps or if an integer (X) is given, top X on the roster"
+    "description": "Lists everyone on the guild roster."
   },
   {
-    "name": "toggleexpos",
+    "name": "setexpo",
     "admin": true,
-    "required": [],
+    "required": ["am|pm", "on|off"],
     "optional": [],
-    "description": "Enables/Disables expedition sign-ups."
-  },
-  {
-    "name": "listtimermsg",
-    "admin": true,
-    "required": [],
-    "optional": [],
-    "description": "Lists the messages that will display when a timer is triggered."
+    "description": "Sets whether the guild has scheduled AM/PM expeditions."
   },
   {
     "name": "settimerenbmsg",
@@ -152,5 +110,47 @@
     "required": ["Message"],
     "optional": [],
     "description": "Sets the timer message that will display when expos are disabled."
+  },
+  {
+    "name": "swap",
+    "admin": true,
+    "required": ["Member 1", "Member 2"],
+    "optional": [],
+    "description": "Swaps two guild members between two expedition groups!"
+  },
+  {
+    "name": "timerchadd",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Adds the current channel to the timers list."
+  },
+  {
+    "name": "timerchremove",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Removes the current channel from the timers list."
+  },
+  {
+    "name": "timers",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Lists timer information for the guild."
+  },
+  {
+    "name": "toggleexpos",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Enables/Disables expedition sign-ups."
+  },
+  {
+    "name": "update",
+    "admin": false,
+    "required": ["Type", "Name", "Value"],
+    "optional": [],
+    "description": "Updates a value (class, dps, id, multiplier, name) for a member on the guild roster."
   }
 ]

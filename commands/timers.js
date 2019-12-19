@@ -1,6 +1,24 @@
 var TIMER_LOC = "./resources/timerchannels.json";
 var timerChannels = require ("." + TIMER_LOC);
 
+function setAmPmExpos(message){
+  if(timerChannels[message.guild.id] == undefined){
+    message.channel.send(':scream: No timer channels exist for this server. Use !timerchadd to add some.');
+  }else{ //settimer am on, settimer pm off
+      var commands = message.content.toLowerCase().split(' ');
+      if(commands.length < 2 || (commands[1] !== 'am' && commands[1] !== 'pm') || (commands[2] !== 'on' && commands[2] !== 'off')){
+        message.channel.send(':scream: Usage: setexpo [am|pm] [on|off]');
+      }else{
+        if(commands[1] === 'pm'){
+          timerChannels[message.guild.id].pmExpos = commands[2] === 'on'
+        }else if(commands[1] === 'am'){
+          timerChannels[message.guild.id].amExpos = commands[2] === 'on'
+        }
+        writeToTimerFile(message.channel, true);
+      }
+  }
+}
+
 function setTimerMsg(message, enabled){
     if(timerChannels[message.guild.id] == undefined){
       message.channel.send(':scream: No timer channels exist for this server. Use !timerchadd to add some.');
@@ -23,7 +41,8 @@ function addCh(message){
     timerChannels[message.guild.id] = {"enabled": true,
     "timerChannels": [],
     "enabledMsg": "@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.",
-    "disabledMsg": "@everyone Expedition sign-ups are currently disabled."};
+    "disabledMsg": "@everyone Expedition sign-ups are currently disabled.",
+    "amExpos": true, "pmExpos": true};
   }
 	if(timerChannels[message.guild.id].timerChannels.indexOf(channel) === -1) {
 		timerChannels[message.guild.id].timerChannels.push(channel);
@@ -74,13 +93,6 @@ module.exports = {
   removeTimerCh: function (message){
     removeCh(message);
   },
-  listTimerCh: function (message){
-    if(timerChannels[message.guild.id] != undefined){
-      message.channel.send('['+timerChannels[message.guild.id].timerChannels.toString()+']');
-    }else{
-      message.channel.send('[]');
-    }
-  },
   getTimerCh: function(){
     return timerChannels;
   },
@@ -102,9 +114,20 @@ module.exports = {
   },
   listTimerMsg: function(message){
     if(timerChannels[message.guild.id] != undefined){
-      message.channel.send("Enabled Msg: "+timerChannels[message.guild.id].enabledMsg + "\n" + "Disabled Msg: " + timerChannels[message.guild.id].disabledMsg);
+      var amexpos = timerChannels[message.guild.id].amExpos ? "on." : "off."
+      var pmexpos = timerChannels[message.guild.id].pmExpos ? "on." : "off."
+      var expos = timerChannels[message.guild.id].enabled ? "enabled." : "disabled."
+      message.channel.send("The AM Expo timer is "+ amexpos +
+      "\nThe PM Expo timer is "+pmexpos+
+      "\nExpedition sign-ups are "+ expos +
+      "\nEnabled Msg: "+timerChannels[message.guild.id].enabledMsg +
+      "\nDisabled Msg: " + timerChannels[message.guild.id].disabledMsg +
+      "\nTimers will display in channel(s): " + '['+timerChannels[message.guild.id].timerChannels.toString()+']');
     }else{
       message.channel.send(':scream: No timer channels exist for this server. Use !timerchadd to add some.');
     }
+  },
+  setAmPmExpos: function(message){
+    setAmPmExpos(message);
   }
 };
