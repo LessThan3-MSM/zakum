@@ -23,7 +23,9 @@ module.exports = {
       return;
     }
     leaders = leaders.filter(member => member.name.toLowerCase() !== name.toLowerCase());
-    balance(leaders, guildData, false, null)
+    if(guildData.groups && guildData.groups.length){
+      balance(leaders, guildData, false, null)
+    }
     return;
   }
 };

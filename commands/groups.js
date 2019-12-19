@@ -5,6 +5,44 @@ function formatGroupMessage(name, group) {
 	return `${groupMsg} ${infoMsg} \n`
 }
 
+function formatGroupDetailMessage(group, name, isMembers){
+	var msg = `\`\`\`${name} (Count: ${group.length}, Strength: ${totalRank(group).toFixed(1)})\n`;
+	var leader;
+	if(isMembers){
+		leader = group.find(member => member.leader)
+		msg += "Leader: \n\t" + formatMemberDetailMessage(leader);
+		msg += "\nBishops: \n\t";
+		var bishops = group.filter(member => member.role.toLowerCase() === "bishop" && member.name !== leader.name);
+		for(var i=0; i<bishops.length; i++){
+				msg += formatMemberDetailMessage(bishops[i]);
+				if(i != bishops.length-1){
+					msg+="\n\t"
+				}
+		}
+		msg += "\nMembers: \n\t";
+	}else{
+		msg += "\t";
+	}
+
+
+	for(var i=0; i<group.length; i++){
+		if(!isMembers || group[i].name !== leader.name && group[i].role.toLowerCase() !== 'bishop'){
+			msg += formatMemberDetailMessage(group[i]);
+			if(i != group.length-1){
+				msg+="\n\t"
+			}
+		}
+	}
+
+
+	return msg + '\`\`\`';
+}
+
+function formatMemberDetailMessage(member){
+	var msg = `${member.name} (class: ${member.role}, dps: ${member.rank}`;
+	return member.multiplier ? msg + `, multiplier: ${member.multiplier})` : msg + ")";
+}
+
 function formatWaitlistMessage(group) {
 	if (!group) return;
 	let groupMsg = `Waitlist: ${group.map(member => member.name).join(", ")}`
@@ -50,5 +88,11 @@ module.exports = {
 		}
 
 		message.channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
-  }
+  },
+	groupDetails: function (message, guildData, leaders){
+		var msg = '';
+		guildData.groups && guildData.groups.length ? guildData.groups.forEach((group, key) => msg += formatGroupDetailMessage(group, `Group ${key+1}`, true)) : msg += formatGroupDetailMessage(leaders, "Leaders", false);
+		guildData.waitlist && guildData.waitlist.length ? msg += formatGroupDetailMessage(guildData.waitlist, `Waitlist`, false) : ''
+		message.channel.send(msg);
+	}
 };

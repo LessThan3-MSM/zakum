@@ -32,8 +32,9 @@ module.exports = {
       if (guildData.pool.find( member => member.id === promoted.id  )){ //remove leader from pool if there.
     		  guildData.pool = guildData.pool.filter(member => member.id !== promoted.id)
       }
-      
-      balance(leaders, guildData, false, null) //re-balance
+      if(guildData.groups && guildData.groups.length){
+        balance(leaders, guildData, false, null) //re-balance
+      }
     }
     else {
       message.channel.send(name + " is not in your guild roster! Please try again");

@@ -12,6 +12,7 @@ const listCommands = require('./commands/commands.js').listCommands;
 const demote = require('./commands/demote.js').demoteCommand;
 const find = require('./commands/find.js').findCommand;
 const groupCommand = require('./commands/groups.js').groupCommand;
+const groupDetails = require('./commands/groups.js').groupDetails;
 const join = require('./commands/join.js').join;
 const joined = require('./commands/joined.js').joined;
 const leaderboard = require('./commands/leaderboard.js').leaderboard;
@@ -37,7 +38,7 @@ let guilds = [];
 client.on('message', message => {
 	if (message.author.bot) return;
 
-	if(message.content.substring(0, PREFIX.length) === PREFIX){
+	if(message.content.substring(0, PREFIX.length).toLowerCase() === PREFIX.toLowerCase()){
 		const isAdmin = isGuildAdmin(message.member._roles, message.guild.id);
 		var commands = message.content.substring(PREFIX.length).toLowerCase().split(' ');
 
@@ -54,6 +55,9 @@ client.on('message', message => {
 				return;
 			case "groups":
 				groupCommand(message, getGuildData(message.guild.id), getLeaders(message));
+				return;
+			case "groupdetails":
+				groupDetails(message, getGuildData(message.guild.id), getLeaders(message));
 				return;
 			case "find":
 				find(message, getRoster(message));
