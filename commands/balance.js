@@ -4,8 +4,12 @@ function totalRank(group){
 }
 
 module.exports = {
-  balance: function (pool, leaders, groups, sendMsg, channel) {
-      groups.length = 0;
+  balance: function (leaders, guildData, sendMsg, channel) {
+			var pool = guildData.pool;
+			var groups = guildData.groups;
+			var waitlist = guildData.waitlist;
+
+			groups.length = 0;
 
     let [bishops, joining, weakest, total] = [pool.filter(member => member.role === "bishop" && !member.leader).sort((a,b) => a.rank-b.rank), pool.slice().sort((a,b) => a.rank*(a.multiplier || 1) - b.rank*(b.multiplier || 1)), [{rank: 100}], [...leaders, ...pool].length]
     leaders.forEach((leader, index) => total > (10*index) ? groups[index] = [leader] : joining.push(leader))

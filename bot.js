@@ -32,9 +32,7 @@ const update = require('./commands/update.js').update;
 
 var fs = require("fs");
 
-let groups = [];
-let pool = [];
-let waitlist = [];
+let guilds = [];
 
 client.on('message', message => {
 	if (message.author.bot) return;
@@ -46,16 +44,16 @@ client.on('message', message => {
 		switch(commands[0]){
 			case "pool":
 			case "joined":
-				joined(message, getPool(message.guild.id));
+				joined(message, getGuildData(message.guild.id));
 				return;
 			case "join":
-				pool[message.guild.id] = join(message, getRoster(message), getWaitlist(message.guild.id), getPool(message.guild.id), getLeaders(message), getGroups(message.guild.id));
+				join(message, getRoster(message), getLeaders(message), getGuildData(message.guild.id));
 				return;
 			case "roster":
 				postRoster(message, getRoster(message));
 				return;
 			case "groups":
-				groupCommand(message, getGroups(message.guild.id), getPool(message.guild.id), getWaitlist(message.guild.id), getLeaders(message));
+				groupCommand(message, getGuildData(message.guild.id), getLeaders(message));
 				return;
 			case "find":
 				find(message, getRoster(message));
@@ -92,10 +90,10 @@ client.on('message', message => {
 						remove(message, getRoster(message), message.guild.id);
 						return;
 					case "reset":
-						reset(message.channel, getPool(message.guild.id), getGroups(message.guild.id), getWaitlist(message.guild.id));
+						reset(message.channel, getGuildData(message.guild.id));
 						return;
 					case "balance":
-						balance(getPool(message.guild.id), getLeaders(message), getGroups(message.guild.id), true, message.channel);
+						balance(getLeaders(message), getGuildData(message.guild.id), true, message.channel);
 						return;
 					case "promote":
 						promote(message, getRoster(message), getLeaders(message), message.guild.id);
@@ -107,7 +105,7 @@ client.on('message', message => {
 						demote(message, getRoster(message), getLeaders(message), message.guild.id);
 						return;
 					case "swap":
-						waitlist[message.guild.id] = swap(message, getGroups(message.guild.id), getWaitlist(message.guild.id))
+						swap(message, getGuildData(message.guild.id))
 						return;
 					case "update":
 						update(message, getRoster(message), MAPLE_STORY_CLASSES)
@@ -126,19 +124,9 @@ client.on('message', message => {
 			}
 });
 
-function getWaitlist(guildID){
-		if(waitlist[guildID] == undefined) { waitlist[guildID] = [] ;}
-		return waitlist[guildID];
-}
-
-function getPool(guildID){
-		if(pool[guildID] == undefined) { pool[guildID] = [] ;}
-		return pool[guildID];
-}
-
-function getGroups(guildID){
-		if(groups[guildID] == undefined) { groups[guildID] = [] ;}
-		return groups[guildID];
+function getGuildData(guildID){
+		if(guilds[guildID] == undefined) { guilds[guildID] = {pool:[],groups:[], waitlist:[]}}
+		return guilds[guildID];
 }
 
 function getLeaders(message){
@@ -190,9 +178,10 @@ var expoTimer = new CronJob('30 17 * * *', function(){
 			var channel = client.channels.get(timerChannels[key].timerChannels[i]);
 			if(channel != undefined){
 				if(timerChannels[key].enabled){
-					getPool(key).length = 0;
-					getGroups(key).length = 0;
-					getWaitlist(key).length = 0;
+					var guildData = getGuildData(key);
+					guildData.pool.length = 0;
+					guildData.groups.length = 0;
+					guildData.waitlist.length = 0;
 					channel.send(timerChannels[key].enabledMsg);
 				}else{
 					channel.send(timerChannels[key].disabledMsg);

@@ -1,5 +1,7 @@
 module.exports = {
-  swap: function (message, groups, waitlist) {
+  swap: function (message, guildData) {
+    var groups = guildData.groups;
+
     message.channel.send("Zakum used **Swap!**")
    let params = message.content.split(" ")
 
@@ -19,8 +21,8 @@ module.exports = {
     })
 
     if(swapGroups.length < 2){ //try the waitlist?
-      const p1 = waitlist.find(member => member.name.toLowerCase() === first.toLowerCase())
-      const p2 = waitlist.find(member => member.name.toLowerCase() === second.toLowerCase())
+      const p1 = guildData.waitlist.find(member => member.name.toLowerCase() === first.toLowerCase())
+      const p2 = guildData.waitlist.find(member => member.name.toLowerCase() === second.toLowerCase())
       p1 && swapGroups.push({groupId: -1, member:p1})
       p2 && swapGroups.push({groupId: -1, member:p2})
     }
@@ -37,20 +39,19 @@ module.exports = {
     }
 
     if(swapGroups[0].groupId === -1){
-      waitlist = waitlist.filter(member => member.name.toLowerCase() !== swapGroups[0].member.name.toLowerCase());
-      waitlist.push(swapGroups[1].member)
+      guildData.waitlist = guildData.waitlist.filter(member => member.name.toLowerCase() !== swapGroups[0].member.name.toLowerCase());
+      guildData.waitlist.push(swapGroups[1].member)
     }else{
       groups[swapGroups[0].groupId] = groups[swapGroups[0].groupId].filter(member => member.name.toLowerCase() !== swapGroups[0].member.name.toLowerCase())
       groups[swapGroups[0].groupId].push(swapGroups[1].member)
     }
     if(swapGroups[1].groupId === -1){
-      waitlist = waitlist.filter(member => member.name.toLowerCase() !== swapGroups[1].member.name.toLowerCase());
-      waitlist.push(swapGroups[0].member)
+      guildData.waitlist = guildData.waitlist.filter(member => member.name.toLowerCase() !== swapGroups[1].member.name.toLowerCase());
+      guildData.waitlist.push(swapGroups[0].member)
     }else{
       groups[swapGroups[1].groupId] = groups[swapGroups[1].groupId].filter(member => member.name.toLowerCase() !== swapGroups[1].member.name.toLowerCase())
       groups[swapGroups[1].groupId].push(swapGroups[0].member)
     }
     message.channel.send("*It was super effective!*")
-    return waitlist;
   }
 };

@@ -35,18 +35,18 @@ function computeDifference(group1, group2, abs){
 
 function totalRank(group){
 	return group.reduce(function (acc, obj) {
-		var rank = isNaN(obj.rank) ? 0 : obj.rank; 
+		var rank = isNaN(obj.rank) ? 0 : obj.rank;
 		return acc + rank * (obj.multiplier || 1);
 	}, 0);
 }
 
 module.exports = {
-  groupCommand: function (message, groups, pool, waitlist, leaders) {
-		let [differenceMessage, groupMessage] = [formatDifferenceMessage(computeDifference(groups[0], groups[1], true)), ""]
-		groups.length ? groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
+  groupCommand: function (message, guildData, leaders) {
+		let [differenceMessage, groupMessage] = [formatDifferenceMessage(computeDifference(guildData.groups[0], guildData.groups[1], true)), ""]
+		guildData.groups.length ? guildData.groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
 
-		if(waitlist && waitlist.length){
-			groupMessage += formatWaitlistMessage(waitlist)
+		if(guildData.waitlist && guildData.waitlist.length){
+			groupMessage += formatWaitlistMessage(guildData.waitlist)
 		}
 
 		message.channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
