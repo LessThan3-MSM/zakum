@@ -1,6 +1,7 @@
 {
   "PREFIX": "!",
   "ADMIN_ROLE": "zakum-admin",
+  "SERVER_TIME_ZONE": "Pacific/Pitcairn",
   "MAPLE_STORY_CLASSES": [
     "darkknight",
     "bowmaster",
