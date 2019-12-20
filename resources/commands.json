@@ -7,13 +7,6 @@
     "description": "Adds a member to the guild roster."
   },
   {
-    "name": "balance",
-    "admin": true,
-    "required": [],
-    "optional": [],
-    "description": "Re-balances the groups. Shouldn't really be needed."
-  },
-  {
     "name": "class",
     "admin": false,
     "required": ["Name|Class"],
