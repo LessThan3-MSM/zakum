@@ -3,7 +3,7 @@ var timerChannels = require ("." + TIMER_LOC);
 const {SERVER_TIME_ZONE} = require("../resources/constants.json")
 
 function isInGuildWindow(guildID, before){
-  var notInWindow = false;
+  var inWindow = false;
   if(timerChannels[guildID] && timerChannels[guildID].signUpWindow){
     var currServerTime = new Date().toLocaleString("en-US", {timeZone: SERVER_TIME_ZONE});
     currServerTime = new Date(currServerTime);
@@ -41,23 +41,30 @@ function isInGuildWindow(guildID, before){
       var expoTime2MinusMinutes = new Date(expoTime2);
       expoTime2MinusMinutes.setMinutes(expoTime2.getMinutes() - timerChannels[guildID].minBeforeStart)
 
-      notInWindow = (timerChannels[guildID].amExpos && !(currServerTime >= expoTime1MinusMinutes && currServerTime < expoTime1End)) &&
-        (timerChannels[guildID].pmExpos && !(currServerTime >= expoTime2MinusMinutes && currServerTime < expoTime2End));
+      inWindow = (timerChannels[guildID].amExpos && currServerTime >= expoTime1MinusMinutes && currServerTime < expoTime1End) ||
+        (timerChannels[guildID].pmExpos && currServerTime >= expoTime2MinusMinutes && currServerTime < expoTime2End);
     }else{
+      var abs = Math.abs(timerChannels[guildID].minAfterStart);
       var expoTime1PlusMinutes = new Date(expoTime1);
-      expoTime1PlusMinutes.setMinutes(expoTime1.getMinutes() + timerChannels[guildID].minAfterStart)
       var expoTime2PlusMinutes = new Date(expoTime2);
-      expoTime2PlusMinutes.setMinutes(expoTime2.getMinutes() + timerChannels[guildID].minAfterStart)
 
-      notInWindow = (timerChannels[guildID].amExpos && currServerTime > expoTime1PlusMinutes && currServerTime <= expoTime1End) ||
+      if(timerChannels[guildID].minAfterStart > 0){
+        expoTime1PlusMinutes.setMinutes(expoTime1.getMinutes() + abs)
+        expoTime2PlusMinutes.setMinutes(expoTime2.getMinutes() + abs)
+      }else{
+        expoTime1PlusMinutes.setMinutes(expoTime1.getMinutes() - abs)
+        expoTime2PlusMinutes.setMinutes(expoTime2.getMinutes() - abs)
+      }
+
+      inWindow = (timerChannels[guildID].amExpos && currServerTime > expoTime1PlusMinutes && currServerTime <= expoTime1End) ||
         (timerChannels[guildID].pmExpos && currServerTime > expoTime2PlusMinutes && currServerTime <= expoTime2End);
     }
   }
-  return notInWindow;
+  return inWindow;
 }
 
 function isBeforeGuildJoinWindow(guildID){
-  return isInGuildWindow(guildID, true);
+  return !isInGuildWindow(guildID, true);
 }
 
 function isAfterGuildJoinWindow(guildID){
