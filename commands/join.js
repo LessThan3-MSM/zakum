@@ -43,7 +43,7 @@ module.exports = {
   join: function (message, roster, leaders, guildData) {
 		if(!isguildenabled(message.guild.id)){
 			message.channel.send(":thumbsdown: Expeditions are disabled.");
-		}else if(isBeforeGuildJoinWindow(message.guild.id, new Date())){
+		}else if(isBeforeGuildJoinWindow(message.guild.id)){
 			message.channel.send(":thumbsdown: You cannot join the expedition until closer to start time.");
 		}else{
 		message.content.split(" ").forEach(function (joiner, index){
