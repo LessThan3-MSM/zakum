@@ -49,8 +49,8 @@ function isInGuildWindow(guildID, before){
       var expoTime2PlusMinutes = new Date(expoTime2);
       expoTime2PlusMinutes.setMinutes(expoTime2.getMinutes() + timerChannels[guildID].minAfterStart)
 
-      notInWindow = (timerChannels[guildID].amExpos && !(currServerTime >= expoTime1PlusMinutes && currServerTime < expoTime1End)) ||
-        (timerChannels[guildID].pmExpos && !(currServerTime >= expoTime2PlusMinutes && currServerTime < expoTime2End));
+      notInWindow = (timerChannels[guildID].amExpos && currServerTime > expoTime1PlusMinutes && currServerTime <= expoTime1) ||
+        (timerChannels[guildID].pmExpos && currServerTime > expoTime2PlusMinutes && currServerTime <= expoTime2);
     }
   }
 
