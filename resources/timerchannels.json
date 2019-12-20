@@ -7,7 +7,10 @@
         "enabledMsg": "@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!",
         "disabledMsg": "@everyone Guild expeditions are cancelled today in order to prepare for Worlds.",
         "pmExpos": true,
-        "amExpos": false
+        "amExpos": false,
+        "signUpWindow": true,
+        "minBeforeStart": "30",
+        "minAfterStart": "25"
     },
     "578374186217766941": {
         "enabled": true,
@@ -17,6 +20,9 @@
         "enabledMsg": " @everyone SIGN UP FOR EXPOS.",
         "disabledMsg": "@everyone hi what's up",
         "pmExpos": true,
-        "amExpos": false
+        "amExpos": false,
+        "signUpWindow": false,
+        "minBeforeStart": "30",
+        "minAfterStart": "50"
     }
 }

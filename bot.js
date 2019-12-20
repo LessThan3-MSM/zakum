@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const {PREFIX, ADMIN_ROLE, MAPLE_STORY_CLASSES} = require("./resources/constants.json")
+const {PREFIX, ADMIN_ROLE, SERVER_TIME_ZONE, MAPLE_STORY_CLASSES} = require("./resources/constants.json")
 const {TOKEN} = require('./resources/config.json')
 
 /* importing functions from the commands dir */
@@ -30,6 +30,7 @@ const listTimerMsg = require('./commands/timers.js').listTimerMsg;
 const toggleexpos = require('./commands/timers.js').toggleexpos;
 const update = require('./commands/update.js').update;
 const setAmPmExpos = require('./commands/timers.js').setAmPmExpos;
+const setWindow = require('./commands/timers.js').setWindow;
 
 var fs = require("fs");
 
@@ -123,6 +124,9 @@ client.on('message', message => {
 					case "setexpo":
 						setAmPmExpos(message);
 						return;
+					case "setwindow":
+						setWindow(message);
+						return;
 					}
 				}
 			}
@@ -172,13 +176,12 @@ client.login(TOKEN);
 /************TIMERS******************/
 /** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
 var CronJob = require('cron').CronJob; /** Timers REQUIRE cron npm to be installed **/
-var serverTimeZone = 'Pacific/Pitcairn'; //This is Scania's Server time. Modify as needed.
 
 var expoTimer = new CronJob('30 17,9 * * *', function(){
 	var timerChannels = getTimerCh();
 
 	for(key in timerChannels) {
-		var serverTime = new Date().toLocaleString("en-US", {timeZone: serverTimeZone});
+		var serverTime = new Date().toLocaleString("en-US", {timeZone: SERVER_TIME_ZONE});
 		serverTime = new Date(serverTime);
 		if((serverTime.getHours() == 17 && timerChannels[key].pmExpos) ||
 				(serverTime.getHours() == 9 && timerChannels[key].amExpos)){
@@ -200,6 +203,6 @@ var expoTimer = new CronJob('30 17,9 * * *', function(){
 				}
 	}
 
-}, null, true, serverTimeZone);
+}, null, true, SERVER_TIME_ZONE);
 
 expoTimer.start();

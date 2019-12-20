@@ -1,5 +1,7 @@
 const balance = require('./balance.js').balance;
 const isguildenabled = require('./timers.js').isguildenabled;
+const isBeforeGuildJoinWindow = require('./timers.js').isBeforeGuildJoinWindow;
+const isAfterGuildJoinWindow = require('./timers.js').isAfterGuildJoinWindow;
 
 function addMemberToPool(name, message, roster, leaders, guildData){
 	let user = null;
@@ -27,8 +29,8 @@ function addMemberToPool(name, message, roster, leaders, guildData){
 		guildData.pool = guildData.pool.filter(member => member.id !== joined.id)
 		message.channel.send(`Removed ${name || message.author.username} from the Zakum Expedition Finder queue.`)
 		balance(leaders, guildData, false, null)
-	} else if ([...leaders, ...guildData.pool].length >= leaders.length * 10){
-		message.channel.send(`Sorry ${name || message.author.username}! Looks like we've reached capacity. Adding you to the waitlist!`)
+	} else if (isAfterGuildJoinWindow(message.guild.id) || ([...leaders, ...guildData.pool].length >= leaders.length * 10)){
+		message.channel.send(`Sorry ${name || message.author.username}! We weren't able to add you to the expedition. Adding you to the waitlist!`)
 		guildData.waitlist.push(joined)
 	} else {
 		guildData.pool.push(joined)
@@ -39,7 +41,11 @@ function addMemberToPool(name, message, roster, leaders, guildData){
 
 module.exports = {
   join: function (message, roster, leaders, guildData) {
-		if(isguildenabled(message.guild.id)){
+		if(!isguildenabled(message.guild.id)){
+			message.channel.send(":thumbsdown: Expeditions are disabled.");
+		}else if(isBeforeGuildJoinWindow(message.guild.id, new Date())){
+			message.channel.send(":thumbsdown: You cannot join the expedition until closer to start time.");
+		}else{
 		message.content.split(" ").forEach(function (joiner, index){
 			if(message.content.split(" ").length === 1){
 				addMemberToPool(null, message, roster, leaders, guildData)
@@ -47,8 +53,6 @@ module.exports = {
 				addMemberToPool(joiner, message, roster, leaders, guildData)
 			}
 		})
-	}else{
-		message.channel.send(":thumbsdown: Expeditions are disabled.");
-	}
   }
+}
 };

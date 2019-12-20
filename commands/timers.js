@@ -1,18 +1,96 @@
 var TIMER_LOC = "./resources/timerchannels.json";
 var timerChannels = require ("." + TIMER_LOC);
+const {SERVER_TIME_ZONE} = require("../resources/constants.json")
+
+function isBeforeGuildJoinWindow(guildID){
+  var isBeforeGuildJoinWindow = false;
+  if(timerChannels[guildID] && timerChannels[guildID].signUpWindow){
+    var currServerTime = new Date().toLocaleString("en-US", {timeZone: SERVER_TIME_ZONE});
+    currServerTime = new Date(currServerTime);
+
+    let[expoTime1Hr, expoTime2Hr] = [10,18];
+
+    var expoTime1 = new Date();
+    expoTime1.setHours(expoTime1Hr);
+    expoTime1.setMinutes(0);
+    expoTime1.setSeconds(0);
+    expoTime1.setMilliseconds(0);
+
+    var expoTime2 = new Date();
+    expoTime2.setHours(expoTime2Hr);
+    expoTime2.setMinutes(0);
+    expoTime2.setSeconds(0);
+    expoTime2.setMilliseconds(0);
+
+    var expoTime1End = new Date();
+    expoTime1End = new Date();
+    expoTime1End.setHours(expoTime1Hr + 1);
+    expoTime1End.setMinutes(0);
+    expoTime1End.setSeconds(0);
+    expoTime1End.setMilliseconds(0);
+
+    var expoTime2End = new Date();
+    expoTime2End.setHours(expoTime2Hr + 1);
+    expoTime2End.setMinutes(0);
+    expoTime2End.setSeconds(0);
+    expoTime2End.setMilliseconds(0);
+
+    var expoTime1MinusMinutes = new Date(expoTime1);
+    expoTime1MinusMinutes.setMinutes(expoTime1.getMinutes() - timerChannels[guildID].minBeforeStart)
+    var expoTime2MinusMinutes = new Date(expoTime2);
+    expoTime2MinusMinutes.setMinutes(expoTime2.getMinutes() - timerChannels[guildID].minBeforeStart)
+
+    isBeforeGuildJoinWindow = (timerChannels[guildID].amExpos && !(currServerTime >= expoTime1MinusMinutes && currServerTime < expoTime1End)) ||
+      (timerChannels[guildID].pmExpos && !(currServerTime >= expoTime2MinusMinutes && currServerTime < expoTime2End));
+  }
+
+  return isBeforeGuildJoinWindow;
+}
+
+function isAfterGuildJoinWindow(guildID){
+  var isBeforeGuildJoinWindow = false;
+  if(timerChannels[guildID] && timerChannels[guildID].signUpWindow){
+    var currServerTime = new Date().toLocaleString("en-US", {timeZone: SERVER_TIME_ZONE});
+    currServerTime = new Date(currServerTime);
+
+    
+
+  }
+  return isBeforeGuildJoinWindow;
+}
+
+function setWindow(message){
+  if(timerChannels[message.guild.id] == undefined){
+    message.channel.send(':scream: No timer channels exist for this server. Use !timerchadd to add some.');
+  }else{ //setwindow [before|after] minutes
+      var commands = message.content.toLowerCase().split(' ');
+      if(commands.length < 2 || (commands[1] !== 'before' && commands[1] !== 'after') || (isNaN(commands[2]))){
+        message.channel.send(':scream: Usage: setwindow [before|after] minutes');
+      }else{
+        if(commands[1] === 'before'){
+          timerChannels[message.guild.id].minBeforeStart = commands[2]
+        }else if(commands[1] === 'after'){
+          timerChannels[message.guild.id].minAfterStart = commands[2]
+        }
+        writeToTimerFile(message.channel, true);
+      }
+  }
+}
 
 function setAmPmExpos(message){
   if(timerChannels[message.guild.id] == undefined){
     message.channel.send(':scream: No timer channels exist for this server. Use !timerchadd to add some.');
   }else{ //settimer am on, settimer pm off
       var commands = message.content.toLowerCase().split(' ');
-      if(commands.length < 2 || (commands[1] !== 'am' && commands[1] !== 'pm') || (commands[2] !== 'on' && commands[2] !== 'off')){
-        message.channel.send(':scream: Usage: setexpo [am|pm] [on|off]');
+      if(commands.length < 2 || (commands[1] !== 'am' && commands[1] !== 'pm' && commands[1] !== 'window') || (commands[2] !== 'on' && commands[2] !== 'off')){
+        message.channel.send(':scream: Usage: setexpo [am|pm|window] [on|off]');
       }else{
         if(commands[1] === 'pm'){
           timerChannels[message.guild.id].pmExpos = commands[2] === 'on'
         }else if(commands[1] === 'am'){
           timerChannels[message.guild.id].amExpos = commands[2] === 'on'
+        }else if(commands[1] === 'window'){
+          timerChannels[message.guild.id].signUpWindow = commands[2] === 'on'
         }
         writeToTimerFile(message.channel, true);
       }
@@ -42,7 +120,7 @@ function addCh(message){
     "timerChannels": [],
     "enabledMsg": "@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.",
     "disabledMsg": "@everyone Expedition sign-ups are currently disabled.",
-    "amExpos": true, "pmExpos": true};
+    "amExpos": true, "pmExpos": true, "signUpWindow": false, "minBeforeStart":"30", "minAfterStart":"30"};
   }
 	if(timerChannels[message.guild.id].timerChannels.indexOf(channel) === -1) {
 		timerChannels[message.guild.id].timerChannels.push(channel);
@@ -117,9 +195,13 @@ module.exports = {
       var amexpos = timerChannels[message.guild.id].amExpos ? "on." : "off."
       var pmexpos = timerChannels[message.guild.id].pmExpos ? "on." : "off."
       var expos = timerChannels[message.guild.id].enabled ? "enabled." : "disabled."
+      var window = timerChannels[message.guild.id].signUpWindow ? "enabled" : "disabled."
       message.channel.send("The AM Expo timer is "+ amexpos +
       "\nThe PM Expo timer is "+pmexpos+
       "\nExpedition sign-ups are "+ expos +
+      "\nExpedition join windows are " + window +
+      (timerChannels[message.guild.id].signUpWindow ? ("\n\tand will allow sign-ups " + timerChannels[message.guild.id].minBeforeStart + " minutes before expedition start" +
+      "\n\tuntil " + timerChannels[message.guild.id].minAfterStart + " minutes after expedition start.") : "") +
       "\nEnabled Msg: "+timerChannels[message.guild.id].enabledMsg +
       "\nDisabled Msg: " + timerChannels[message.guild.id].disabledMsg +
       "\nTimers will display in channel(s): " + '['+timerChannels[message.guild.id].timerChannels.toString()+']');
@@ -129,5 +211,14 @@ module.exports = {
   },
   setAmPmExpos: function(message){
     setAmPmExpos(message);
+  },
+  setWindow: function(message){
+    setWindow(message);
+  },
+  isBeforeGuildJoinWindow: function(guildID){
+    return isBeforeGuildJoinWindow(guildID);
+  },
+  isAfterGuildJoinWindow: function(guildID){
+    return isAfterGuildJoinWindow(guildID);
   }
 };

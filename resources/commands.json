@@ -93,9 +93,9 @@
   {
     "name": "setexpo",
     "admin": true,
-    "required": ["am|pm", "on|off"],
+    "required": ["am|pm|window", "on|off"],
     "optional": [],
-    "description": "Sets whether the guild has scheduled AM/PM expeditions."
+    "description": "Sets whether the guild has scheduled AM/PM expeditions or an expo join window."
   },
   {
     "name": "settimerenbmsg",
@@ -110,6 +110,13 @@
     "required": ["Message"],
     "optional": [],
     "description": "Sets the timer message that will display when expos are disabled."
+  },
+  {
+    "name": "setwindow",
+    "admin": true,
+    "required": ["before|after","minutes"],
+    "optional": [],
+    "description": "Sets the expedition join window to x # minutes before/after expedition start time."
   },
   {
     "name": "swap",
