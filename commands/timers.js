@@ -2,8 +2,8 @@ var TIMER_LOC = "./resources/timerchannels.json";
 var timerChannels = require ("." + TIMER_LOC);
 const {SERVER_TIME_ZONE} = require("../resources/constants.json")
 
-function isBeforeGuildJoinWindow(guildID){
-  var isBeforeGuildJoinWindow = false;
+function isInGuildWindow(guildID, before){
+  var notInWindow = false;
   if(timerChannels[guildID] && timerChannels[guildID].signUpWindow){
     var currServerTime = new Date().toLocaleString("en-US", {timeZone: SERVER_TIME_ZONE});
     currServerTime = new Date(currServerTime);
@@ -35,28 +35,34 @@ function isBeforeGuildJoinWindow(guildID){
     expoTime2End.setSeconds(0);
     expoTime2End.setMilliseconds(0);
 
-    var expoTime1MinusMinutes = new Date(expoTime1);
-    expoTime1MinusMinutes.setMinutes(expoTime1.getMinutes() - timerChannels[guildID].minBeforeStart)
-    var expoTime2MinusMinutes = new Date(expoTime2);
-    expoTime2MinusMinutes.setMinutes(expoTime2.getMinutes() - timerChannels[guildID].minBeforeStart)
+    if(before){
+      var expoTime1MinusMinutes = new Date(expoTime1);
+      expoTime1MinusMinutes.setMinutes(expoTime1.getMinutes() - timerChannels[guildID].minBeforeStart)
+      var expoTime2MinusMinutes = new Date(expoTime2);
+      expoTime2MinusMinutes.setMinutes(expoTime2.getMinutes() - timerChannels[guildID].minBeforeStart)
 
-    isBeforeGuildJoinWindow = (timerChannels[guildID].amExpos && !(currServerTime >= expoTime1MinusMinutes && currServerTime < expoTime1End)) ||
-      (timerChannels[guildID].pmExpos && !(currServerTime >= expoTime2MinusMinutes && currServerTime < expoTime2End));
+      notInWindow = (timerChannels[guildID].amExpos && !(currServerTime >= expoTime1MinusMinutes && currServerTime < expoTime1End)) ||
+        (timerChannels[guildID].pmExpos && !(currServerTime >= expoTime2MinusMinutes && currServerTime < expoTime2End));
+    }else{
+      var expoTime1PlusMinutes = new Date(expoTime1);
+      expoTime1PlusMinutes.setMinutes(expoTime1.getMinutes() + timerChannels[guildID].minAfterStart)
+      var expoTime2PlusMinutes = new Date(expoTime2);
+      expoTime2PlusMinutes.setMinutes(expoTime2.getMinutes() + timerChannels[guildID].minAfterStart)
+
+      notInWindow = (timerChannels[guildID].amExpos && !(currServerTime >= expoTime1PlusMinutes && currServerTime < expoTime1End)) ||
+        (timerChannels[guildID].pmExpos && !(currServerTime >= expoTime2PlusMinutes && currServerTime < expoTime2End));
+    }
   }
 
-  return isBeforeGuildJoinWindow;
+  return notInWindow;
+}
+
+function isBeforeGuildJoinWindow(guildID){
+  return isInGuildWindow(guildID, true);
 }
 
 function isAfterGuildJoinWindow(guildID){
-  var isBeforeGuildJoinWindow = false;
-  if(timerChannels[guildID] && timerChannels[guildID].signUpWindow){
-    var currServerTime = new Date().toLocaleString("en-US", {timeZone: SERVER_TIME_ZONE});
-    currServerTime = new Date(currServerTime);
-
-    
-
-  }
-  return isBeforeGuildJoinWindow;
+  return isInGuildWindow(guildID, false);
 }
 
 function setWindow(message){
@@ -201,7 +207,7 @@ module.exports = {
       "\nExpedition sign-ups are "+ expos +
       "\nExpedition join windows are " + window +
       (timerChannels[message.guild.id].signUpWindow ? ("\n\tand will allow sign-ups " + timerChannels[message.guild.id].minBeforeStart + " minutes before expedition start" +
-      "\n\tuntil " + timerChannels[message.guild.id].minAfterStart + " minutes after expedition start.") : "") +
+      "\n\tand will waitlist members " + timerChannels[message.guild.id].minAfterStart + " minutes after expedition start.") : "") +
       "\nEnabled Msg: "+timerChannels[message.guild.id].enabledMsg +
       "\nDisabled Msg: " + timerChannels[message.guild.id].disabledMsg +
       "\nTimers will display in channel(s): " + '['+timerChannels[message.guild.id].timerChannels.toString()+']');

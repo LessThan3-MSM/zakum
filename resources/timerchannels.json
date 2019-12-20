@@ -21,8 +21,8 @@
         "disabledMsg": "@everyone hi what's up",
         "pmExpos": true,
         "amExpos": false,
-        "signUpWindow": false,
+        "signUpWindow": true,
         "minBeforeStart": "30",
-        "minAfterStart": "50"
+        "minAfterStart": "20"
     }
 }
