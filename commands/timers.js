@@ -35,20 +35,16 @@ function isInGuildWindow(guildID, before){
     expoTime2End.setSeconds(0);
     expoTime2End.setMilliseconds(0);
 
+    var abs = 0;
     if(before){
-      var expoTime1MinusMinutes = new Date(expoTime1);
-      expoTime1MinusMinutes.setMinutes(expoTime1.getMinutes() - timerChannels[guildID].minBeforeStart)
-      var expoTime2MinusMinutes = new Date(expoTime2);
-      expoTime2MinusMinutes.setMinutes(expoTime2.getMinutes() - timerChannels[guildID].minBeforeStart)
-
-      inWindow = (timerChannels[guildID].amExpos && currServerTime >= expoTime1MinusMinutes && currServerTime < expoTime1End) ||
-        (timerChannels[guildID].pmExpos && currServerTime >= expoTime2MinusMinutes && currServerTime < expoTime2End);
+      abs = Math.abs(timerChannels[guildID].minBeforeStart);
     }else{
-      var abs = Math.abs(timerChannels[guildID].minAfterStart);
-      var expoTime1PlusMinutes = new Date(expoTime1);
-      var expoTime2PlusMinutes = new Date(expoTime2);
+      abs = Math.abs(timerChannels[guildID].minAfterStart);
+    }
+    var expoTime1PlusMinutes = new Date(expoTime1);
+    var expoTime2PlusMinutes = new Date(expoTime2);
 
-      if(timerChannels[guildID].minAfterStart > 0){
+      if((!before && timerChannels[guildID].minAfterStart > 0) || (before && timerChannels[guildID].minBeforeStart < 0)){
         expoTime1PlusMinutes.setMinutes(expoTime1.getMinutes() + abs)
         expoTime2PlusMinutes.setMinutes(expoTime2.getMinutes() + abs)
       }else{
@@ -56,9 +52,8 @@ function isInGuildWindow(guildID, before){
         expoTime2PlusMinutes.setMinutes(expoTime2.getMinutes() - abs)
       }
 
-      inWindow = (timerChannels[guildID].amExpos && currServerTime > expoTime1PlusMinutes && currServerTime <= expoTime1End) ||
-        (timerChannels[guildID].pmExpos && currServerTime > expoTime2PlusMinutes && currServerTime <= expoTime2End);
-    }
+      inWindow = (timerChannels[guildID].amExpos && currServerTime >= expoTime1PlusMinutes && currServerTime < expoTime1End) ||
+        (timerChannels[guildID].pmExpos && currServerTime >= expoTime2PlusMinutes && currServerTime < expoTime2End);
   }
   return inWindow;
 }
