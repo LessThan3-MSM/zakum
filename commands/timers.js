@@ -3,10 +3,14 @@ var timerChannels = require ("." + TIMER_LOC);
 const {SERVER_TIME_ZONE} = require("../resources/constants.json")
 
 function isInGuildWindow(guildID, before){
-  var inWindow = false;
+  var inWindow = before ? true : false;
+
   if(timerChannels[guildID] && timerChannels[guildID].signUpWindow){
     var currServerTime = new Date().toLocaleString("en-US", {timeZone: SERVER_TIME_ZONE});
     currServerTime = new Date(currServerTime);
+    currServerTime.setMonth(1);
+    currServerTime.setDate(1);
+    currServerTime.setYear(2011);
 
     let[expoTime1Hr, expoTime2Hr] = [10,18];
 
@@ -15,12 +19,18 @@ function isInGuildWindow(guildID, before){
     expoTime1.setMinutes(0);
     expoTime1.setSeconds(0);
     expoTime1.setMilliseconds(0);
+    expoTime1.setMonth(1);
+    expoTime1.setDate(1);
+    expoTime1.setYear(2011);
 
     var expoTime2 = new Date();
     expoTime2.setHours(expoTime2Hr);
     expoTime2.setMinutes(0);
     expoTime2.setSeconds(0);
     expoTime2.setMilliseconds(0);
+    expoTime2.setMonth(1);
+    expoTime2.setDate(1);
+    expoTime2.setYear(2011);
 
     var expoTime1End = new Date();
     expoTime1End = new Date();
@@ -28,12 +38,18 @@ function isInGuildWindow(guildID, before){
     expoTime1End.setMinutes(0);
     expoTime1End.setSeconds(0);
     expoTime1End.setMilliseconds(0);
+    expoTime1End.setMonth(1);
+    expoTime1End.setDate(1);
+    expoTime1End.setYear(2011);
 
     var expoTime2End = new Date();
     expoTime2End.setHours(expoTime2Hr + 1);
     expoTime2End.setMinutes(0);
     expoTime2End.setSeconds(0);
     expoTime2End.setMilliseconds(0);
+    expoTime2End.setMonth(1);
+    expoTime2End.setDate(1);
+    expoTime2End.setYear(2011);
 
     var abs = 0;
     if(before){
@@ -41,6 +57,7 @@ function isInGuildWindow(guildID, before){
     }else{
       abs = Math.abs(timerChannels[guildID].minAfterStart);
     }
+
     var expoTime1PlusMinutes = new Date(expoTime1);
     var expoTime2PlusMinutes = new Date(expoTime2);
 
@@ -52,9 +69,10 @@ function isInGuildWindow(guildID, before){
         expoTime2PlusMinutes.setMinutes(expoTime2.getMinutes() - abs)
       }
 
-      inWindow = (timerChannels[guildID].amExpos && currServerTime >= expoTime1PlusMinutes && currServerTime < expoTime1End) ||
-        (timerChannels[guildID].pmExpos && currServerTime >= expoTime2PlusMinutes && currServerTime < expoTime2End);
+      inWindow = (timerChannels[guildID].amExpos && (currServerTime >= expoTime1PlusMinutes) && (currServerTime < expoTime1End)) ||
+        (timerChannels[guildID].pmExpos && (currServerTime >= expoTime2PlusMinutes) && (currServerTime < expoTime2End));
   }
+
   return inWindow;
 }
 
