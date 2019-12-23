@@ -3,10 +3,11 @@ var fs = require("fs");
 module.exports = {
   update: function (message, roster, classes) {
     const content = message.content.split(" ")
+
     const person = content.length >= 4 && roster.find(member => member.name.toLowerCase() === content[2].toLowerCase())
     const [AVAILABLE_ARGS, type, id, value] = [
       ["dps", "id", "name", "class", "multiplier"],
-      content[1].toLowerCase(),
+      content.length > 1 ? content[1].toLowerCase() : "",
       content.length >= 4 ? person && person.id : `${message.author.username}#${message.author.discriminator}`,
       content.slice(content.length >= 4 ? 3:2).join("")
     ]
