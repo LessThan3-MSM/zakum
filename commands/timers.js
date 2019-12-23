@@ -3,7 +3,7 @@ var timerChannels = require ("." + TIMER_LOC);
 const {SERVER_TIME_ZONE} = require("../resources/constants.json")
 
 function isInGuildWindow(guildID, before){
-  var inWindow = before ? true : false;
+  var inWindow = before;
 
   if(timerChannels[guildID] && timerChannels[guildID].signUpWindow){
     var currServerTime = new Date().toLocaleString("en-US", {timeZone: SERVER_TIME_ZONE});
@@ -14,42 +14,17 @@ function isInGuildWindow(guildID, before){
 
     let[expoTime1Hr, expoTime2Hr] = [10,18];
 
-    var expoTime1 = new Date();
+    var expoTime1 = new Date('January 1, 2011 0:0:0');
     expoTime1.setHours(expoTime1Hr);
-    expoTime1.setMinutes(0);
-    expoTime1.setSeconds(0);
-    expoTime1.setMilliseconds(0);
-    expoTime1.setMonth(1);
-    expoTime1.setDate(1);
-    expoTime1.setYear(2011);
 
-    var expoTime2 = new Date();
+    var expoTime2 = new Date('January 1, 2011 0:0:0');
     expoTime2.setHours(expoTime2Hr);
-    expoTime2.setMinutes(0);
-    expoTime2.setSeconds(0);
-    expoTime2.setMilliseconds(0);
-    expoTime2.setMonth(1);
-    expoTime2.setDate(1);
-    expoTime2.setYear(2011);
 
-    var expoTime1End = new Date();
-    expoTime1End = new Date();
+    var expoTime1End = new Date('January 1, 2011 0:0:0');
     expoTime1End.setHours(expoTime1Hr + 1);
-    expoTime1End.setMinutes(0);
-    expoTime1End.setSeconds(0);
-    expoTime1End.setMilliseconds(0);
-    expoTime1End.setMonth(1);
-    expoTime1End.setDate(1);
-    expoTime1End.setYear(2011);
 
-    var expoTime2End = new Date();
+    var expoTime2End = new Date('January 1, 2011 0:0:0');
     expoTime2End.setHours(expoTime2Hr + 1);
-    expoTime2End.setMinutes(0);
-    expoTime2End.setSeconds(0);
-    expoTime2End.setMilliseconds(0);
-    expoTime2End.setMonth(1);
-    expoTime2End.setDate(1);
-    expoTime2End.setYear(2011);
 
     var abs = 0;
     if(before){
