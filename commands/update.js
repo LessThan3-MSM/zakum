@@ -4,18 +4,18 @@ module.exports = {
   update: function (message, roster, classes) {
     const content = message.content.split(" ")
 
-    const person = content.length >= 4 && roster.find(member => member.name.toLowerCase() === content[2].toLowerCase())
+    const person = content.length >= 4 && roster.find(member => member.name.toLowerCase() === content[1].toLowerCase())
     const [AVAILABLE_ARGS, type, id, value] = [
       ["dps", "id", "name", "class", "multiplier"],
-      content.length > 1 ? content[1].toLowerCase() : "",
+      content.length > 2 ? content[2].toLowerCase() : "",
       content.length >= 4 ? person && person.id : `${message.author.username}#${message.author.discriminator}`,
       content.slice(content.length >= 4 ? 3:2).join("")
     ]
-    if(!AVAILABLE_ARGS.includes(type)) {
-      message.channel.send("Invalid update format. Example: \`!update [dps|id|name|class|multiplier] name value \`")
+    if(!AVAILABLE_ARGS.includes(type) || content.length < 4) {
+      message.channel.send("Invalid update format. Example: \`!update name [dps|id|name|class|multiplier] value \`")
       return;
     } else if (!roster.find(member => member.id === id)){
-      message.channel.send(`Zakum cannot find ${id || content[2]} on the guild roster! Try updating your id first!`)
+      message.channel.send(`Zakum cannot find ${id || content[1]} on the guild roster! Try updating your id first!`)
       return;
     } else {
       update(message, type, content, id, value, roster, classes)
@@ -32,6 +32,7 @@ function update(message, type, content, id, value, roster, classes){
       updateDps(message, id, value, roster)
       break;
     case "id":
+      console.log(content.slice(content.length >= 4 ? 3:2).join(" "));
       updateId(message, id, content.slice(content.length >= 4 ? 3:2).join(" "), roster)
       break;
     case "name":
@@ -54,7 +55,7 @@ function updateClass(message, id, role, classes, roster){
 
 function updateDps(message, id, dps, roster){
   if (!dps || dps.length > 5 || !parseFloat(dps)){
-    message.channel.send("Invalid dps value entered. Example: \`!update dps 13.37 \`")
+    message.channel.send("Invalid dps value entered. Example: \`!update name dps 13.37 \`")
     return;
   }
   roster.find(member => member.id === id).rank = parseFloat(dps)
@@ -63,7 +64,7 @@ function updateDps(message, id, dps, roster){
 
 function updateId(message, id, newId, roster){
   if (!newId){
-    message.channel.send("Invalid new id entered. Example: \`!update id Zakum Zakum#1234 \`")
+    message.channel.send("Invalid new id entered. Example: \`!update name id Zakum#1234 \`")
     return;
   }
   newId = newId || `${message.author.username}#${message.author.discriminator}`
