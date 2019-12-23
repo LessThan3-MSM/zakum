@@ -139,6 +139,10 @@ function setTimerMsg(message, enabled){
 
 function addCh(message){
   var channel = message.content.split(" ")[1];
+  if(channel == undefined){
+    message.channel.send(':scream: Please supply the channel to be added.');
+    return;
+  }
   if(timerChannels[message.guild.id] == undefined){
     timerChannels[message.guild.id] = {"enabled": true,
     "timerChannels": [],
@@ -157,6 +161,10 @@ function addCh(message){
 function removeCh(message){
 	var removed = false;
   var channel = message.content.split(" ")[1];
+  if(channel == undefined){
+    message.channel.send(':scream: Please supply the channel to be added.');
+    return;
+  }
   if(timerChannels[message.guild.id] != undefined){
 	   timerChannels[message.guild.id].timerChannels = timerChannels[message.guild.id].timerChannels.filter(function(value, index, arr){
 		     if(value == channel){

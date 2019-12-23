@@ -2,7 +2,13 @@ module.exports = {
   findByClass: function (message, roster, classes) {
     const args = message.content
     const req = args.split(" ").slice(1).join('')
-    const member = roster.find(member => member.name.toLowerCase() === req.toLowerCase())
+
+    if(req == undefined || req === ''){
+      message.channel.send(':scream: Please supply the name to find.');
+      return;
+    }
+
+    const member = roster.find(member => member.name.toLowerCase() === req.toLowerCase());
 
     if(member && member.name.toLowerCase().includes(req.toLowerCase())){
       message.channel.send(`${member.name} plays ${member.role.substring(0,1).toUpperCase() + member.role.substring(1)}. That's a really cool class!`)
