@@ -123,21 +123,21 @@
     "admin": true,
     "required": ["Member 1", "Member 2"],
     "optional": [],
-    "description": "Swaps two guild members between two expedition groups!"
+    "description": "Swaps two guild members between two expo groups!"
   },
   {
     "name": "timerchadd",
     "admin": true,
     "required": ["Channel"],
     "optional": [],
-    "description": "Adds the current channel to the timers list."
+    "description": "Adds a channel to the timers list."
   },
   {
     "name": "timerchremove",
     "admin": true,
     "required": ["Channel"],
     "optional": [],
-    "description": "Removes the current channel from the timers list."
+    "description": "Removes a channel from the timers list."
   },
   {
     "name": "timers",
@@ -151,13 +151,13 @@
     "admin": true,
     "required": [],
     "optional": [],
-    "description": "Enables/Disables expedition sign-ups."
+    "description": "Toggles expedition sign-ups."
   },
   {
     "name": "update",
     "admin": true,
     "required": ["Name", "Type", "Value"],
     "optional": [],
-    "description": "Updates a value (class, dps, id, multiplier, name) for a member on the guild roster."
+    "description": "Updates the [class, dps, id, multiplier, name] for a member on the guild roster."
   }
 ]

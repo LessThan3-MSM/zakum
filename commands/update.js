@@ -32,7 +32,6 @@ function update(message, type, content, id, value, roster, classes){
       updateDps(message, id, value, roster)
       break;
     case "id":
-      console.log(content.slice(content.length >= 4 ? 3:2).join(" "));
       updateId(message, id, content.slice(content.length >= 4 ? 3:2).join(" "), roster)
       break;
     case "name":
