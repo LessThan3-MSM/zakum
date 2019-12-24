@@ -15,11 +15,5 @@ module.exports = {
        }
      });
      channel.send(helpMsg);
-
-    //helpMsg = helpMsg.match(/[\s\S]{1,2000}/g) || [];
-  //  for(var i = 0; i < helpMsg.length; i++){
-    //    channel.send(helpMsg[i]);
-  //  }
-
   }
 };
