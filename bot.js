@@ -128,6 +128,9 @@ client.on('message', message => {
 						setWindow(message);
 						return;
 					}
+					if(commands[0].includes("fuck")){
+						message.channel.send("Lappu is a bot.");
+					}
 				}
 			}
 });
@@ -177,6 +180,7 @@ client.login(TOKEN);
 /** Timers MUST be global and cannot be inside a JS method. This puts them out of scope.**/
 var CronJob = require('cron').CronJob; /** Timers REQUIRE cron npm to be installed **/
 
+//Expedition Timer
 var expoTimer = new CronJob('30 17,9 * * *', function(){
 	var timerChannels = getTimerCh();
 
@@ -206,3 +210,22 @@ var expoTimer = new CronJob('30 17,9 * * *', function(){
 }, null, true, SERVER_TIME_ZONE);
 
 expoTimer.start();
+
+//Server Reset Timer
+var serverResetTimer = new CronJob('0 0 * * *', function(){
+	var timerChannels = getTimerCh();
+
+	for(key in timerChannels) {
+		var guildData = getGuildData(key);
+		guildData.pool.length = 0;
+		guildData.groups.length = 0;
+		guildData.waitlist.length = 0;
+
+		if(timerChannels[key].autoReset && !timerChannels[key].enabled){
+				timerChannels[key].enabled = true;
+		}
+	}
+
+}, null, true, SERVER_TIME_ZONE);
+
+serverResetTimer.start();

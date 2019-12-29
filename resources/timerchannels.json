@@ -4,25 +4,27 @@
         "timerChannels": [
             "495314040810373140"
         ],
-        "enabledMsg": "@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave. Expedition groups are assembled at :25 and waitlist invites start at :30!",
-        "disabledMsg": "@everyone Guild expeditions are cancelled today in order to prepare for Worlds.",
+        "enabledMsg": "<@&496191261972234242> Type !join to sign up for expeditions, and if you need to cancel your sign up, just type !join again. \nExpeditions begin at 18:25, if you are late we will give your spot to someone from the wait list, and if you no-show/AFK you will receive a warning.",
+        "disabledMsg": "Expeditions are cancelled today for Christmas. Hope you are having a lovely holiday!",
         "pmExpos": true,
         "amExpos": false,
-        "signUpWindow": true,
-        "minBeforeStart": "30",
-        "minAfterStart": "25"
+        "signUpWindow": false,
+        "minBeforeStart": "60",
+        "minAfterStart": "20",
+        "autoReset": true
     },
     "578374186217766941": {
         "enabled": true,
         "timerChannels": [
             "604133794274082837"
         ],
-        "enabledMsg": " @everyone SIGN UP FOR EXPOS.",
+        "enabledMsg": "join",
         "disabledMsg": "@everyone hi what's up",
-        "pmExpos": true,
-        "amExpos": false,
+        "pmExpos": false,
+        "amExpos": true,
         "signUpWindow": true,
         "minBeforeStart": "30",
-        "minAfterStart": "57"
+        "minAfterStart": "25",
+        "autoReset": true
     }
 }

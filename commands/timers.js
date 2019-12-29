@@ -106,8 +106,8 @@ function setAmPmExpos(message){
     message.channel.send(':scream: No timer channels exist for this server. Use !timerchadd to add some.');
   }else{ //settimer am on, settimer pm off
       var commands = message.content.toLowerCase().split(' ');
-      if(commands.length < 2 || (commands[1] !== 'am' && commands[1] !== 'pm' && commands[1] !== 'window') || (commands[2] !== 'on' && commands[2] !== 'off')){
-        message.channel.send(':scream: Usage: setexpo [am|pm|window] [on|off]');
+      if(commands.length < 2 || (commands[1] !== 'am' && commands[1] !== 'pm' && commands[1] !== 'window' && commands[1] !== 'autoreset') || (commands[2] !== 'on' && commands[2] !== 'off')){
+        message.channel.send(':scream: Usage: setexpo [am|pm|window|autoreset] [on|off]');
       }else{
         if(commands[1] === 'pm'){
           timerChannels[message.guild.id].pmExpos = commands[2] === 'on'
@@ -115,6 +115,8 @@ function setAmPmExpos(message){
           timerChannels[message.guild.id].amExpos = commands[2] === 'on'
         }else if(commands[1] === 'window'){
           timerChannels[message.guild.id].signUpWindow = commands[2] === 'on'
+        }else if(commands[1] === 'autoreset'){
+          timerChannels[message.guild.id].autoReset = commands[2] === 'on'
         }
         writeToTimerFile(message.channel, true);
       }
@@ -148,7 +150,7 @@ function addCh(message){
     "timerChannels": [],
     "enabledMsg": "@everyone I am Zakumbot, the expedition group assistant-koom! Type !join to sign up for expeditions and type the command again to leave.",
     "disabledMsg": "@everyone Expedition sign-ups are currently disabled.",
-    "amExpos": true, "pmExpos": true, "signUpWindow": false, "minBeforeStart":"30", "minAfterStart":"30"};
+    "amExpos": true, "pmExpos": true, "signUpWindow": false, "minBeforeStart":"30", "minAfterStart":"30", "autoReset":true};
   }
 	if(timerChannels[message.guild.id].timerChannels.indexOf(channel) === -1) {
 		timerChannels[message.guild.id].timerChannels.push(channel);
@@ -226,11 +228,13 @@ module.exports = {
     if(timerChannels[message.guild.id] != undefined){
       var amexpos = timerChannels[message.guild.id].amExpos ? "on." : "off."
       var pmexpos = timerChannels[message.guild.id].pmExpos ? "on." : "off."
-      var expos = timerChannels[message.guild.id].enabled ? "enabled." : "disabled."
+      var expos = timerChannels[message.guild.id].enabled ? "enabled." : "disabled"
       var window = timerChannels[message.guild.id].signUpWindow ? "enabled" : "disabled."
+      var autoReset = timerChannels[message.guild.id].autoReset ? "" : "not "
       message.channel.send("The AM Expo timer is "+ amexpos +
       "\nThe PM Expo timer is "+pmexpos+
       "\nExpedition sign-ups are "+ expos +
+      (!timerChannels[message.guild.id].enabled ? ("\n\tand will " + autoReset + "auto reset at server reset to enabled status."): "") +
       "\nExpedition join windows are " + window +
       (timerChannels[message.guild.id].signUpWindow ? ("\n\tand will allow sign-ups " + timerChannels[message.guild.id].minBeforeStart + " minutes before expedition start" +
       "\n\tand will waitlist members " + timerChannels[message.guild.id].minAfterStart + " minutes after expedition start.") : "") +

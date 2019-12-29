@@ -93,7 +93,7 @@
   {
     "name": "setexpo",
     "admin": true,
-    "required": ["am|pm|window", "on|off"],
+    "required": ["am|pm|window|autoreset", "on|off"],
     "optional": [],
     "description": "Sets whether the guild has scheduled AM/PM expeditions or an expo join window."
   },
