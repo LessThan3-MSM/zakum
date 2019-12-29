@@ -8,8 +8,7 @@ function isInGuildWindow(guildID, before){
   if(timerChannels[guildID] && timerChannels[guildID].signUpWindow){
     var currServerTime = new Date().toLocaleString("en-US", {timeZone: SERVER_TIME_ZONE});
     currServerTime = new Date(currServerTime);
-    currServerTime.setMonth(1);
-    currServerTime.setDate(1);
+    currServerTime.setMonth(1,1);
     currServerTime.setYear(2011);
 
     let[expoTime1Hr, expoTime2Hr] = [10,18];
@@ -19,8 +18,7 @@ function isInGuildWindow(guildID, before){
     expoTime1.setMinutes(0);
     expoTime1.setSeconds(0);
     expoTime1.setMilliseconds(0);
-    expoTime1.setMonth(1);
-    expoTime1.setDate(1);
+    expoTime1.setMonth(1,1);
     expoTime1.setYear(2011);
 
     var expoTime2 = new Date();
@@ -28,8 +26,7 @@ function isInGuildWindow(guildID, before){
     expoTime2.setMinutes(0);
     expoTime2.setSeconds(0);
     expoTime2.setMilliseconds(0);
-    expoTime2.setMonth(1);
-    expoTime2.setDate(1);
+    expoTime2.setMonth(1,1);
     expoTime2.setYear(2011);
 
     var expoTime1End = new Date();
@@ -37,8 +34,7 @@ function isInGuildWindow(guildID, before){
     expoTime1End.setMinutes(0);
     expoTime1End.setSeconds(0);
     expoTime1End.setMilliseconds(0);
-    expoTime1End.setMonth(1);
-    expoTime1End.setDate(1);
+    expoTime1End.setMonth(1,1);
     expoTime1End.setYear(2011);
 
     var expoTime2End = new Date();
@@ -46,8 +42,7 @@ function isInGuildWindow(guildID, before){
     expoTime2End.setMinutes(0);
     expoTime2End.setSeconds(0);
     expoTime2End.setMilliseconds(0);
-    expoTime2End.setMonth(1);
-    expoTime2End.setDate(1);
+    expoTime2End.setMonth(1,1);
     expoTime2End.setYear(2011);
 
     var abs = 0;
