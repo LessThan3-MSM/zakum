@@ -41,7 +41,7 @@ client.on('message', message => {
 
 	if(message.content.substring(0, PREFIX.length).toLowerCase() === PREFIX.toLowerCase()){
 		const isAdmin = isGuildAdmin(message.member._roles, message.guild.id);
-		var commands = message.content.substring(PREFIX.length).toLowerCase().split(' ');
+		var commands = message.content.substring(PREFIX.length).toLowerCase().split(' ').filter(Boolean);
 
 		switch(commands[0]){
 			case "pool":
