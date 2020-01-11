@@ -14,12 +14,15 @@ function start(expoData, name, channel){
     anExpo.pool = [];
     anExpo.waitlist = [];
 
-    channel.send(anExpo.message).then(sentMessage => {
-      sentMessage.react("👍");
-      sentMessage.react("👎");
-      anExpo.messageID = sentMessage.id;
+    channel.send("```css\n"+anExpo.message+"```").then(async message => {
+      anExpo.messageID = message.id;
+      await message.react('👍');
+      await message.react('👎');
+      await message.react('⬜');
+      await message.react('🧐');
+      await message.react('🔁');
+      await message.react('💣');
     });
-
   }
 }
 
@@ -252,6 +255,15 @@ function printInfo(expoData, name, channel){
 }
 
 module.exports = {
+  deleteExpo: function(expoData, expoName, channel){
+    deleteExpo(expoData, expoName, channel)
+  },
+  getGroupExpo: function(expoData, expoName, channel){
+      printGroups(expoData, expoName, channel);
+  },
+  resetExpo: function(expoData, expoName, channel){
+      start(expoData, expoName, channel);
+  },
   joinExpo: function(expoData, expoName, members, message, startIndex){
     joinExpo(expoData, expoName, members, message, startIndex);
   },

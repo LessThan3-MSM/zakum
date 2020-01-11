@@ -11,7 +11,9 @@ const findByClass = require('./commands/class.js').findByClass;
 const listCommands = require('./commands/commands.js').listCommands;
 const demote = require('./commands/demote.js').demoteCommand;
 const manageExpo = require('./commands/expo.js').manageExpo;
-//const joinExpo = require('./commands/expo.js').joinExpo;
+const deleteExpo = require('./commands/expo.js').deleteExpo;
+const resetExpo = require('./commands/expo.js').resetExpo;
+const getGroupExpo = require('./commands/expo.js').getGroupExpo;
 const joinReact = require('./commands/join.js').joinReact;
 const find = require('./commands/find.js').findCommand;
 const groupCommand = require('./commands/groups.js').groupCommand;
@@ -160,6 +162,8 @@ client.on('message', message => {
 client.on('messageReactionAdd', (reaction, user) => {
 	if (user.bot) return;
 				var expos = getGuildData(reaction.message.guild.id, null).expos;
+				var isAdmin = isGuildAdmin(user.lastMessage.member._roles, reaction.message.guild.id, reaction.message.channel);
+
 				for(var i = 0; i <expos.length; i++){
 					if(reaction.message.id === expos[i].messageID){
 						if (reaction.emoji.name == '👍') {
@@ -167,8 +171,18 @@ client.on('messageReactionAdd', (reaction, user) => {
 							if(anyError){
 								reaction.remove(user);
 							}
+							return;
+						}else if(isAdmin && reaction.emoji.name == '👎'){
+							return;
+						}else if(isAdmin && reaction.emoji.name == '🧐'){
+							getGroupExpo(expos, expos[i].name, reaction.message.channel);
+						}else if(isAdmin && reaction.emoji.name == '🔁'){
+							resetExpo(expos, expos[i].name, reaction.message.channel);
+						}else if(isAdmin && reaction.emoji.name == '💣'){
+							deleteExpo(expos, expos[i].name, reaction.message.channel);
 						}
 					}
+						reaction.remove(user);
 				}
 });
 
