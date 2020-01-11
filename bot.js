@@ -10,6 +10,11 @@ const balance = require('./commands/balance.js').balance;
 const findByClass = require('./commands/class.js').findByClass;
 const listCommands = require('./commands/commands.js').listCommands;
 const demote = require('./commands/demote.js').demoteCommand;
+const manageExpo = require('./commands/expo.js').manageExpo;
+const deleteExpo = require('./commands/expo.js').deleteExpo;
+const resetExpo = require('./commands/expo.js').resetExpo;
+const getGroupExpo = require('./commands/expo.js').getGroupExpo;
+const joinReact = require('./commands/join.js').joinReact;
 const find = require('./commands/find.js').findCommand;
 const groupCommand = require('./commands/groups.js').groupCommand;
 const groupDetails = require('./commands/groups.js').groupDetails;
@@ -39,40 +44,47 @@ let guilds = [];
 client.on('message', message => {
 	if (message.author.bot) return;
 
-	if(message.content.substring(0, PREFIX.length).toLowerCase() === PREFIX.toLowerCase()){
-		const isAdmin = isGuildAdmin(message.member._roles, message.guild.id);
-		var commands = message.content.substring(PREFIX.length).toLowerCase().split(' ').filter(Boolean);
+	var gprefix = getGuildPrefix(message.guild.id, message.channel);
+
+	if(message.content.substring(0, gprefix.length).toLowerCase() === gprefix.toLowerCase()){
+		const isAdmin = isGuildAdmin(message.member._roles, message.guild.id, message.channel);
+		var commands = message.content.substring(gprefix.length).toLowerCase().split(' ').filter(Boolean);
 
 		switch(commands[0]){
 			case "pool":
 			case "joined":
-				joined(message, getGuildData(message.guild.id));
+				joined(message, getGuildData(message.guild.id, message.channel));
 				return;
 			case "join":
-				join(message, getRoster(message), getLeaders(message), getGuildData(message.guild.id));
+				//if(commands.length > 1 && getGuildData(message.guild.id, message.channel).expos.find(expo => expo.name.toLowerCase() === commands[1])){
+					//joinExpo(getGuildData(message.guild.id, message.channel).expos.find(expo => expo.name.toLowerCase() === commands[1]), commands[1], getMembers(message.guild.id,message.channel), message, 2);
+				//} else {
+					join(message, getMembers(message.guild.id,message.channel), getLeaders(message.guild.id,message.channel), getGuildData(message.guild.id, message.channel), null, false, 1);
+				//}
 				return;
 			case "roster":
-				postRoster(message, getRoster(message));
+				postRoster(message, getMembers(message.guild.id,message.channel));
 				return;
 			case "groups":
-				groupCommand(message, getGuildData(message.guild.id), getLeaders(message));
+				groupCommand(message.channel, getGuildData(message.guild.id, message.channel), getLeaders(message.guild.id,message.channel));
 				return;
 			case "groupdetails":
-				groupDetails(message, getGuildData(message.guild.id), getLeaders(message));
+				groupDetails(message.channel, getGuildData(message.guild.id, message.channel), getLeaders(message.guild.id,message.channel));
 				return;
 			case "find":
-				find(message, getRoster(message));
+				find(message, getMembers(message.guild.id,message.channel));
 				return;
 			case "leaderboard":
-				leaderboard(message, getRoster(message))
+				leaderboard(message, getMembers(message.guild.id,message.channel))
 				return;
 			case "class":
-				findByClass(message, getRoster(message), MAPLE_STORY_CLASSES);
+				findByClass(message, getMembers(message.guild.id,message.channel), MAPLE_STORY_CLASSES);
 				return;
 			case "commands":
 				listCommands(message.channel, isAdmin);
 				return;
 			case "timers":
+			case "info":
 				listTimerMsg(message);
 				return;
 			}
@@ -80,7 +92,7 @@ client.on('message', message => {
 			if(isAdmin){
 				switch(commands[0]){
 					case "add":
-						add(message, getRoster(message), message.guild.id);
+						add(message, getGuildData(message.guild.id,message.channel), message.guild.id);
 						return;
 					case "timerchadd":
 						addTimerCh(message);
@@ -89,43 +101,55 @@ client.on('message', message => {
 						removeTimerCh(message);
 						return;
 					case "remove":
-						remove(message, getRoster(message), message.guild.id);
+						remove(message,  message.guild.id, getGuildData(message.guild.id,message.channel));
 						return;
 					case "reset":
-						reset(message.channel, getGuildData(message.guild.id));
+						reset(getGuildData(message.guild.id, message.channel));
+						message.channel.send(':thumbsup: Zakum has reset all expeditions.');
 						return;
 					case "balance":
-						balance(getLeaders(message), getGuildData(message.guild.id), true, message.channel);
+						balance(getLeaders(message.guild.id,message.channel), getGuildData(message.guild.id, message.channel), true, message.channel);
 						return;
 					case "promote":
-						promote(message, getRoster(message), getLeaders(message), message.guild.id, getGuildData(message.guild.id));
+						promote(message, message.guild.id, getGuildData(message.guild.id, message.channel));
 						return;
 					case "leaders":
-						leadersCommand(message.channel, getRoster(message));
+						leadersCommand(message.channel, getMembers(message.guild.id, message.channel));
 						return;
 					case "demote":
-						demote(message, getRoster(message), getLeaders(message), message.guild.id, getGuildData(message.guild.id));
+						demote(message, message.guild.id, getGuildData(message.guild.id, message.channel));
 						return;
 					case "swap":
-						swap(message, getGuildData(message.guild.id))
+						swap(message, getGuildData(message.guild.id, message.channel))
 						return;
 					case "update":
-						update(message, getRoster(message), MAPLE_STORY_CLASSES)
+						update(message, getGuildData(message.guild.id,message.channel), MAPLE_STORY_CLASSES)
 						return;
 					case "toggleexpos":
 						toggleexpos(message.guild.id, message.channel);
 						return;
-					case "settimerenbmsg":
-						setTimerMsg(message, true);
-						return;
-					case "settimerdismsg":
-						setTimerMsg(message, false);
+					case "setmsg":
+						setTimerMsg(message);
 						return;
 					case "setexpo":
 						setAmPmExpos(message);
 						return;
 					case "setwindow":
 						setWindow(message);
+						return;
+					case "expo":
+						manageExpo(getGuildData(message.guild.id, message.channel).expos, getMembers(message.guild.id,message.channel), message);
+						return;
+					case "export":
+						writeGuildToFile(message.guild.id, getGuildData(message.guild.id, message.channel), message.channel);
+						message.channel.send("Guild data successfully exported to file.");
+						return;
+					case "setadminrole":
+						var casecommands = message.content.substring(gprefix.length).split(' ');
+						setGuildAdminRole(casecommands[1], message.guild.id, message.channel)
+						return;
+					case "setprefix":
+						setGuildPrefix(commands[1], message.guild.id, message.channel);
 						return;
 					}
 					if(commands[0].includes("fuck")){
@@ -135,39 +159,122 @@ client.on('message', message => {
 			}
 });
 
-function getGuildData(guildID){
-		if(guilds[guildID] == undefined) { guilds[guildID] = {pool:[],groups:[], waitlist:[]}}
+client.on('messageReactionAdd', (reaction, user) => {
+	if (user.bot) return;
+				var expos = getGuildData(reaction.message.guild.id, null).expos;
+				var isAdmin = isGuildAdmin(user.lastMessage.member._roles, reaction.message.guild.id, reaction.message.channel);
+
+				for(var i = 0; i <expos.length; i++){
+					if(reaction.message.id === expos[i].messageID){
+						if (reaction.emoji.name == '👍') {
+							var anyError = joinReact(expos[i], expos[i].name, getMembers(reaction.message.guild.id, reaction.message.channel), reaction.message.channel, user.username, user.discriminator, reaction.message.guild.id);
+							if(anyError){
+								reaction.remove(user);
+							}
+							return;
+						}else if(isAdmin && reaction.emoji.name == '👎'){
+							return;
+						}else if(isAdmin && reaction.emoji.name == '🧐'){
+							getGroupExpo(expos, expos[i].name, reaction.message.channel);
+						}else if(isAdmin && reaction.emoji.name == '🔁'){
+							resetExpo(expos, expos[i].name, reaction.message.channel);
+						}else if(isAdmin && reaction.emoji.name == '💣'){
+							deleteExpo(expos, expos[i].name, reaction.message.channel);
+						}
+					}
+						reaction.remove(user);
+				}
+});
+
+client.on('messageReactionRemove', (reaction, user) => {
+	if (user.bot) return;
+				var expos = getGuildData(reaction.message.guild.id, null).expos;
+				for(var i = 0; i <expos.length; i++){
+					if(reaction.message.id === expos[i].messageID){
+						if (reaction.emoji.name == '👍') {
+							joinReact(expos[i], expos[i].name, getMembers(reaction.message.guild.id, reaction.message.channel), reaction.message.channel, user.username, user.discriminator, reaction.message.guild.id);
+						}
+					}
+				}
+});
+
+function getGuildData(guildID, channel){
+		if(guilds[guildID] == undefined) {guilds[guildID] = getGuildJSON(guildID, channel)}
 		return guilds[guildID];
 }
 
-function getLeaders(message){
-	return getRoster(message).filter(member => member.leader);
+function getLeaders(guildID, channel){
+	return getGuildData(guildID, channel).members.filter(member => member.leader);
 }
 
-function getRoster(message){
-	var roster;
-	try{
-		roster = JSON.parse(fs.readFileSync('./guilds/' + message.guild.id +'.json', 'utf8')).members;
-	} catch (err) {
-		roster = createNewGuild(message.guild.id, message.channel);
+function getGuildPrefix(guildID, channel){
+	var gprefix = getGuildData(guildID, channel).prefix === undefined ? PREFIX : getGuildData(guildID, channel).prefix;
+	return gprefix;
+}
+
+function setGuildPrefix(gprefix, guildID, channel){
+	if(gprefix.indexOf("!") != -1){
+		channel.send(":scream: ! may not be included. This is automatically added after your prefix.");
+	}else if(gprefix != undefined){
+		var guildData = getGuildData(guildID, channel);
+		guildData.prefix = gprefix + "!";
+		writeGuildToFile(guildID, guildData, channel);
+		channel.send(":thumbsup: Guild prefix successfully updated.");
+	}else{
+		channel.send(":scream: Please provide the new prefix to be used.");
 	}
 
-	return roster;
+}
+
+function getGuildAdminRole(guildID, channel){
+	var adminRole = getGuildData(guildID, channel).adminrole == undefined ? ADMIN_ROLE : getGuildData(guildID, channel).adminrole;
+	return adminRole;
+}
+
+function setGuildAdminRole(gadminrole, guildID, channel){
+	if(gadminrole != undefined){
+		var guildData = getGuildData(guildID, channel);
+		guildData.adminrole = gadminrole;
+		writeGuildToFile(guildID, guildData, channel);
+		channel.send(":thumbsup: Guild admin role successfully updated.");
+	}else{
+		channel.send(":scream: Please provide the new admin role name to be used.");
+	}
+}
+
+function getMembers(guildID, channel){
+	return getGuildData(guildID, channel).members;
+}
+
+function getGuildJSON(guildID, channel){
+	var guildInfo;
+	try{
+		guildInfo = JSON.parse(fs.readFileSync('./guilds/' + guildID +'.json', 'utf8'));
+	} catch (err) {
+		guildInfo = createNewGuild(guildID, channel);
+	}
+
+	return guildInfo;
 }
 
 function createNewGuild(guildID, channel){
-	var roster = [];
-	fs.writeFileSync("./guilds/" + guildID + ".json", JSON.stringify({"members":roster}, null, 4), function (err) {
-		if (err){
-			channel.send(":scream: We were unable to find or create a roster. Please contact an admin.");
-		}
-	});
-	return roster;
+	var newGuild = {"prefix":PREFIX, "adminrole":ADMIN_ROLE, "members":[], "pool":[],"groups":[],"waitlist":[], "expos":[]};
+	writeGuildToFile(guildID, newGuild, channel);
+	return newGuild;
 }
 
-function isGuildAdmin(roleList, guildID){
+function writeGuildToFile(guildID, guildInfo, channel){
+	fs.writeFileSync("./guilds/" + guildID + ".json", JSON.stringify(guildInfo, null, 4), function (err) {
+		if (err && channel != null){
+			channel.send(":scream: We were unable to find or create guild information. Please contact an admin.");
+		}
+	});
+}
+
+function isGuildAdmin(roleList, guildID, channel){
+	var guildAdminRole = getGuildAdminRole(guildID, channel);
 	for(var i = 0; i < roleList.length; i++){
-		if(ADMIN_ROLE === client.guilds.get(guildID).roles.get(roleList[i]).name){
+		if(guildAdminRole === client.guilds.get(guildID).roles.get(roleList[i]).name){
 			return true;
 		}
 	}
@@ -189,10 +296,12 @@ var expoTimer = new CronJob('30 17,9 * * *', function(){
 		serverTime = new Date(serverTime);
 		if((serverTime.getHours() == 17 && timerChannels[key].pmExpos) ||
 				(serverTime.getHours() == 9 && timerChannels[key].amExpos)){
-					var guildData = getGuildData(key);
+					var guildData = getGuildData(key, null);
 					guildData.pool.length = 0;
 					guildData.groups.length = 0;
 					guildData.waitlist.length = 0;
+
+					writeGuildToFile(key, guildData, null);
 
 					for(var i =0; i< timerChannels[key].timerChannels.length; i++){
 						var channel = client.channels.get(timerChannels[key].timerChannels[i]);
@@ -216,10 +325,12 @@ var serverResetTimer = new CronJob('0 0 * * *', function(){
 	var timerChannels = getTimerCh();
 
 	for(key in timerChannels) {
-		var guildData = getGuildData(key);
+		var guildData = getGuildData(key, null);
 		guildData.pool.length = 0;
 		guildData.groups.length = 0;
 		guildData.waitlist.length = 0;
+
+		writeGuildToFile(key, guildData, null);
 
 		if(timerChannels[key].autoReset && !timerChannels[key].enabled){
 				timerChannels[key].enabled = true;

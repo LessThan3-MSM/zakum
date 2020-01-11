@@ -2,7 +2,7 @@ const balance = require('./balance.js').balance;
 var fs = require("fs");
 
 module.exports = {
-  promoteCommand: function (message, roster, leaders, guildID, guildData) {
+  promoteCommand: function (message, guildID, guildData) {
     if(message.content.split(" ").length !== 2) {
       message.channel.send("No input. Please use like so: !promote <IGN>")
       return;
@@ -11,17 +11,16 @@ module.exports = {
 
     // i need help with checking if roster has member, doing ugly code to check
     flag = 0;
-    roster.forEach(function(member) {
+    guildData.members.forEach(function(member) {
       if (member.name.localeCompare(name, undefined, { sensitivity: 'accent' }) === 0) {
         flag = 1;
       }
     });
 
     if (flag === 1){
-  		let promoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
+  		let promoted = guildData.members.find(member => member.name.toLowerCase() === name.toLowerCase())
   		promoted.leader = true
-  		leaders.push(promoted)
-  		fs.writeFile("./guilds/" + guildID + ".json", JSON.stringify({"members":roster}, null, 4), (err) => {
+  		fs.writeFile("./guilds/" + guildID + ".json", JSON.stringify(guildData, null, 4), (err) => {
   		    if (err) {
   		        console.error(err);
   		        return;
@@ -33,7 +32,8 @@ module.exports = {
     		  guildData.pool = guildData.pool.filter(member => member.id !== promoted.id)
       }
       if(guildData.groups && guildData.groups.length){
-        balance(leaders, guildData, false, null) //re-balance
+        var leaders = guildData.members.filter(member => member.name.toLowerCase() !== name.toLowerCase());
+        balance(leaders, guildData, false, message.channel) //re-balance
       }
     }
     else {

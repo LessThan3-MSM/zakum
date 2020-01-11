@@ -101,8 +101,8 @@ function setAmPmExpos(message){
     message.channel.send(':scream: No timer channels exist for this server. Use !timerchadd to add some.');
   }else{ //settimer am on, settimer pm off
       var commands = message.content.toLowerCase().split(' ');
-      if(commands.length < 2 || (commands[1] !== 'am' && commands[1] !== 'pm' && commands[1] !== 'window' && commands[1] !== 'autoreset') || (commands[2] !== 'on' && commands[2] !== 'off')){
-        message.channel.send(':scream: Usage: setexpo [am|pm|window|autoreset] [on|off]');
+      if(commands.length < 2 || (commands[1] !== 'am' && commands[1] !== 'pm' && commands[1] !== 'window' && commands[1] !== 'autoreset' && commands[1] !== 'join') || (commands[2] !== 'on' && commands[2] !== 'off')){
+        message.channel.send(':scream: Usage: setexpo [am|pm|join|window|autoreset] [on|off]');
       }else{
         if(commands[1] === 'pm'){
           timerChannels[message.guild.id].pmExpos = commands[2] === 'on'
@@ -112,7 +112,9 @@ function setAmPmExpos(message){
           timerChannels[message.guild.id].signUpWindow = commands[2] === 'on'
         }else if(commands[1] === 'autoreset'){
           timerChannels[message.guild.id].autoReset = commands[2] === 'on'
-        }
+        }else if(commands[1] === 'join'){
+			timerChannels[message.guild.id].enabled = commands[2] === 'on'
+		}
         writeToTimerFile(message.channel, true);
       }
   }
@@ -121,17 +123,20 @@ function setAmPmExpos(message){
 function setTimerMsg(message, enabled){
     if(timerChannels[message.guild.id] == undefined){
       message.channel.send(':scream: No timer channels exist for this server. Use !timerchadd to add some.');
-    }else if(message.content.indexOf(" ") != -1){
-      var msg = message.content.substring(message.content.indexOf(" ")+1);
-      if(enabled){
-        timerChannels[message.guild.id].enabledMsg = msg;
-      }else{
-        timerChannels[message.guild.id].disabledMsg = msg;
-      }
-      writeToTimerFile(message.channel, true);
     }else{
-      message.channel.send(':scream: Please enter a message for the timer.');
+		var commands = message.content.toLowerCase().split(' ');
+		if(commands.length < 2 || (commands[1] !== 'on' && commands[1] !== 'off')){
+			message.channel.send(':scream: Usage: setmsg [on|off] message');
+		}else{
+			var msg = message.content.substring(10 + commands[1].length);
+			if(commands[1] === 'on'){
+				timerChannels[message.guild.id].enabledMsg = msg;
+			}else{
+				timerChannels[message.guild.id].disabledMsg = msg;
+			}
+      writeToTimerFile(message.channel, true);
     }
+}
 }
 
 function addCh(message){
@@ -216,8 +221,8 @@ module.exports = {
   isguildenabled: function(guildID){
     return timerChannels[guildID] == undefined || timerChannels[guildID].enabled;
   },
-  setTimerMsg: function(message, enabled){
-    setTimerMsg(message, enabled)
+  setTimerMsg: function(message){
+    setTimerMsg(message)
   },
   listTimerMsg: function(message){
     if(timerChannels[message.guild.id] != undefined){

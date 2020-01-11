@@ -7,6 +7,13 @@
     "description": "Adds a member to the guild roster."
   },
   {
+    "name": "balance",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Balances expedition groups (will likely show no difference unless a swap was performed)."
+  },
+  {
     "name": "class",
     "admin": false,
     "required": ["Name|Class"],
@@ -19,6 +26,20 @@
     "required": ["Name"],
     "optional": [],
     "description": "Demotes a leader to a member."
+  },
+  {
+    "name": "expo",
+    "admin": true,
+    "required": ["add|channel|delete|demote|detail|groups|info|promote|reset|setbalance|setlock|setmsg|start","Name"],
+    "optional": ["greedy|first"],
+    "description": "The {Name} custom expedition can be managed. If setting the balance the balance type (greedy or first) must be provided."
+  },
+  {
+    "name": "export",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Exports group data (i.e. in case of server maintenance)."
   },
   {
     "name": "find",
@@ -45,7 +66,7 @@
     "name": "join",
     "admin": false,
     "required": [],
-    "optional": ["Name"],
+    "optional": ["Name..."],
     "description": "Enrolls/Unenrolls a guild roster member for the current expedition."
   },
   {
@@ -91,25 +112,32 @@
     "description": "Lists everyone on the guild roster."
   },
   {
+    "name": "setadminrole",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Sets the server role to use for bot administrator rights."
+  },
+  {
     "name": "setexpo",
     "admin": true,
-    "required": ["am|pm|window|autoreset", "on|off"],
+    "required": ["am|pm|join|window|autoreset", "on|off"],
     "optional": [],
-    "description": "Sets whether the guild has scheduled AM/PM expeditions or an expo join window."
+    "description": "Sets whether the guild has: AM/PM expos, if join(expo sign-ups) is enabled, if there is a window for join/waitlist, or if expos auto reset to enabled at server reset."
   },
   {
-    "name": "settimerenbmsg",
+    "name": "setmsg",
     "admin": true,
-    "required": ["Message"],
+    "required": ["on|off", "Message"],
     "optional": [],
-    "description": "Sets the timer message that will display when expos are enabled."
+    "description": "Sets the expo timer message that will display when join is on or off."
   },
   {
-    "name": "settimerdismsg",
+    "name": "setprefix",
     "admin": true,
-    "required": ["Message"],
+    "required": [],
     "optional": [],
-    "description": "Sets the timer message that will display when expos are disabled."
+    "description": "Sets the prefix to use for bot commands."
   },
   {
     "name": "setwindow",
@@ -140,18 +168,11 @@
     "description": "Removes a channel from the timers list."
   },
   {
-    "name": "timers",
+    "name": "info",
     "admin": true,
     "required": [],
     "optional": [],
-    "description": "Lists timer information for the guild."
-  },
-  {
-    "name": "toggleexpos",
-    "admin": true,
-    "required": [],
-    "optional": [],
-    "description": "Toggles expedition sign-ups."
+    "description": "Lists information for the guild."
   },
   {
     "name": "update",

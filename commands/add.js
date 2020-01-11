@@ -1,7 +1,8 @@
 var fs = require("fs");
 
 module.exports = {
-  addCommand: function (message, roster, guildID) {
+  addCommand: function (message, guildData, guildID) {
+    var roster = guildData.members;
     const content = message.content.split(" ")
     if(content.length !== 5) {
       message.channel.send("Invalid member add format. Example: \`!add discordID#1234 playerName playerClass playerDPS \`")
@@ -21,7 +22,7 @@ module.exports = {
     }
     roster.push(member)
 
-    fs.writeFile("./guilds/"+guildID+".json", JSON.stringify({"members":roster}, null, 4), (err) => {
+    fs.writeFile("./guilds/"+guildID+".json", JSON.stringify(guildData, null, 4), (err) => {
       if (err) {
           console.error(err);
           return;

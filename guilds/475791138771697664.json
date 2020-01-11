@@ -1,16 +1,18 @@
 {
+    "prefix": "!",
+    "adminrole": "zakum-admin",
     "members": [
         {
             "id": "thallium#0472",
             "name": "Arrondi",
-            "rank": 14.5,
+            "rank": 18.2,
             "role": "bishop",
             "leader": false
         },
         {
             "id": "jacqio#4320",
             "name": "Klossi",
-            "rank": 19.7,
+            "rank": 24.3,
             "role": "bowmaster",
             "leader": false
         },
@@ -24,11 +26,11 @@
         },
         {
             "id": "RecNeps#4810",
-            "name": "IceRec",
-            "rank": 9.2,
-            "role": "icelightning",
+            "name": "Recollected",
+            "rank": 24.2,
+            "role": "luminous",
             "leader": false,
-            "multiplier": 1.5
+            "multiplier": 1
         },
         {
             "id": "Cardozo#2372",
@@ -59,13 +61,6 @@
             "leader": false
         },
         {
-            "id": "jacquejk#9898",
-            "name": "Camelia",
-            "rank": 2,
-            "role": "bowmaster",
-            "leader": false
-        },
-        {
             "id": "Nikolai#9619",
             "name": "Nikolai",
             "rank": 6.7,
@@ -89,14 +84,14 @@
         {
             "id": "Heartbeat#8164",
             "name": "Iliana",
-            "rank": 8.8,
+            "rank": 11.3,
             "role": "bishop",
             "leader": false
         },
         {
             "id": "LuciousCurls#0001",
             "name": "LuciousCurls",
-            "rank": 6.7,
+            "rank": 7.5,
             "role": "bishop",
             "leader": false
         },
@@ -116,7 +111,7 @@
             "leader": false
         },
         {
-            "id": "SoRomantic#4455",
+            "id": "SoRomantic#6969",
             "name": "SoRomantic",
             "rank": 8.2,
             "role": "phantom",
@@ -125,37 +120,37 @@
         {
             "id": "Kevin (LuckAdes)#1963",
             "name": "LuckAdes",
-            "rank": 3.4,
+            "rank": 5.9,
             "role": "nightlord",
             "leader": false
         },
         {
             "id": "Fidgets#8755",
-            "name": "BabyDrags",
-            "rank": 10.7,
-            "role": "Evan",
+            "name": "Symbiosix",
+            "rank": 1,
+            "role": "luminous",
             "leader": false,
             "multiplier": 2
         },
         {
             "id": "SammyPhantom#5919",
             "name": "SammyPhantom",
-            "rank": 18.5,
+            "rank": 19,
             "role": "phantom",
             "leader": false
         },
         {
-            "id": "XxDragonKing#3276",
-            "name": "XxDragonKing",
+            "id": "XxLumiKing#3276",
+            "name": "XxLumiKing",
             "rank": 4,
-            "role": "evan",
+            "role": "luminous",
             "leader": false,
             "multiplier": 2
         },
         {
             "id": "awong617#6044",
             "name": "Lappu",
-            "rank": 17.7,
+            "rank": 18.7,
             "role": "windarcher",
             "leader": true
         },
@@ -176,7 +171,7 @@
         {
             "id": "Tara#9863",
             "name": "Stiletto",
-            "rank": 24,
+            "rank": 28.2,
             "role": "shadower",
             "leader": false,
             "multiplier": 0.6
@@ -187,14 +182,6 @@
             "rank": 3.4,
             "role": "nightlord",
             "leader": false
-        },
-        {
-            "id": "Khel#7646",
-            "name": "Khel",
-            "rank": 12.7,
-            "role": "evan",
-            "leader": true,
-            "multiplier": 2
         },
         {
             "id": "XxMagicKing#123",
@@ -221,15 +208,8 @@
         {
             "id": "Subzob#8232",
             "name": "Subzob",
-            "rank": 12.4,
+            "rank": 15.6,
             "role": "nightlord",
-            "leader": false
-        },
-        {
-            "id": "Panna#1234",
-            "name": "Panna",
-            "rank": 1,
-            "role": "bishop",
             "leader": false
         },
         {
@@ -256,24 +236,10 @@
             "leader": false
         },
         {
-            "id": "XxDub786xX#4392",
-            "name": "XxBowKing",
-            "rank": 1,
-            "role": "windarcher",
-            "leader": false
-        },
-        {
             "id": "BloodySins#3975",
             "name": "BloodyPhan",
             "rank": 11.6,
             "role": "phantom",
-            "leader": false
-        },
-        {
-            "id": "beastfromthewest#0428",
-            "name": "Bftw",
-            "rank": 14.2,
-            "role": "bishop",
             "leader": false
         },
         {
@@ -298,38 +264,9 @@
             "leader": false
         },
         {
-            "id": "UltralightReam#8368",
-            "name": "Furhire",
-            "rank": 4.2,
-            "role": "bishop",
-            "leader": false
-        },
-        {
-            "id": "Haru#9649",
-            "name": "Midnightdew",
-            "rank": 18.3,
-            "role": "nightwalker",
-            "leader": false,
-            "multiplier": 0.6
-        },
-        {
-            "id": "Nomammeshuey (DonJulio)#2019",
-            "name": "Nomammshuey",
-            "rank": 2.6,
-            "role": "bowmaster",
-            "leader": false
-        },
-        {
-            "id": "Kingsy#1473",
-            "name": "Kingsy",
-            "rank": 8.7,
-            "role": "bishop",
-            "leader": false
-        },
-        {
             "id": "Daniel109#6725",
             "name": "LakeForest",
-            "rank": 8,
+            "rank": 11,
             "role": "shadower",
             "leader": false,
             "multiplier": 0.5
@@ -337,7 +274,7 @@
         {
             "id": "privatemedia#0987",
             "name": "PrivateMedia",
-            "rank": 1,
+            "rank": 6,
             "role": "bowmaster",
             "leader": false
         },
@@ -358,9 +295,76 @@
         {
             "id": "Ishie#5096",
             "name": "Xboed",
-            "rank": 4.4,
+            "rank": 7,
             "role": "marksman",
             "leader": false
+        },
+        {
+            "id": "khel#7646",
+            "name": "Kheletto",
+            "rank": 20.5,
+            "role": "shadower",
+            "leader": true
+        },
+        {
+            "id": "Kingsy#1473",
+            "name": "Godley",
+            "rank": 19.2,
+            "role": "luminous",
+            "leader": false
+        },
+        {
+            "id": "FullxxMoon#5354",
+            "name": "FullxxMoon",
+            "rank": 1,
+            "role": "phantom",
+            "leader": false
+        },
+        {
+            "id": "Primo#0714",
+            "name": "MasterRoshi",
+            "rank": 17.4,
+            "role": "phantom",
+            "leader": false
+        },
+        {
+            "id": "wtf_allan#9816",
+            "name": "Allaannn",
+            "rank": 1,
+            "role": "phantom",
+            "leader": false
+        },
+        {
+            "id": "valdWhite/Rem#4252",
+            "name": "RemNYC",
+            "rank": 1,
+            "role": "luminous",
+            "leader": false
+        },
+        {
+            "id": "khel#1234",
+            "name": "Khel",
+            "rank": 12.7,
+            "role": "evan",
+            "leader": false
+        },
+        {
+            "id": "yamjerky#1109",
+            "name": "Driedyam",
+            "rank": 8.5,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "tara#1234",
+            "name": "Tawaboo",
+            "rank": 1,
+            "role": "bishop",
+            "leader": false
         }
-    ]
+    ],
+    "pool": [],
+    "groups": [],
+    "waitlist": [],
+    "expos": []
 }
