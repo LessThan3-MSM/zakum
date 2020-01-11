@@ -46,7 +46,8 @@ function addMemberToPool(name, roster, leaders, guildData, expoName, isExpo, cha
 
 	//Join
 	joined.timestamp = Date.now();
-	if ((!isExpo && isAfterGuildJoinWindow(guildID)) || ("greedy" !== guildData.balance === undefined && [...leaders, ...guildData.pool].length >= leaders.length * 10)){
+
+	if ((!isExpo && isAfterGuildJoinWindow(guildID)) || ("greedy" !== guildData.balance && [...leaders, ...guildData.pool].length >= leaders.length * 10)){
 		guildData.waitlist.push(joined)
 	} else {
 		guildData.pool.push(joined)
