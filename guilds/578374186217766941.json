@@ -1,11 +1,13 @@
 {
+  "prefix": "z!",
+  "adminrole": "zakum-admin",
     "members": [
         {
             "id": "Tommy#4015",
             "name": "Tomcicle",
             "rank": 12,
             "role": "dps",
-            "leader": true
+            "leader": false
         },
         {
             "id": "thallium#0472",
@@ -269,7 +271,7 @@
         {
             "id": "LuciousCurls#0001",
             "name": "LuciousCurls",
-            "rank": 0,
+            "rank": 17,
             "role": "Bishop",
             "leader": false
         },
@@ -280,5 +282,9 @@
             "role": "DPS",
             "leader": false
         }
-    ]
+    ],
+    "pool": [],
+    "groups": [],
+    "waitlist": [],
+    "expos": []
 }

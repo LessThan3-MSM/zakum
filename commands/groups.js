@@ -5,11 +5,19 @@ function formatGroupMessage(name, group) {
 	return `${groupMsg} ${infoMsg} \n`
 }
 
-function formatGroupDetailMessage(group, name, isMembers){
+function getFirstMatch(a, b) {
+    for ( var i = 0; i < a.length; i++ ) {
+        for ( var e = 0; e < b.length; e++ ) {
+            if ( a[i].id === b[e].id ) return a[i];
+        }
+    }
+}
+
+function formatGroupDetailMessage(group, leaders, name, isMembers){
 	var msg = `\`\`\`${name} (Count: ${group.length}, Strength: ${totalRank(group).toFixed(1)})\n`;
 	var leader;
 	if(isMembers){
-		leader = group.find(member => member.leader)
+		leader = getFirstMatch(group,leaders);
 		msg += "Leader: \n\t" + formatMemberDetailMessage(leader);
 		msg += "\nBishops: \n\t";
 		var bishops = group.filter(member => member.role.toLowerCase() === "bishop" && member.name !== leader.name);
@@ -33,7 +41,6 @@ function formatGroupDetailMessage(group, name, isMembers){
 			}
 		}
 	}
-
 
 	return msg + '\`\`\`';
 }
@@ -79,7 +86,7 @@ function totalRank(group){
 }
 
 module.exports = {
-  groupCommand: function (message, guildData, leaders) {
+  groupCommand: function (channel, guildData, leaders) {
 		let [differenceMessage, groupMessage] = [formatDifferenceMessage(computeDifference(guildData.groups[0], guildData.groups[1], true)), ""]
 		guildData.groups.length ? guildData.groups.forEach((group, key) => groupMessage += formatGroupMessage(`Group ${key+1}`, group)) : groupMessage += formatGroupMessage("Leaders", leaders)
 
@@ -87,12 +94,12 @@ module.exports = {
 			groupMessage += formatWaitlistMessage(guildData.waitlist)
 		}
 
-		message.channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
+		channel.send("```" + groupMessage + "```" +  `\`Zakum has put together wonderful groups for the expedition!\``)
   },
-	groupDetails: function (message, guildData, leaders){
+	groupDetails: function (channel, guildData, leaders){
 		var msg = '';
-		guildData.groups && guildData.groups.length ? guildData.groups.forEach((group, key) => msg += formatGroupDetailMessage(group, `Group ${key+1}`, true)) : msg += formatGroupDetailMessage(leaders, "Leaders", false);
+		guildData.groups && guildData.groups.length ? guildData.groups.forEach((group, key) => msg += formatGroupDetailMessage(group, leaders, `Group ${key+1}`, true)) : msg += formatGroupDetailMessage(leaders, leaders, "Leaders", false);
 		guildData.waitlist && guildData.waitlist.length ? msg += formatGroupDetailMessage(guildData.waitlist, `Waitlist`, false) : ''
-		message.channel.send(msg);
+		channel.send(msg);
 	}
 };

@@ -2,16 +2,16 @@ const balance = require('./balance.js').balance;
 var fs = require("fs");
 
 module.exports = {
-  demoteCommand: function (message, roster, leaders, guildID, guildData) {
+  demoteCommand: function (message, guildID, guildData) {
     if(message.content.split(" ").length !== 2) {
       message.channel.send("No input. Please use like so: !demote <IGN>")
       return;
     }
     const name = message.content.split(" ")[1];
-    let demoted = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
+    let demoted = guildData.members.find(member => member.name.toLowerCase() === name.toLowerCase())
     if (demoted != undefined) {
   		demoted.leader = false
-  		fs.writeFile("./guilds/" + guildID + ".json", JSON.stringify({"members":roster}, null, 4), (err) => {
+  		fs.writeFile("./guilds/" + guildID + ".json", JSON.stringify(guildData, null, 4), (err) => {
   				if (err) {
   						console.error(err);
   						return;
@@ -22,9 +22,9 @@ module.exports = {
       message.channel.send(name + " is not in your guild roster! Please try again");
       return;
     }
-    leaders = leaders.filter(member => member.name.toLowerCase() !== name.toLowerCase());
+    var leaders = guildData.members.filter(member => member.name.toLowerCase() !== name.toLowerCase());
     if(guildData.groups && guildData.groups.length){
-      balance(leaders, guildData, false, null)
+      balance(leaders, guildData, false, message.channel)
     }
     return;
   }
