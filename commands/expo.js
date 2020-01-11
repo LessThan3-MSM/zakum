@@ -86,12 +86,12 @@ function setmessage(expoData, name, message, channel){
   }
 }
 
-function setchannel(expoData, channel){
+function setchannel(expoData, channel, channelID){
   if(expoData == undefined){
     channel.send(":scream: The specified expo does not exist.");
   }else{
-    expoData.channel = channel.id;
-    channel.send(`:thumbsup: If this expo is locked, joining will only be allowed for the current channel.`);
+    expoData.channel = channelID;
+    channel.send(`:thumbsup: If this expo is locked, joining will only be allowed for channel: ${expoData.channel}.`);
   }
 }
 
@@ -288,7 +288,8 @@ module.exports = {
         balanceExpo(expoData, content[2], message.channel);
         break;
       case "channel":
-        setchannel(anExpo, message.channel);
+        var channelID = content[3] && !isNaN(content[3]) ? content[3] : message.channel.id;
+        setchannel(anExpo, message.channel, channelID);
         break;
       case "delete":
         deleteExpo(expoData, content[2], message.channel);
