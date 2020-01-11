@@ -179,11 +179,11 @@ function deleteExpo(expoData, name, channel){
   }
 }
 
-function swapPeople(expoData, message){
+function swapPeople(channel, expoData, firstMemberName, secondMemberName, guildID){
   if(!expoData){
     channel.send(":scream: The specified expo does not exist.");
   }else{
-    swap(message, expoData);
+    swap(channel, expoData, firstMemberName, secondMemberName, false, false, guildID);
   }
 }
 
@@ -267,7 +267,7 @@ module.exports = {
   joinExpo: function(expoData, expoName, members, message, startIndex){
     joinExpo(expoData, expoName, members, message, startIndex);
   },
-  manageExpo: function (expoData, members, message) {
+  manageExpo: function (expoData, members, message, guildID) {
     const content = message.content.toLowerCase().split(" ");
 
     if(content.length < 3 || content[2].length < 1 || (content[2].startsWith('set') && content.length < 4)) {
@@ -294,9 +294,6 @@ module.exports = {
       case "delete":
         deleteExpo(expoData, content[2], message.channel);
         break;
-      //case "join":
-        //joinExpo(anExpo, content[2], members, message, 3);
-        //break;
       case "groups":
         printGroups(expoData, content[2], message.channel);
         break;
@@ -324,8 +321,7 @@ module.exports = {
         start(expoData, content[2], message.channel);
         break;
       case "swap":
-        message.content = content.splice(2,content.length).join(" ");
-        swapPeople(anExpo, message);
+        swapPeople(message.channel, anExpo, content[3], content[4], guildID);
         break;
       case "promote":
         var promoted = addLeader(message, members, expoData, content[2], content[3])

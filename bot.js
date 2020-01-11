@@ -56,11 +56,7 @@ client.on('message', message => {
 				joined(message, getGuildData(message.guild.id, message.channel));
 				return;
 			case "join":
-				//if(commands.length > 1 && getGuildData(message.guild.id, message.channel).expos.find(expo => expo.name.toLowerCase() === commands[1])){
-					//joinExpo(getGuildData(message.guild.id, message.channel).expos.find(expo => expo.name.toLowerCase() === commands[1]), commands[1], getMembers(message.guild.id,message.channel), message, 2);
-				//} else {
 					join(message, getMembers(message.guild.id,message.channel), getLeaders(message.guild.id,message.channel), getGuildData(message.guild.id, message.channel), null, false, 1);
-				//}
 				return;
 			case "roster":
 				postRoster(message, getMembers(message.guild.id,message.channel));
@@ -111,16 +107,18 @@ client.on('message', message => {
 						balance(getLeaders(message.guild.id,message.channel), getGuildData(message.guild.id, message.channel), true, message.channel);
 						return;
 					case "promote":
-						promote(message, message.guild.id, getGuildData(message.guild.id, message.channel));
+						promote(commands[1], message.channel, message.guild.id, getGuildData(message.guild.id, message.channel), true);
 						return;
 					case "leaders":
 						leadersCommand(message.channel, getMembers(message.guild.id, message.channel));
 						return;
 					case "demote":
-						demote(message, message.guild.id, getGuildData(message.guild.id, message.channel));
+						demote(commands[1], message.channel, message.guild.id, getGuildData(message.guild.id, message.channel), true);
 						return;
 					case "swap":
-						swap(message, getGuildData(message.guild.id, message.channel))
+						const firstMemberIsAdmin = isGuildAdminByName(message.guild.members, message.guild.id, message.channel, commands[1]);
+						const secondMemberIsAdmin = isGuildAdminByName(message.guild.members, message.guild.id, message.channel, commands[2]);
+						swap(message.channel, getGuildData(message.guild.id, message.channel), commands[1], commands[2], firstMemberIsAdmin, secondMemberIsAdmin, message.guild.id)
 						return;
 					case "update":
 						update(message, getGuildData(message.guild.id,message.channel), MAPLE_STORY_CLASSES)
@@ -138,7 +136,7 @@ client.on('message', message => {
 						setWindow(message);
 						return;
 					case "expo":
-						manageExpo(getGuildData(message.guild.id, message.channel).expos, getMembers(message.guild.id,message.channel), message);
+						manageExpo(getGuildData(message.guild.id, message.channel).expos, getMembers(message.guild.id,message.channel), message, message.guild.id);
 						return;
 					case "export":
 						writeGuildToFile(message.guild.id, getGuildData(message.guild.id, message.channel), message.channel);
@@ -279,6 +277,19 @@ function isGuildAdmin(roleList, guildID, channel){
 		}
 	}
 	return false;
+}
+
+function isGuildAdminByName(memberList, guildID, channel, userName){
+		var guildAdminRole = getGuildAdminRole(guildID, channel);
+
+		var aGuild = client.guilds.get(guildID);
+    var guildAdminRoleID = aGuild.roles.find(role => role.name === guildAdminRole).id;
+
+		var aUser = memberList.find(member => member.user.username.toLowerCase() === userName.toLowerCase());
+		if(!aUser) aUser = memberList.find(member => member.nickname && member.nickname.toLowerCase() === userName.toLowerCase());
+		var hasRole = aUser && aUser._roles.find(element => element === guildAdminRoleID) ? true : false;
+
+		return hasRole;
 }
 
 client.login(TOKEN);
