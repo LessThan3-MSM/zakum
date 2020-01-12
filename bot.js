@@ -135,8 +135,8 @@ client.on('message', message => {
 					case "setwindow":
 						setWindow(message);
 						return;
-					case "expo":
-						manageExpo(getGuildData(message.guild.id, message.channel).expos, getMembers(message.guild.id,message.channel), message, message.guild.id);
+					case "expo":						
+						manageExpo(getGuildData(message.guild.id, message.channel).expos, getMembers(message.guild.id,message.channel), message, message.guild.id, client.channels);
 						return;
 					case "export":
 						writeGuildToFile(message.guild.id, getGuildData(message.guild.id, message.channel), message.channel);
@@ -175,7 +175,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 						}else if(isAdmin && reaction.emoji.name == '🧐'){
 							getGroupExpo(expos, expos[i].name, reaction.message.channel);
 						}else if(isAdmin && reaction.emoji.name == '🔁'){
-							resetExpo(expos, expos[i].name, reaction.message.channel);
+							resetExpo(expos, expos[i].name, reaction.message.channel, reaction.message.channel);
 						}else if(isAdmin && reaction.emoji.name == '💣'){
 							deleteExpo(expos, expos[i].name, reaction.message.channel);
 						}

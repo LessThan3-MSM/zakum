@@ -5,7 +5,7 @@ const balance = require('./balance.js').balance;
 const reset = require('./reset.js').reset;
 const join = require('./join.js').join;
 
-function start(expoData, name, channel){
+function start(expoData, name, channel, expoChannel){
   if (!expoData.find(expo => expo.name.toLowerCase() === name.toLowerCase())){
     channel.send(":scream: The specified expo does not exist.");
   } else {
@@ -14,7 +14,7 @@ function start(expoData, name, channel){
     anExpo.pool = [];
     anExpo.waitlist = [];
 
-    channel.send("```css\n"+anExpo.message+"```").then(async message => {
+    expoChannel.send("```css\n"+anExpo.message+"```").then(async message => { //TODO. change from channel to the expoData.channel?
       anExpo.messageID = message.id;
       await message.react('👍');
       await message.react('👎');
@@ -261,13 +261,13 @@ module.exports = {
   getGroupExpo: function(expoData, expoName, channel){
       printGroups(expoData, expoName, channel);
   },
-  resetExpo: function(expoData, expoName, channel){
-      start(expoData, expoName, channel);
+  resetExpo: function(expoData, expoName, channel, expoChannel){
+      start(expoData, expoName, channel, expoChannel);
   },
   joinExpo: function(expoData, expoName, members, message, startIndex){
     joinExpo(expoData, expoName, members, message, startIndex);
   },
-  manageExpo: function (expoData, members, message, guildID) {
+  manageExpo: function (expoData, members, message, guildID, channels) {
     const content = message.content.toLowerCase().split(" ");
 
     if(content.length < 3 || content[2].length < 1 || (content[2].startsWith('set') && content.length < 4)) {
@@ -318,7 +318,8 @@ module.exports = {
         setmessage(anExpo, name, msg, message.channel);
         break;
       case "start":
-        start(expoData, content[2], message.channel);
+        var expoChannel = channels.get(anExpo.channel);
+        start(expoData, content[2], message.channel, expoChannel);
         break;
       case "swap":
         swapPeople(message.channel, anExpo, content[3], content[4], guildID);
