@@ -44,11 +44,15 @@ module.exports = {
       continue;
     }
 
-    weakest.filter(member => member.role.toLowerCase() === "bishop").length < minBishopsPerGroup &&
-    bishops.length
-      ? weakest.push(bishops[bishops.length - 1]) &&
-        joining.splice(joining.indexOf(bishops.pop()), 1)
-      : weakest.push(joining.pop())
+    if(weakest.filter(member => member.role.toLowerCase() === "bishop").length < minBishopsPerGroup && bishops.length){
+				var bishop = bishops.pop();
+      	weakest.push(bishop);
+        joining.splice(joining.indexOf(bishop), 1);
+			}else{
+				var ajoining = joining.pop();
+				weakest.push(ajoining);
+				bishops.splice(bishops.indexOf(ajoining), 1);
+			}
     }
 
     if(sendMsg){
