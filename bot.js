@@ -68,7 +68,7 @@ client.on('message', message => {
 				groupDetails(message.channel, getGuildData(message.guild.id, message.channel), getLeaders(message.guild.id,message.channel));
 				return;
 			case "find":
-				find(commands[1], message.channel, getMembers(message.guild.id,message.channel));
+				find(commands.slice(1).join(""), message.channel, getMembers(message.guild.id,message.channel));
 				return;
 			case "leaderboard":
 				leaderboard(commands[1], message.channel, getMembers(message.guild.id,message.channel))
@@ -121,7 +121,7 @@ client.on('message', message => {
 						swap(message.channel, getGuildData(message.guild.id, message.channel), commands[1], commands[2], firstMemberIsAdmin, secondMemberIsAdmin, message.guild.id)
 						return;
 					case "update":
-						update(message, getGuildData(message.guild.id,message.channel), MAPLE_STORY_CLASSES)
+						update(commands[1], commands[2], commands.slice(3).join(""), message.channel, message.guild.id, message.author.username, message.author.discriminator, getGuildData(message.guild.id,message.channel), MAPLE_STORY_CLASSES)
 						return;
 					case "toggleexpos":
 						toggleexpos(message.guild.id, message.channel);
