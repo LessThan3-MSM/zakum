@@ -86,7 +86,7 @@
   {
     "name": "move",
     "admin": true,
-    "required": ["Member","Target Group Member"],
+    "required": ["Member","Target Group Member/Target Group ID"],
     "optional": [],
     "description": "Moves the specified member to the other member's group (if possible.)"
   },
