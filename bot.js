@@ -136,7 +136,8 @@ client.on('message', message => {
 						setWindow(commands[1], commands[2], message.channel, message.guild.id);
 						return;
 					case "expo":
-						manageExpo(getGuildData(message.guild.id, message.channel).expos, getMembers(message.guild.id,message.channel), message, message.guild.id, client.channels);
+						manageExpo(getGuildData(message.guild.id, message.channel).expos, getMembers(message.guild.id,message.channel),
+							commands[1], commands[2], commands.splice(3).join(" "), message.author.username, message.author.discriminator, message.channel, message.guild.id, client.channels);
 						return;
 					case "export":
 						writeGuildToFile(message.guild.id, getGuildData(message.guild.id, message.channel), message.channel);

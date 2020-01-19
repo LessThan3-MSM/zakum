@@ -106,7 +106,7 @@ function setlock(expoData, expoName, isLocked, channel){
   }
 }
 
-function add(expoData, name, channel, message, roster){
+function add(expoData, name, channel, username, discriminator, roster){
   if('all' === name){
     channel.send(":scream: You cannot name a group 'all'. Please pick a different name.")
   } else if(expoData.find(expo => expo.name.toLowerCase() === name.toLowerCase())) {
@@ -114,24 +114,24 @@ function add(expoData, name, channel, message, roster){
   } else {
     var newExpo = {"name":name ,"groups":[], "pool":[], "waitlist":[], "leaders":[], "message":`Use !expo join ${name} to join expo!`, "balance":"greedy", "channel": channel.id, "lock": true, "messageID": ""};
     expoData.push(newExpo);
-    addLeader(message, roster, expoData, name, null)
+    addLeader(username, discriminator, channel, roster, expoData, name, null)
     channel.send(`:thumbsup: The ${name} expo has been successfully added!`);
   }
 }
 
-function addLeader(message, roster, expoData, expoName, userName){
+function addLeader(username, discriminator, channel, roster, expoData, expoName, userName){
   var removed;
   let user = null;
 	if (userName){
 		const added = roster.find(member => member.name.toLowerCase() === userName.toLowerCase())
 		user = added ? added.id:null
 	} else {
-		user = message.author.username + "#" + message.author.discriminator
+		user = username + "#" + discriminator
 	}
 
 	const joined = roster.find(member => member.id === user)
 	if (!joined){
-		message.channel.send(`${name || message.author.username} does not appear to be on the guild roster. Please contact your guild leader to get added to the roster.`)
+		channel.send(`${name || username} does not appear to be on the guild roster. Please contact your guild leader to get added to the roster.`)
 	}else{
     anExpo = expoData.find(expo => expo.name.toLowerCase() === expoName.toLowerCase());
     if(anExpo && !anExpo.leaders.find(member => member.id === user)){
@@ -142,19 +142,19 @@ function addLeader(message, roster, expoData, expoName, userName){
   return removed;
 }
 
-function removeLeader(message, roster, expoData, expoName, userName){
+function removeLeader(username, discriminator, channel, roster, expoData, expoName, userName){
   var removed;
   let user = null;
 	if (userName){
 		const added = roster.find(member => member.name.toLowerCase() === userName.toLowerCase())
 		user = added ? added.id:null
 	} else {
-		user = message.author.username + "#" + message.author.discriminator
+		user = username + "#" + discriminator
 	}
 
 	const joined = roster.find(member => member.id === user)
 	if (!joined){
-		message.channel.send(`${name || message.author.username} does not appear to be on the guild roster. Please contact your guild leader to get added to the roster.`)
+		channel.send(`${name || username} does not appear to be on the guild roster. Please contact your guild leader to get added to the roster.`)
 	}else{
     anExpo = expoData.find(expo => expo.name.toLowerCase() === expoName.toLowerCase());
     if(anExpo && anExpo.leaders.find(member => member.id === user)){
@@ -267,81 +267,80 @@ module.exports = {
   joinExpo: function(expoData, joiners, username, discriminator, channel, guildID, expoName, members){
     joinExpo(expoData, joiners, username, discriminator, channel, guildID, expoName, members);
   },
-  manageExpo: function (expoData, members, message, guildID, channels) {
-    const content = message.content.toLowerCase().split(" ");
-
-    if(content.length < 3 || content[2].length < 1 || (content[2].startsWith('set') && content.length < 4)) {
-      message.channel.send(":scream: Invalid format. Example: \`!expo add cpb\`")
-      return;
-    }else if(expoData[content[2]] && expoData[content[2]].channelLocked && message.channel.id !== expoData[content[2]].channel){
-      message.channel.send(":scream: This channel does not have permissions for this expo.")
+  manageExpo: function (expoData, members, command, expoName, value, username, discriminator, channel, guildID, channels) {
+    if(!command || !expoName || (command.startsWith('set') && !value)) {
+      channel.send(":scream: Invalid format. Example: \`!expo add cpb\`")
       return;
     }
 
-    var anExpo = expoData.find(expo => expo.name.toLowerCase() === content[2].toLowerCase());
+    var anExpo = expoData.find(expo => expo.name.toLowerCase() === expoName.toLowerCase());
 
-    switch(content[1]){
+    if(anExpo && anExpo.channelLocked && channel.id !== anExpo.channel){
+      channel.send(":scream: This channel does not have permissions for this expo.")
+      return;
+    }
+
+    switch(command.toLowerCase()){
       case "add":
-        add(expoData, content[2], message.channel, message, members);
+        add(expoData, expoName, channel, username, discriminator, members);
         break;
       case "balance":
-        balanceExpo(expoData, content[2], message.channel);
+        balanceExpo(expoData, expoName, channel);
         break;
       case "channel":
-        var channelID = content[3] && !isNaN(content[3]) ? content[3] : message.channel.id;
-        setchannel(anExpo, message.channel, channelID);
+        var channelID = value && !isNaN(value) ? value : channel.id;
+        setchannel(anExpo, channel, channelID);
         break;
       case "delete":
-        deleteExpo(expoData, content[2], message.channel);
+        deleteExpo(expoData, expoName, channel);
         break;
       case "groups":
-        printGroups(expoData, content[2], message.channel);
+        printGroups(expoData, expoName, channel);
         break;
       case "detail":
-        printDetail(expoData, content[2], message.channel);
+        printDetail(expoData, expoName, channel);
         break;
       case "info":
-        printInfo(expoData, content[2], message.channel);
+        printInfo(expoData, expoName, channel);
         break;
       case "reset":
-        resetExpo(expoData, content[2], message.channel);
+        resetExpo(expoData, expoName, channel);
         break;
       case "setbalance":
-        setbalance(expoData, content[2], content[3], message.channel);
+        setbalance(expoData, expoName, value, channel);
         break;
       case "setlock":
-        setlock(expoData, content[2], content[3], message.channel);
+        setlock(expoData, expoName, value, channel);
         break;
       case "setmsg":
-        var name = content[2];
-        var msg = content.splice(3,content.length).join(" ");
-        setmessage(anExpo, name, msg, message.channel);
+        setmessage(anExpo, expoName, value, channel);
         break;
       case "start":
         var expoChannel = channels.get(anExpo.channel);
-        start(expoData, content[2], message.channel, expoChannel);
+        start(expoData, expoName, channel, expoChannel);
         break;
       case "swap":
-        swapPeople(message.channel, anExpo, content[3], content[4], guildID);
+        var values = value.split(' ');
+        swapPeople(channel, anExpo, values[0], values[1], guildID);
         break;
       case "promote":
-        var promoted = addLeader(message, members, expoData, content[2], content[3])
+        var promoted = addLeader(username, discriminator, channel, members, expoData, expoName, value)
         if(promoted){
-          message.channel.send(`${promoted.name} has been promoted.`)
+          channel.send(`${promoted.name} has been promoted.`)
           if (anExpo.pool.find( member => member.id === promoted.id  )){ //remove leader from pool if there.
               anExpo.pool = anExpo.pool.filter(member => member.id !== promoted.id)
             }
             if (anExpo.waitlist.find( member => member.id === promoted.id  )){ //remove leader from waitlist if there.
               anExpo.waitlist = anExpo.waitlist.filter(member => member.id !== promoted.id)
             }
-            balanceExpo(expoData, content[2], message.channel);
+            balanceExpo(expoData, expoName, channel);
           }
         break;
       case "demote":
-        var removed = removeLeader(message, members, expoData, content[2], content[3])
+        var removed = removeLeader(username, discriminator, channel, members, expoData, expoName, value)
         if(removed){
-          message.channel.send(`${removed.name} has been demoted.`)
-          balanceExpo(expoData, content[2], message.channel);
+          channel.send(`${removed.name} has been demoted.`)
+          balanceExpo(expoData, expoName, channel);
         }
         break;
     }
