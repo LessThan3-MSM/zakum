@@ -84,6 +84,13 @@
     "description": "Lists the top 10 dps or if an integer (X) is given, top X on the roster"
   },
   {
+    "name": "move",
+    "admin": true,
+    "required": ["Member","Target Group Member"],
+    "optional": [],
+    "description": "Moves the specified member to the other member's group (if possible.)"
+  },
+  {
     "name": "promote",
     "admin": true,
     "required": ["Name"],

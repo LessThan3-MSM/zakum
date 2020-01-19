@@ -27,6 +27,7 @@ const promote = require('./commands/promote.js').promoteCommand;
 const remove = require('./commands/remove.js').removeCommand;
 const reset = require('./commands/reset.js').reset;
 const swap = require('./commands/swap.js').swap;
+const move = require('./commands/move.js').move;
 const addTimerCh = require('./commands/timers.js').addTimerCh;
 const removeTimerCh = require('./commands/timers.js').removeTimerCh;
 const getTimerCh = require('./commands/timers.js').getTimerCh;
@@ -115,6 +116,9 @@ client.on('message', message => {
 						return;
 					case "demote":
 						demote(commands[1], message.channel, message.guild.id, getGuildData(message.guild.id, message.channel), true);
+						return;
+					case "move":
+						move(message.channel, getGuildData(message.guild.id, message.channel), commands[1], commands[2], message.guild.id);
 						return;
 					case "swap":
 						const firstMemberIsAdmin = isGuildAdminByName(message.guild.members, message.guild.id, message.channel, commands[1]);
