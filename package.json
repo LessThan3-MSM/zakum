@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cron": "^1.7.1",
+    "cron": "^1.7.2",
+    "discord": "^0.8.2",
     "discord.js": "^11.5.1"
   },
   "devDependencies": {

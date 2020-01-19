@@ -2,42 +2,42 @@ const balance = require('./balance.js').balance;
 var fs = require("fs");
 
 module.exports = {
-  promoteCommand: function (message, guildID, guildData) {
-    if(message.content.split(" ").length !== 2) {
-      message.channel.send("No input. Please use like so: !promote <IGN>")
+  promoteCommand: function (userName, channel, guildID, guildData, rebalance) {
+    if(!userName) {
+      channel.send("No input. Please use like so: !promote <IGN>")
       return;
     }
-		const name = message.content.split(" ")[1];
 
-    // i need help with checking if roster has member, doing ugly code to check
     flag = 0;
     guildData.members.forEach(function(member) {
-      if (member.name.localeCompare(name, undefined, { sensitivity: 'accent' }) === 0) {
+      if (member.name.localeCompare(userName, undefined, { sensitivity: 'accent' }) === 0) {
         flag = 1;
       }
     });
 
     if (flag === 1){
-  		let promoted = guildData.members.find(member => member.name.toLowerCase() === name.toLowerCase())
+  		let promoted = guildData.members.find(member => member.name.toLowerCase() === userName.toLowerCase())
   		promoted.leader = true
   		fs.writeFile("./guilds/" + guildID + ".json", JSON.stringify(guildData, null, 4), (err) => {
   		    if (err) {
   		        console.error(err);
   		        return;
   		    };
-  		    message.channel.send(`Promoted ${name} to expedition leader!`)
+  		    channel.send(`Promoted ${userName} to expedition leader!`)
   		});
 
       if (guildData.pool.find( member => member.id === promoted.id  )){ //remove leader from pool if there.
     		  guildData.pool = guildData.pool.filter(member => member.id !== promoted.id)
       }
       if(guildData.groups && guildData.groups.length){
-        var leaders = guildData.members.filter(member => member.name.toLowerCase() !== name.toLowerCase());
-        balance(leaders, guildData, false, message.channel) //re-balance
+        var leaders = guildData.members.filter(member => member.leader);
+        if(rebalance){
+          balance(leaders, guildData, false, channel)
+        }
       }
     }
     else {
-      message.channel.send(name + " is not in your guild roster! Please try again");
+      channel.send(userName + " is not in your guild roster! Please try again");
       return;
     }
   }

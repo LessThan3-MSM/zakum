@@ -1,6 +1,6 @@
 {
-  "prefix": "z!",
-  "adminrole": "zakum-admin",
+    "prefix": "z!",
+    "adminrole": "zakum-admin",
     "members": [
         {
             "id": "Tommy#4015",
@@ -11,24 +11,26 @@
         },
         {
             "id": "thallium#0472",
-            "name": "Arrondi",
+            "name": "Halli",
             "rank": 8,
             "role": "bishop",
-            "leader": true
+            "leader": false
         },
         {
             "id": "awong617#6044",
             "name": "Chopixistick",
             "rank": 5,
             "role": "DPS",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283511
         },
         {
             "id": "jacqio#4320",
-            "name": "Klossi",
+            "name": "Liz",
             "rank": 6,
             "role": "DPS",
-            "leader": false
+            "leader": true,
+            "timestamp": 1578765879965
         },
         {
             "id": "Khel#7646",
@@ -40,8 +42,8 @@
         {
             "id": "HarlowAran (Ash/Ashley)#7612",
             "name": "HarlowAran",
-            "rank": "DPS",
-            "role": 5,
+            "rank": 5,
+            "role": "DPS",
             "leader": false
         },
         {
@@ -56,7 +58,8 @@
             "name": "BabyDrags",
             "rank": 4,
             "role": "DPS",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283491
         },
         {
             "id": "RecNeps#4810",
@@ -98,14 +101,16 @@
             "name": "Cardozo",
             "rank": 3,
             "role": "DPS",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283509
         },
         {
             "id": "Josh#1379",
             "name": "Croagunk",
             "rank": 3,
             "role": "DPS",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283521
         },
         {
             "id": "hii_matt#1388",
@@ -168,35 +173,40 @@
             "name": "AiSuushi",
             "rank": 2,
             "role": "DPS",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283481
         },
         {
             "id": "Byn#4729",
             "name": "Byn3",
             "rank": 2,
             "role": "Bishop",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283499
         },
         {
             "id": "Kellie#7385",
             "name": "Calikellie",
             "rank": 2,
             "role": "DPS",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283501
         },
         {
             "id": "jacquejk#9898",
             "name": "Camelia",
             "rank": 2,
             "role": "DPS",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283508
         },
         {
             "id": "Ishie#5096",
             "name": "Deboed",
             "rank": 2,
             "role": "DPS",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283528
         },
         {
             "id": "aphasia#1365",
@@ -259,7 +269,8 @@
             "name": "Akrot",
             "rank": 0,
             "role": "Bishop",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283489
         },
         {
             "id": "KitsuneKingu#8632",
@@ -280,7 +291,8 @@
             "name": "Driedyam",
             "rank": "4",
             "role": "DPS",
-            "leader": false
+            "leader": false,
+            "timestamp": 1578768283534
         }
     ],
     "pool": [],
