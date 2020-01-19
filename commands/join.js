@@ -80,21 +80,17 @@ module.exports = {
 	joinReact: function(expoData, expoName, members, channel, username, discriminator, guildID){
 		return joinExpoReact(expoData, expoName, members, channel, username, discriminator, guildID);
 	},
-  join: function (message, roster, leaders, guildData, expoName, isExpo, startIndex) {
-		if(!isExpo && !isguildenabled(message.guild.id)){
-			message.channel.send(":thumbsdown: Expeditions are disabled.");
-		}else if(!isExpo && isBeforeGuildJoinWindow(message.guild.id)){
-			message.channel.send(":thumbsdown: You cannot join the expedition until closer to start time.");
+  join: function (joiners, username, discriminator, channel, guildID, roster, leaders, guildData, expoName, isExpo) {
+		if(!isExpo && !isguildenabled(guildID)){
+			channel.send(":thumbsdown: Expeditions are disabled.");
+		}else if(!isExpo && isBeforeGuildJoinWindow(guildID)){
+			channel.send(":thumbsdown: You cannot join the expedition until closer to start time.");
+		}else if(!joiners || joiners.length == 0){
+			addMemberToPool(null, roster, leaders, guildData, expoName, isExpo, channel, username, discriminator, guildID, true)
 		}else{
-			if(message.content.split(" ").length-startIndex == 0){
-				addMemberToPool(null, roster, leaders, guildData, expoName, isExpo, message.channel, message.author.username, message.author.discriminator, message.guild.id, true)
-			}else{
-				message.content.split(" ").forEach(function (joiner, index){
-					if(joiner.length > 1 && index >= startIndex){
-						addMemberToPool(joiner, roster, leaders, guildData, expoName, isExpo, message.channel, message.author.username, message.author.discriminator, message.guild.id, true)
-					}
-		})
-  }
-}
+			joiners.forEach(function (joiner, index){
+						addMemberToPool(joiner, roster, leaders, guildData, expoName, isExpo, channel, username, discriminator, guildID, true)
+					})
+  	}
 }
 };

@@ -195,11 +195,11 @@ function balanceExpo(expoData, expoName, channel){
   }
 }
 
-function joinExpo(expoData, expoName, members, message, startIndex){
+function joinExpo(expoData, joiners, username, discriminator, channel, guildID, expoName, members){
   if(!expoData){
     channel.send(":scream: The specified expo does not exist.");
   }else{
-    join(message, members, expoData.leaders, expoData, expoName, true, startIndex);
+    join(joiners, username, discriminator, channel, guildID, members, expoData.leaders, expoData, expoName, true);
   }
 }
 
@@ -264,8 +264,8 @@ module.exports = {
   resetExpo: function(expoData, expoName, channel, expoChannel){
       start(expoData, expoName, channel, expoChannel);
   },
-  joinExpo: function(expoData, expoName, members, message, startIndex){
-    joinExpo(expoData, expoName, members, message, startIndex);
+  joinExpo: function(expoData, joiners, username, discriminator, channel, guildID, expoName, members){
+    joinExpo(expoData, joiners, username, discriminator, channel, guildID, expoName, members);
   },
   manageExpo: function (expoData, members, message, guildID, channels) {
     const content = message.content.toLowerCase().split(" ");

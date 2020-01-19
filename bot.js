@@ -56,7 +56,7 @@ client.on('message', message => {
 				joined(message.channel, getGuildData(message.guild.id, message.channel));
 				return;
 			case "join":
-					join(message, getMembers(message.guild.id,message.channel), getLeaders(message.guild.id,message.channel), getGuildData(message.guild.id, message.channel), null, false, 1);
+				join(commands.slice(1), message.author.username, message.author.discriminator, message.channel, message.guild.id, getMembers(message.guild.id,message.channel), getLeaders(message.guild.id,message.channel), getGuildData(message.guild.id, message.channel), null, false);
 				return;
 			case "roster":
 				postRoster(message.channel, getMembers(message.guild.id,message.channel));
