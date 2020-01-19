@@ -48,7 +48,8 @@ client.on('message', message => {
 
 	if(message.content.substring(0, gprefix.length).toLowerCase() === gprefix.toLowerCase()){
 		const isAdmin = isGuildAdmin(message.member._roles, message.guild.id, message.channel);
-		var commands = message.content.substring(gprefix.length).split(' ');
+
+		var commands = message.content.substring(gprefix.length).split(' ').filter(Boolean);
 
 		switch(commands[0].toLowerCase()){
 			case "pool":
