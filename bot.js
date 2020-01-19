@@ -135,7 +135,7 @@ client.on('message', message => {
 					case "setwindow":
 						setWindow(message);
 						return;
-					case "expo":						
+					case "expo":
 						manageExpo(getGuildData(message.guild.id, message.channel).expos, getMembers(message.guild.id,message.channel), message, message.guild.id, client.channels);
 						return;
 					case "export":
@@ -280,6 +280,8 @@ function isGuildAdmin(roleList, guildID, channel){
 }
 
 function isGuildAdminByName(memberList, guildID, channel, userName){
+	if(!userName) return false;
+
 		var guildAdminRole = getGuildAdminRole(guildID, channel);
 
 		var aGuild = client.guilds.get(guildID);
