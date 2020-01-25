@@ -291,8 +291,7 @@ function isGuildAdminByName(memberList, guildID, channel, userName){
 
 		var aGuild = client.guilds.get(guildID);
     var guildAdminRoleID = aGuild.roles.find(role => role.name === guildAdminRole).id;
-
-		var aUser = memberList.find(member => member.user.username.toLowerCase() === userName.toLowerCase());
+		var aUser = memberList.find(member => member.user.username && member.user.username.toLowerCase() === userName.toLowerCase());
 		if(!aUser) aUser = memberList.find(member => member.nickname && member.nickname.toLowerCase() === userName.toLowerCase());
 		var hasRole = aUser && aUser._roles.find(element => element === guildAdminRoleID) ? true : false;
 
