@@ -1,7 +1,7 @@
 var fs = require("fs");
 
 module.exports = {
-  update: function (name, command, val, channel, guildID, username, discriminator, guildData, classes) {
+  update: function (name, command, val, channel, guildID, guildData, classes) {
 
     const AVAILABLE_ARGS = ["dps", "id", "name", "class", "multiplier"];
 
@@ -14,20 +14,20 @@ module.exports = {
 
     const [type, id, value] = [
       command ? command.toLowerCase() : "",
-      person ? person.id : `${username}#${discriminator}`,
+      person ? person.id : null,
       val
     ]
 
-     if (!guildData.members.find(member => member.id === id)){
-      channel.send(`Zakum cannot find ${id || content[1]} on the guild roster! Try updating your id first!`)
+     if (!person || !guildData.members.find(member => member.id === person.id)){
+      channel.send(`Zakum cannot find ${name} on the guild roster! Try updating your id first!`)
       return;
     } else {
-      update(channel, guildID, username, discriminator, type, id, value, guildData, classes)
+      update(channel, guildID, type, id, value, guildData, classes)
     }
   }
 };
 
-function update(channel, guildID, username, discriminator, type, id, value, guildData, classes){
+function update(channel, guildID, type, id, value, guildData, classes){
   switch(type){
     case "class":
       updateClass(channel, guildID, id, value, classes, guildData)
@@ -36,7 +36,7 @@ function update(channel, guildID, username, discriminator, type, id, value, guil
       updateDps(channel, guildID, id, value, guildData)
       break;
     case "id":
-      updateId(channel, guildID, username, discriminator, id, value, guildData)
+      updateId(channel, guildID, id, value, guildData)
       break;
     case "name":
       updateName(channel, guildID, id, value, guildData)
@@ -65,12 +65,11 @@ function updateDps(channel, guildID, id, dps, guildData){
   updateRoster(guildData, channel, guildID, "dps", id)
 }
 
-function updateId(channel, guildID, username, discriminator, id, newId, guildData){
+function updateId(channel, guildID, id, newId, guildData){
   if (!newId){
     channel.send("Invalid new id entered. Example: \`!update name id Zakum#1234 \`")
     return;
   }
-  newId = newId || `${username}#${discriminator}`
   guildData.members.find(member => member.id === id).id = newId
   updateRoster(guildData, channel, guildID, "id", newId)
 }
