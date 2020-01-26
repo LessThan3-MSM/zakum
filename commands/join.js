@@ -46,8 +46,9 @@ function addMemberToPool(name, roster, leaders, guildData, expoName, isExpo, cha
 
 	//Join
 	joined.timestamp = Date.now();
+	var afterWindow = isAfterGuildJoinWindow(guildID);
 
-	if ((!isExpo && isAfterGuildJoinWindow(guildID)) || ("greedy" !== guildData.balance && [...leaders, ...guildData.pool].length >= leaders.length * 10)){
+	if ((!isExpo && afterWindow) || ("greedy" !== guildData.balance && [...leaders, ...guildData.pool].length >= leaders.length * 10)){
 		guildData.waitlist.push(joined)
 	} else {
 		guildData.pool.push(joined)
@@ -65,8 +66,10 @@ function addMemberToPool(name, roster, leaders, guildData, expoName, isExpo, cha
 	if(showMsg){
 		if(guildData.pool.find( member => member.id === joined.id  )){
 			channel.send(`${name || username} has joined the ${expoName} queue! :heart:`);
-		} else {
-			channel.send(`Sorry ${name || username}! We weren't able to add you to the expedition. Adding you to the waitlist!`);
+		} else if(!isExpo && afterWindow){
+			channel.send(`Sorry ${name || username}! Sign-ups are now closed. Adding you to the waitlist!`);
+		}else{
+			channel.send(`Sorry ${name || username}! All expeditions are full. Adding you to the waitlist!`);
 		}
 	}
 }
