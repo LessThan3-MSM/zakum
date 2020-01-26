@@ -29,6 +29,9 @@ module.exports = {
       if (guildData.pool.find( member => member.id === promoted.id  )){ //remove leader from pool if there.
     		  guildData.pool = guildData.pool.filter(member => member.id !== promoted.id)
       }
+      if(guildData.waitlist.find( member => member.id === promoted.id  )){//remove leader from waitlist if there as well.
+        guildData.waitlist = guildData.waitlist.filter(member => member.id !== promoted.id)
+      }
       if(guildData.groups && guildData.groups.length){
         var leaders = guildData.members.filter(member => member.leader);
         if(rebalance){
