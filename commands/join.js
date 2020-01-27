@@ -7,13 +7,13 @@ function addMemberToPool(name, roster, leaders, guildData, expoName, isExpo, cha
 	let user = null;
 	expoName =  expoName == undefined ? "Zakum Expedition Finder" : expoName;
 	if (name){
-		const added = roster.find(member => member.name.toLowerCase() === name.toLowerCase())
+		const added = name && roster.find(member => member.name.toLowerCase() === name.toLowerCase())
 		user = added ? added.id:null
 	} else {
 		user = username + "#" + discriminator;
 	}
 
-	const joined = roster.find(member => member.id === user)
+	const joined = user && roster.find(member => member.id && member.id.toLowerCase() === user.toLowerCase())
 	if (!joined){
 		if(showMsg){
 			channel.send(`${name || username} does not appear to be on the guild roster. Please contact your guild leader to get added to the roster.`)
