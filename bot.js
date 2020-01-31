@@ -165,10 +165,11 @@ client.on('message', message => {
 client.on('messageReactionAdd', (reaction, user) => {
 	if (user.bot) return;
 				var expos = getGuildData(reaction.message.guild.id, null).expos;
-				var isAdmin = user.lastMessage.member && isGuildAdmin(user.lastMessage.member._roles, reaction.message.guild.id, reaction.message.channel);
 
 				for(var i = 0; i <expos.length; i++){
 					if(reaction.message.id === expos[i].messageID){
+						var isAdmin = user.lastMessage.member && isGuildAdmin(user.lastMessage.member._roles, reaction.message.guild.id, reaction.message.channel);
+						
 						if (reaction.emoji.name == '👍') {
 							var anyError = joinReact(expos[i], expos[i].name, getMembers(reaction.message.guild.id, reaction.message.channel), reaction.message.channel, user.username, user.discriminator, reaction.message.guild.id);
 							if(anyError){
