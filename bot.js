@@ -51,8 +51,8 @@ client.on('message', message => {
 		const isAdmin = isGuildAdmin(message.member._roles, message.guild.id, message.channel);
 
 		var commands = message.content.substring(gprefix.length).split(' ').filter(Boolean);
-
-		switch(commands[0].toLowerCase()){
+		var theCmd = commands[0] && commands[0].toLowerCase();
+		switch(theCmd){
 			case "pool":
 			case "joined":
 				joined(message.channel, getGuildData(message.guild.id, message.channel));
@@ -88,7 +88,7 @@ client.on('message', message => {
 			}
 
 			if(isAdmin){
-				switch(commands[0].toLowerCase()){
+				switch(theCmd){
 					case "add":
 						add(commands[1], commands[2], commands[3], commands[4], message.channel, getGuildData(message.guild.id,message.channel), message.guild.id, MAPLE_STORY_CLASSES);
 						return;
@@ -155,7 +155,7 @@ client.on('message', message => {
 						setGuildPrefix(commands[1], message.guild.id, message.channel);
 						return;
 					}
-					if(commands[0].toLowerCase().includes("fuck")){
+					if(theCmd.includes("fuck")){
 						message.channel.send("Lappu is a bot.");
 					}
 				}
@@ -165,7 +165,7 @@ client.on('message', message => {
 client.on('messageReactionAdd', (reaction, user) => {
 	if (user.bot) return;
 				var expos = getGuildData(reaction.message.guild.id, null).expos;
-				var isAdmin = isGuildAdmin(user.lastMessage.member._roles, reaction.message.guild.id, reaction.message.channel);
+				var isAdmin = user.lastMessage.member && isGuildAdmin(user.lastMessage.member._roles, reaction.message.guild.id, reaction.message.channel);
 
 				for(var i = 0; i <expos.length; i++){
 					if(reaction.message.id === expos[i].messageID){

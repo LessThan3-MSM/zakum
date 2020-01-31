@@ -7,7 +7,7 @@ function addMemberToPool(name, roster, leaders, guildData, expoName, isExpo, cha
 	let user = null;
 	expoName =  expoName == undefined ? "Zakum Expedition Finder" : expoName;
 	if (name){
-		const added = name && roster.find(member => member.name.toLowerCase() === name.toLowerCase())
+		const added = roster.find(member => member.name && member.name.toLowerCase() === name.toLowerCase())
 		user = added ? added.id:null
 	} else {
 		user = username + "#" + discriminator;
@@ -21,7 +21,7 @@ function addMemberToPool(name, roster, leaders, guildData, expoName, isExpo, cha
 		return true;
 	}
 
-	const aleader = leaders.find(member => member.id === user)
+	const aleader = user && leaders.find(member => member.id && member.id.toLowerCase() === user.toLowerCase())
 	if(aleader){
 		if(showMsg){
 			channel.send(`${name || username} is a leader. Only regular members may join.`)
