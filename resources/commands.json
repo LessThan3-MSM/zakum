@@ -63,6 +63,13 @@
     "description": "Lists in-depth details on all groups and their members."
   },
   {
+    "name": "info",
+    "admin": true,
+    "required": [],
+    "optional": [],
+    "description": "Lists information for the guild."
+  },
+  {
     "name": "join",
     "admin": false,
     "required": [],
@@ -173,13 +180,6 @@
     "required": ["Channel"],
     "optional": [],
     "description": "Removes a channel from the timers list."
-  },
-  {
-    "name": "info",
-    "admin": true,
-    "required": [],
-    "optional": [],
-    "description": "Lists information for the guild."
   },
   {
     "name": "update",
