@@ -48,7 +48,9 @@ module.exports = {
 
     if(swapGroups[0].groupId === -1){
       guildData.waitlist = guildData.waitlist.filter(member => member.name.toLowerCase() !== swapGroups[0].member.name.toLowerCase());
-      guildData.waitlist.push(swapGroups[1].member)
+      guildData.waitlist.push(swapGroups[1].member);
+      guildData.pool.push(swapGroups[0].member);
+      guildData.pool = guildData.pool.filter(member => member.name.toLowerCase() !== swapGroups[1].member.name.toLowerCase());
     }else{
       groups[swapGroups[0].groupId] = groups[swapGroups[0].groupId].filter(member => member.name.toLowerCase() !== swapGroups[0].member.name.toLowerCase())
       groups[swapGroups[0].groupId].push(swapGroups[1].member)
@@ -56,6 +58,8 @@ module.exports = {
     if(swapGroups[1].groupId === -1){
       guildData.waitlist = guildData.waitlist.filter(member => member.name.toLowerCase() !== swapGroups[1].member.name.toLowerCase());
       guildData.waitlist.push(swapGroups[0].member)
+      guildData.pool.push(swapGroups[1].member);
+      guildData.pool = guildData.pool.filter(member => member.name.toLowerCase() !== swapGroups[0].member.name.toLowerCase());
     }else{
       groups[swapGroups[1].groupId] = groups[swapGroups[1].groupId].filter(member => member.name.toLowerCase() !== swapGroups[1].member.name.toLowerCase())
       groups[swapGroups[1].groupId].push(swapGroups[0].member)

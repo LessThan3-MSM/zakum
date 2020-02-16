@@ -42,12 +42,14 @@ module.exports = {
     //add target to new group.
     if(targetGroupID === waitlist){
       guildData.waitlist.push(sourceMember);
+      guildData.pool = guildData.pool.filter(member=>member.name.toLowerCase() !== memberName.toLowerCase());
     }else{
       groups[targetGroupID].push(sourceMember);
     }
 
     //remove from original group.
     if(sourceGroupID === waitlist){
+      guildData.pool.push(sourceMember);
       guildData.waitlist = guildData.waitlist.filter(member => member.name.toLowerCase() !== memberName.toLowerCase());
     }else{
       groups[sourceGroupID] = groups[sourceGroupID].filter(member => member.name.toLowerCase() !== memberName.toLowerCase())
