@@ -14,7 +14,7 @@ function start(expoData, name, channel, expoChannel){
     anExpo.pool = [];
     anExpo.waitlist = [];
 
-    expoChannel.send("```css\n"+anExpo.message+"```").then(async message => { //TODO. change from channel to the expoData.channel?
+    expoChannel.send("\n"+anExpo.message+"").then(async message => {
       anExpo.messageID = message.id;
       await message.react('👍');
       await message.react('👎');
