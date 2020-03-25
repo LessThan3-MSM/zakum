@@ -132,7 +132,7 @@ client.on('message', message => {
 						toggleexpos(message.guild.id, message.channel);
 						return;
 					case "setmsg":
-						setTimerMsg(commands[1], commands.slice(2).join(''), message.channel, message.guild.id);
+						setTimerMsg(commands[1], commands.slice(2).join(' '), message.channel, message.guild.id);
 						return;
 					case "setexpo":
 						setAmPmExpos(commands[1], commands[2], message.channel, message.guild.id);
@@ -169,7 +169,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 				for(var i = 0; i <expos.length; i++){
 					if(reaction.message.id === expos[i].messageID){
 						var isAdmin = user.lastMessage.member && isGuildAdmin(user.lastMessage.member._roles, reaction.message.guild.id, reaction.message.channel);
-						
+
 						if (reaction.emoji.name == '👍') {
 							var anyError = joinReact(expos[i], expos[i].name, getMembers(reaction.message.guild.id, reaction.message.channel), reaction.message.channel, user.username, user.discriminator, reaction.message.guild.id);
 							if(anyError){
