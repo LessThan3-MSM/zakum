@@ -90,7 +90,14 @@ client.on('message', message => {
 			if(isAdmin){
 				switch(theCmd){
 					case "add":
-						add(commands[1], commands[2], commands[3], commands[4], message.channel, getGuildData(message.guild.id,message.channel), message.guild.id, MAPLE_STORY_CLASSES);
+						//added so you can add IDs with spaces.
+						const msg = commands.slice(1).join(" ");
+						const pound = msg.search("#");
+						const space = msg.substring(pound).search(" ");
+						var discordID = msg.substring(0,pound+space);
+						//other commands must be shifted by same amount. messy. may be a better way to do.
+						commands = msg.substring(pound+space+1).split(" ");
+						add(discordID, commands[0], commands[1], commands[2], message.channel, getGuildData(message.guild.id,message.channel), message.guild.id, MAPLE_STORY_CLASSES);
 						return;
 					case "timerchadd":
 						addTimerCh(message.channel, commands[1], message.guild.id);
