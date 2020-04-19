@@ -70,13 +70,13 @@ client.on('message', message => {
 				groupDetails(message.channel, getGuildData(message.guild.id, message.channel), getLeaders(message.guild.id,message.channel));
 				return;
 			case "find":
-				find(commands.slice(1).join(""), message.channel, getMembers(message.guild.id,message.channel));
+				find(commands.slice(1).join(" "), message.channel, getMembers(message.guild.id,message.channel));
 				return;
 			case "leaderboard":
 				leaderboard(commands[1], message.channel, getMembers(message.guild.id,message.channel))
 				return;
 			case "class":
-				findByClass(commands.slice(1).join(''), message.channel, getMembers(message.guild.id,message.channel), MAPLE_STORY_CLASSES);
+				findByClass(commands.slice(1).join(' '), message.channel, getMembers(message.guild.id,message.channel), MAPLE_STORY_CLASSES);
 				return;
 			case "commands":
 				listCommands(message.channel, isAdmin);
