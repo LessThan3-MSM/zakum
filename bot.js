@@ -133,7 +133,7 @@ client.on('message', message => {
 						swap(message.channel, getGuildData(message.guild.id, message.channel), commands[1], commands[2], firstMemberIsAdmin, secondMemberIsAdmin, message.guild.id)
 						return;
 					case "update":
-						update(commands[1], commands[2], commands.slice(3).join(""), message.channel, message.guild.id, getGuildData(message.guild.id,message.channel), MAPLE_STORY_CLASSES)
+						update(commands[1], commands[2], commands.slice(3).join(" "), message.channel, message.guild.id, getGuildData(message.guild.id,message.channel), MAPLE_STORY_CLASSES)
 						return;
 					case "toggleexpos":
 						toggleexpos(message.guild.id, message.channel);
