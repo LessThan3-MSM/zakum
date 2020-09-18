@@ -75,6 +75,9 @@ client.on('message', message => {
 			case "leaderboard":
 				leaderboard(commands[1], message.channel, getMembers(message.guild.id,message.channel))
 				return;
+			case "classes":
+				message.channel.send(MAPLE_STORY_CLASSES.join('\n'));
+				return;
 			case "class":
 				findByClass(commands.slice(1).join(' '), message.channel, getMembers(message.guild.id,message.channel), MAPLE_STORY_CLASSES);
 				return;

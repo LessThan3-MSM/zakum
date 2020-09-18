@@ -21,6 +21,13 @@
     "description": "Lists the class of the specified roster member *OR* Lists all roster members of the specified class."
   },
   {
+    "name": "classes",
+    "admin": false,
+    "required": [],
+    "optional": [],
+    "description": "Lists all currently supported classes."
+  },
+  {
     "name": "demote",
     "admin": true,
     "required": ["Name"],
