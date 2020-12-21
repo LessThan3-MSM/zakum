@@ -1,8 +1,11 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const {PREFIX, ADMIN_ROLE, SERVER_TIME_ZONE, MAPLE_STORY_CLASSES} = require("./resources/constants.json")
+const {PREFIX, ADMIN_ROLE, SERVER_TIME_ZONE} = require("./resources/constants.json")
 const {TOKEN} = require('./resources/config.json')
+
+var BOT_ADMINS = require("./resources/botadmins.json");
+var MAPLE_STORY_CLASSES = require("./resources/maplestoryclasses.json")
 
 /* importing functions from the commands dir */
 const add = require('./commands/add.js').addCommand;
@@ -37,6 +40,10 @@ const toggleexpos = require('./commands/timers.js').toggleexpos;
 const update = require('./commands/update.js').update;
 const setAmPmExpos = require('./commands/timers.js').setAmPmExpos;
 const setWindow = require('./commands/timers.js').setWindow;
+const addBotAdmin = require('./commands/botadmin.js').addBotAdmin;
+const removeBotAdmin = require('./commands/botadmin.js').removeBotAdmin;
+const addClass = require('./commands/manageclasses.js').addClass;
+const removeClass = require('./commands/manageclasses.js').removeClass;
 
 var fs = require("fs");
 
@@ -49,6 +56,7 @@ client.on('message', message => {
 
 	if(message.content.substring(0, gprefix.length).toLowerCase() === gprefix.toLowerCase()){
 		const isAdmin = isGuildAdmin(message.member._roles, message.guild.id, message.channel);
+		const isBotAdmin = getBotAdmin(message.author.username, message.author.discriminator);
 
 		var commands = message.content.substring(gprefix.length).split(' ').filter(Boolean);
 		var theCmd = commands[0] && commands[0].toLowerCase();
@@ -82,7 +90,7 @@ client.on('message', message => {
 				findByClass(commands.slice(1).join(' '), message.channel, getMembers(message.guild.id,message.channel), MAPLE_STORY_CLASSES);
 				return;
 			case "commands":
-				listCommands(message.channel, isAdmin);
+				listCommands(message.channel, isAdmin, isBotAdmin);
 				return;
 			case "timers":
 			case "info":
@@ -164,9 +172,29 @@ client.on('message', message => {
 					case "setprefix":
 						setGuildPrefix(commands[1], message.guild.id, message.channel);
 						return;
+					case "botadmins":
+						message.channel.send(BOT_ADMINS.join('\n'));
+						return;
 					}
 					if(theCmd.includes("fuck")){
 						message.channel.send("Lappu is a bot.");
+					}
+				}
+
+				if(isBotAdmin){
+					switch(theCmd){
+						case "addbotadmin":
+							addBotAdmin(commands.slice(1).join(" "), BOT_ADMINS, message.channel);
+							return;
+						case "removebotadmin":
+							removeBotAdmin(commands.slice(1).join(" "),BOT_ADMINS, message.channel);
+							return;
+						case "addclass":
+							addClass(commands.slice(1).join(" "), MAPLE_STORY_CLASSES, message.channel);
+							return;
+						case "removeclass":
+							removeClass(commands.slice(1).join(" "), MAPLE_STORY_CLASSES, message.channel);
+							return;
 					}
 				}
 			}
@@ -211,6 +239,12 @@ client.on('messageReactionRemove', (reaction, user) => {
 					}
 				}
 });
+
+function getBotAdmin(username, discriminator){
+	let uid = username + '#' + discriminator;
+	let isbotadmin = BOT_ADMINS.includes(uid);
+	return isbotadmin;
+}
 
 function getGuildData(guildID, channel){
 		if(guilds[guildID] == undefined) {guilds[guildID] = getGuildJSON(guildID, channel)}

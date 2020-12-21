@@ -2,6 +2,7 @@
   {
     "name": "add",
     "admin": true,
+    "botadmin":false,
     "required": ["Discord ID", "Name", "Class", "Rating [1-10]"],
     "optional": [],
     "description": "Adds a member to the guild roster."
@@ -9,6 +10,7 @@
   {
     "name": "balance",
     "admin": true,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Balances expedition groups (will likely show no difference unless a swap was performed)."
@@ -16,6 +18,7 @@
   {
     "name": "class",
     "admin": false,
+    "botadmin":false,
     "required": ["Name|Class"],
     "optional": [],
     "description": "Lists the class of the specified roster member *OR* Lists all roster members of the specified class."
@@ -23,6 +26,7 @@
   {
     "name": "classes",
     "admin": false,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Lists all currently supported classes."
@@ -30,6 +34,7 @@
   {
     "name": "demote",
     "admin": true,
+    "botadmin":false,
     "required": ["Name"],
     "optional": [],
     "description": "Demotes a leader to a member."
@@ -37,6 +42,7 @@
   {
     "name": "expo",
     "admin": true,
+    "botadmin":false,
     "required": ["add|channel|delete|demote|detail|groups|info|promote|reset|setbalance|setlock|setmsg|start","Name"],
     "optional": ["greedy|first"],
     "description": "The {Name} custom expedition can be managed. If setting the balance the balance type (greedy or first) must be provided."
@@ -44,6 +50,7 @@
   {
     "name": "export",
     "admin": true,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Exports group data (i.e. in case of server maintenance)."
@@ -51,6 +58,7 @@
   {
     "name": "find",
     "admin": false,
+    "botadmin":false,
     "required": ["Name|ID"],
     "optional": [],
     "description": "Lists details for a guild roster member."
@@ -58,6 +66,7 @@
   {
     "name": "groups",
     "admin": false,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Lists all available groups and their members."
@@ -65,6 +74,7 @@
   {
     "name": "groupdetails",
     "admin": false,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Lists in-depth details on all groups and their members."
@@ -72,6 +82,7 @@
   {
     "name": "info",
     "admin": true,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Lists information for the guild."
@@ -79,6 +90,7 @@
   {
     "name": "join",
     "admin": false,
+    "botadmin":false,
     "required": [],
     "optional": ["Name..."],
     "description": "Enrolls/Unenrolls a guild roster member for the current expedition."
@@ -86,6 +98,7 @@
   {
     "name": "joined/pool",
     "admin": false,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Lists all members that have joined the current expedition."
@@ -93,6 +106,7 @@
   {
     "name": "leaderboard",
     "admin": false,
+    "botadmin":false,
     "required": [],
     "optional": ["Number"],
     "description": "Lists the top 10 dps or if an integer (X) is given, top X on the roster"
@@ -100,6 +114,7 @@
   {
     "name": "move",
     "admin": true,
+    "botadmin":false,
     "required": ["Member","Target Group Member/Target Group ID"],
     "optional": [],
     "description": "Moves the specified member to the other member's group (if possible.)"
@@ -107,6 +122,7 @@
   {
     "name": "promote",
     "admin": true,
+    "botadmin":false,
     "required": ["Name"],
     "optional": [],
     "description": "Promotes a member to a leader."
@@ -114,6 +130,7 @@
   {
     "name": "remove",
     "admin": true,
+    "botadmin":false,
     "required": ["Name"],
     "optional": [],
     "description": "Removes a member from the guild roster."
@@ -121,6 +138,7 @@
   {
     "name": "reset",
     "admin": true,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "The expedition groups are reset."
@@ -128,6 +146,7 @@
   {
     "name": "roster",
     "admin": false,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Lists everyone on the guild roster."
@@ -135,6 +154,7 @@
   {
     "name": "setadminrole",
     "admin": true,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Sets the server role to use for bot administrator rights."
@@ -142,6 +162,7 @@
   {
     "name": "setexpo",
     "admin": true,
+    "botadmin":false,
     "required": ["am|pm|join|window|autoreset", "on|off"],
     "optional": [],
     "description": "Sets whether the guild has: AM/PM expos, if join(expo sign-ups) is enabled, if there is a window for join/waitlist, or if expos auto reset to enabled at server reset."
@@ -149,6 +170,7 @@
   {
     "name": "setmsg",
     "admin": true,
+    "botadmin":false,
     "required": ["on|off", "Message"],
     "optional": [],
     "description": "Sets the expo timer message that will display when join is on or off."
@@ -156,6 +178,7 @@
   {
     "name": "setprefix",
     "admin": true,
+    "botadmin":false,
     "required": [],
     "optional": [],
     "description": "Sets the prefix to use for bot commands."
@@ -163,6 +186,7 @@
   {
     "name": "setwindow",
     "admin": true,
+    "botadmin":false,
     "required": ["before|after","minutes"],
     "optional": [],
     "description": "Sets the expedition join window to x # minutes before/after expedition start time."
@@ -170,6 +194,7 @@
   {
     "name": "swap",
     "admin": true,
+    "botadmin":false,
     "required": ["Member 1", "Member 2"],
     "optional": [],
     "description": "Swaps two guild members between two expo groups!"
@@ -177,6 +202,7 @@
   {
     "name": "timerchadd",
     "admin": true,
+    "botadmin":false,
     "required": ["Channel"],
     "optional": [],
     "description": "Adds a channel to the timers list."
@@ -184,6 +210,7 @@
   {
     "name": "timerchremove",
     "admin": true,
+    "botadmin":false,
     "required": ["Channel"],
     "optional": [],
     "description": "Removes a channel from the timers list."
@@ -191,8 +218,49 @@
   {
     "name": "update",
     "admin": true,
+    "botadmin":false,
     "required": ["Name", "Type", "Value"],
     "optional": [],
     "description": "Updates the [class, dps, id, multiplier, name] for a member on the guild roster."
+  },
+  {
+    "name": "botadmins",
+    "admin": true,
+    "botadmin":false,
+    "required": [],
+    "optional": [],
+    "description": "Lists all the current bot administrators."
+  },
+  {
+    "name": "addbotadmin",
+    "admin": true,
+    "botadmin":true,
+    "required": ["UID"],
+    "optional": [],
+    "description": "Add a bot administrator. Must be FULL Discord UID (ie myusername#1234)."
+  },
+  {
+    "name": "removebotadmin",
+    "admin": true,
+    "botadmin":true,
+    "required": ["UID"],
+    "optional": [],
+    "description": "Remove a bot administrator. Must be FULL Discord UID (ie myusername#1234)."
+  },
+  {
+    "name": "addclass",
+    "admin": true,
+    "botadmin":true,
+    "required": [],
+    "optional": [],
+    "description": "Add a class to the list of supported classes. (see classes command)"
+  },
+  {
+    "name": "removeclass",
+    "admin": true,
+    "botadmin":true,
+    "required": [],
+    "optional": [],
+    "description": "Remove a class from the list of supported classes. (see classes command)"
   }
 ]

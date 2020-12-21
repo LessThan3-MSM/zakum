@@ -1,35 +1,5 @@
 {
   "PREFIX": "!",
   "ADMIN_ROLE": "zakum-admin",
-  "SERVER_TIME_ZONE": "Pacific/Pitcairn",
-  "MAPLE_STORY_CLASSES": [
-    "darkknight",
-    "bowmaster",
-    "nightlord",
-    "bishop",
-    "corsair",
-    "dawnwarrior",
-    "windarcher",
-    "nightwalker",
-    "blazewizard",
-    "thunderbreaker",
-    "aran",
-    "mercedes",
-    "evan",
-    "hero",
-    "shadower",
-    "icelightning",
-    "buccaneer",
-    "marksman",
-    "paladin",
-    "phantom",
-    "firepoison",
-    "luminous",
-    "shade",
-    "battlemage",
-    "wildhunter",
-    "mechanic",
-    "demonslayer",
-    "demonavenger"
-  ]
+  "SERVER_TIME_ZONE": "Pacific/Pitcairn"
 }
