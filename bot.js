@@ -350,7 +350,7 @@ client.login(TOKEN);
 var CronJob = require('cron').CronJob; /** Timers REQUIRE cron npm to be installed **/
 
 //Expedition Timer
-var expoTimer = new CronJob('30 17,9 * * *', function(){
+var expoTimer = new CronJob('0 17,9 * * *', function(){
 	var timerChannels = getTimerCh();
 
 	for(key in timerChannels) {

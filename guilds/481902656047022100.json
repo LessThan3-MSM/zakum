@@ -1,0 +1,150 @@
+{
+    "prefix": "z!",
+    "adminrole": "zakum-admin",
+    "members": [
+        {
+            "id": "SammyPhantom#5919",
+            "name": "SammyPhantom",
+            "rank": 94.4,
+            "role": "phantom",
+            "leader": false,
+            "timestamp": 1607999075662
+        },
+        {
+            "id": "khel#3737",
+            "name": "Khel",
+            "rank": 90.3,
+            "role": "phantom",
+            "leader": true,
+            "timestamp": 1611106744954
+        },
+        {
+            "id": "Lappu#6044",
+            "name": "Lappu",
+            "rank": 84.7,
+            "role": "windarcher",
+            "leader": false,
+            "timestamp": 1611885789447
+        },
+        {
+            "id": "Primo#0714",
+            "name": "Knuckle",
+            "rank": 81.5,
+            "role": "shade",
+            "leader": false,
+            "timestamp": 1611886011237
+        },
+        {
+            "id": "thallium#0472",
+            "name": "Arrondi",
+            "rank": 70.1,
+            "role": "bishop",
+            "leader": false,
+            "timestamp": 1611885589727
+        },
+        {
+            "id": "bootypirate#6582",
+            "name": "Lilhands",
+            "rank": 62.2,
+            "role": "shadower",
+            "leader": false,
+            "timestamp": 1613094358508
+        },
+        {
+            "id": "Kryd3n#2425",
+            "name": "Kryd3n",
+            "rank": 60.6,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "bruhhh#0480",
+            "name": "AyBruh",
+            "rank": 49.3,
+            "role": "phantom",
+            "leader": false,
+            "timestamp": 1601084610171
+        },
+        {
+            "id": "Subzob#8232",
+            "name": "Subzob",
+            "rank": 36.1,
+            "role": "nightlord",
+            "leader": false,
+            "timestamp": 1611713051014
+        },
+        {
+            "id": "Fidgets#8755",
+            "name": "Flameos",
+            "rank": 32.2,
+            "role": "firepoison",
+            "leader": false,
+            "multiplier": 0.8,
+            "timestamp": 1611886275407
+        },
+        {
+            "id": "Queenfarfelue#0766",
+            "name": "Aphr0d1te",
+            "rank": 30.9,
+            "role": "aran",
+            "leader": false
+        },
+        {
+            "id": "sabrinaa#0993",
+            "name": "shitake",
+            "rank": 29.5,
+            "role": "phantom",
+            "leader": false,
+            "timestamp": 1609034174828
+        },
+        {
+            "id": "swiszyy#3813",
+            "name": "ShadeSumn",
+            "rank": 17.6,
+            "role": "shade",
+            "leader": false,
+            "timestamp": 1610159176520
+        },
+        {
+            "id": "winfluencer#9284",
+            "name": "Winfluencer",
+            "rank": 16.1,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "angelxeternity#1099",
+            "name": "omgeez",
+            "rank": 11.6,
+            "role": "buccaneer",
+            "leader": false,
+            "timestamp": 1611452551994
+        },
+        {
+            "id": "Dennis#5146",
+            "name": "FLAMINGYAWNN",
+            "rank": 11.4,
+            "role": "evan",
+            "leader": false
+        },
+        {
+            "id": "jerms (CardioB)#0891",
+            "name": "CardioB",
+            "rank": 1,
+            "role": "windarcher",
+            "leader": false
+        },
+        {
+            "id": "chaztel#0920",
+            "name": "Chazus",
+            "rank": -1,
+            "role": "bishop",
+            "leader": false,
+            "timestamp": 1607045835206
+        }
+    ],
+    "pool": [],
+    "groups": [],
+    "waitlist": [],
+    "expos": []
+}
