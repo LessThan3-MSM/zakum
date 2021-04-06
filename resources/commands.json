@@ -179,7 +179,7 @@
     "name": "setprefix",
     "admin": true,
     "botadmin":false,
-    "required": [],
+    "required": ["prefix"],
     "optional": [],
     "description": "Sets the prefix to use for bot commands."
   },

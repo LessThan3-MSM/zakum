@@ -261,17 +261,16 @@ function getGuildPrefix(guildID, channel){
 }
 
 function setGuildPrefix(gprefix, guildID, channel){
-	if(gprefix.indexOf("!") != -1){
+	if(gprefix == undefined){
+		channel.send(":scream: Please provide the new prefix to be used.");
+	}else if(gprefix.length > 1 && gprefix.indexOf("!") != -1){
 		channel.send(":scream: ! may not be included. This is automatically added after your prefix.");
-	}else if(gprefix != undefined){
+	}else{
 		var guildData = getGuildData(guildID, channel);
-		guildData.prefix = gprefix + "!";
+		guildData.prefix = gprefix === "!" ? gprefix : (gprefix + "!");
 		writeGuildToFile(guildID, guildData, channel);
 		channel.send(":thumbsup: Guild prefix successfully updated.");
-	}else{
-		channel.send(":scream: Please provide the new prefix to be used.");
 	}
-
 }
 
 function getGuildAdminRole(guildID, channel){
