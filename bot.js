@@ -358,9 +358,9 @@ var expoTimer = new CronJob('0 17,9 * * *', function(){
 		if((serverTime.getHours() == 17 && timerChannels[key].pmExpos) ||
 				(serverTime.getHours() == 9 && timerChannels[key].amExpos)){
 					var guildData = getGuildData(key, null);
-					guildData.pool.length = 0;
-					guildData.groups.length = 0;
-					guildData.waitlist.length = 0;
+					//guildData.pool.length = 0; //removing per Khel 4/7/21
+					//guildData.groups.length = 0;
+					//guildData.waitlist.length = 0;
 
 					writeGuildToFile(key, guildData, null);
 
