@@ -1,38 +1,70 @@
 {
-    "prefix": "z!",
+    "prefix": "!",
     "adminrole": "zakum-admin",
     "members": [
         {
             "id": "SammyPhantom#5919",
             "name": "SammyPhantom",
-            "rank": 94.4,
+            "rank": 98.6,
             "role": "phantom",
             "leader": false,
             "timestamp": 1607999075662
         },
         {
+            "id": "Primo#0714",
+            "name": "Knuckle",
+            "rank": 95.3,
+            "role": "shade",
+            "leader": false,
+            "timestamp": 1611886011237
+        },
+        {
             "id": "khel#3737",
             "name": "Khel",
-            "rank": 90.3,
+            "rank": 94.5,
             "role": "phantom",
-            "leader": true,
-            "timestamp": 1611106744954
+            "leader": false,
+            "timestamp": 1617325448859
         },
         {
             "id": "Lappu#6044",
             "name": "Lappu",
-            "rank": 84.7,
+            "rank": 93,
             "role": "windarcher",
             "leader": false,
-            "timestamp": 1611885789447
+            "timestamp": 1617235699604
         },
         {
-            "id": "Primo#0714",
-            "name": "Knuckle",
-            "rank": 81.5,
-            "role": "shade",
+            "id": "Bowmatsue#2186",
+            "name": "Bowmatsu",
+            "rank": 92.3,
+            "role": "windarcher",
             "leader": false,
-            "timestamp": 1611886011237
+            "timestamp": 1617585125541
+        },
+        {
+            "id": "Ruhk#5905",
+            "name": "Nageling",
+            "rank": 89,
+            "role": "shadower",
+            "leader": false,
+            "timestamp": 1617411667870
+        },
+        {
+            "id": "lior60#5460",
+            "name": "lior60",
+            "rank": 86,
+            "role": "phantom",
+            "leader": false,
+            "timestamp": 1621216248231
+        },
+        {
+            "id": "Renn#3700",
+            "name": "RenRenNL",
+            "rank": 72.5,
+            "role": "nightlord",
+            "leader": false,
+            "timestamp": 1621206056298
         },
         {
             "id": "thallium#0472",
@@ -43,6 +75,45 @@
             "timestamp": 1611885589727
         },
         {
+            "id": "7Eighteen#0718",
+            "name": "Khanjar",
+            "rank": 67.8,
+            "role": "shadower",
+            "leader": false
+        },
+        {
+            "id": "Fidgets#8755",
+            "name": "Flameos",
+            "rank": 67.8,
+            "role": "firepoison",
+            "leader": false,
+            "multiplier": 0.8,
+            "timestamp": 1617673114562
+        },
+        {
+            "id": "Vałkyrja#0008",
+            "name": "Vałkyrja",
+            "rank": 66,
+            "role": "mercedes",
+            "leader": false,
+            "timestamp": 1621206881964
+        },
+        {
+            "id": "coke#6942",
+            "name": "Cokekage",
+            "rank": 65,
+            "role": "shade",
+            "leader": false,
+            "timestamp": 1621216289551
+        },
+        {
+            "id": "7Eighteen#1111",
+            "name": "Mooken",
+            "rank": 64.4,
+            "role": "demonavenger",
+            "leader": false
+        },
+        {
             "id": "bootypirate#6582",
             "name": "Lilhands",
             "rank": 62.2,
@@ -51,19 +122,50 @@
             "timestamp": 1613094358508
         },
         {
-            "id": "Kryd3n#2425",
-            "name": "Kryd3n",
-            "rank": 60.6,
-            "role": "nightlord",
+            "id": "Haruchon#6984",
+            "name": "ravencardss",
+            "rank": 59.9,
+            "role": "phantom",
             "leader": false
         },
         {
-            "id": "bruhhh#0480",
-            "name": "AyBruh",
-            "rank": 49.3,
-            "role": "phantom",
+            "id": "Jenny#7852",
+            "name": "LumiNaughti",
+            "rank": 56,
+            "role": "luminous",
+            "leader": false
+        },
+        {
+            "id": "itsdaytime24#5626",
+            "name": "BAM10",
+            "rank": 50.5,
+            "role": "battlemage",
+            "leader": true,
+            "timestamp": 1617325266536
+        },
+        {
+            "id": "BlackRyu#8737",
+            "name": "BlackRyu",
+            "rank": 49,
+            "role": "kaiser",
             "leader": false,
-            "timestamp": 1601084610171
+            "timestamp": 1621217176676
+        },
+        {
+            "id": "angelxeternity#1099",
+            "name": "omgeez",
+            "rank": 45,
+            "role": "buccaneer",
+            "leader": false,
+            "timestamp": 1617414188006
+        },
+        {
+            "id": "achoi#8641",
+            "name": "ACicy",
+            "rank": 38,
+            "role": "icelightning",
+            "leader": false,
+            "timestamp": 1617670873442
         },
         {
             "id": "Subzob#8232",
@@ -71,28 +173,20 @@
             "rank": 36.1,
             "role": "nightlord",
             "leader": false,
-            "timestamp": 1611713051014
+            "timestamp": 1621216216694
         },
         {
-            "id": "Fidgets#8755",
-            "name": "Flameos",
-            "rank": 32.2,
-            "role": "firepoison",
+            "id": "YodaisPal#4536",
+            "name": "BigBossPal",
+            "rank": 31.8,
+            "role": "paladin",
             "leader": false,
-            "multiplier": 0.8,
-            "timestamp": 1611886275407
-        },
-        {
-            "id": "Queenfarfelue#0766",
-            "name": "Aphr0d1te",
-            "rank": 30.9,
-            "role": "aran",
-            "leader": false
+            "timestamp": 1621215968090
         },
         {
             "id": "sabrinaa#0993",
             "name": "shitake",
-            "rank": 29.5,
+            "rank": 31,
             "role": "phantom",
             "leader": false,
             "timestamp": 1609034174828
@@ -113,12 +207,11 @@
             "leader": false
         },
         {
-            "id": "angelxeternity#1099",
-            "name": "omgeez",
-            "rank": 11.6,
-            "role": "buccaneer",
-            "leader": false,
-            "timestamp": 1611452551994
+            "id": "QueenJojo - FlickMyWand#4667",
+            "name": "FlickMyWand",
+            "rank": 15.6,
+            "role": "bishop",
+            "leader": false
         },
         {
             "id": "Dennis#5146",
@@ -128,10 +221,142 @@
             "leader": false
         },
         {
-            "id": "jerms (CardioB)#0891",
-            "name": "CardioB",
+            "id": "duble#3226",
+            "name": "Dubletap3",
+            "rank": 1,
+            "role": "thunderbreaker",
+            "leader": false,
+            "timestamp": 1617587777194
+        },
+        {
+            "id": "CupNoodles#5753",
+            "name": "Jiggle",
+            "rank": 1,
+            "role": "darkknight",
+            "leader": false
+        },
+        {
+            "id": "Drogøn#2599",
+            "name": "TeeeRaw",
+            "rank": 1,
+            "role": "icelightning",
+            "leader": false,
+            "timestamp": 1617672887444
+        },
+        {
+            "id": "jin#2259",
+            "name": "Hyorinmaru",
+            "rank": 34.7,
+            "role": "kaiser",
+            "leader": false,
+            "timestamp": 1621206896708
+        },
+        {
+            "id": "Missy#6114",
+            "name": "MissBow",
             "rank": 1,
             "role": "windarcher",
+            "leader": false,
+            "timestamp": 1617674609451
+        },
+        {
+            "id": "ipposama#8552",
+            "name": "ipposama",
+            "rank": 1,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "Supbuddy (Sophan)#6993",
+            "name": "supbuddy",
+            "rank": 1,
+            "role": "phantom",
+            "leader": false,
+            "timestamp": 1621128694722
+        },
+        {
+            "id": "itsdaytime24#1111",
+            "name": "PalaDAYn",
+            "rank": 1,
+            "role": "paladin",
+            "leader": false
+        },
+        {
+            "id": "Khanjar#2222",
+            "name": "SaberSenpai",
+            "rank": 1,
+            "role": "paladin",
+            "leader": false
+        },
+        {
+            "id": "chicken nugget#0412",
+            "name": "Horus",
+            "rank": 1,
+            "role": "phantom",
+            "leader": false
+        },
+        {
+            "id": "Sharkey#6408",
+            "name": "Sharkey",
+            "rank": 1,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "yujube#2375",
+            "name": "yujube",
+            "rank": 1,
+            "role": "icelightning",
+            "leader": false
+        },
+        {
+            "id": "Jenny#1111",
+            "name": "FeelMeSlowly",
+            "rank": 1,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "MM#3468",
+            "name": "xMMx",
+            "rank": 1,
+            "role": "bishop",
+            "leader": false
+        },
+        {
+            "id": "COKE#1111",
+            "name": "CokeySenpai",
+            "rank": 1,
+            "role": "bishop",
+            "leader": false,
+            "timestamp": 1621216294683
+        },
+        {
+            "id": "siciliano711#0290",
+            "name": "Charlie711",
+            "rank": 1,
+            "role": "nightlord",
+            "leader": false
+        },
+        {
+            "id": "Shooky#8044",
+            "name": "ShookyOnIce",
+            "rank": 1,
+            "role": "icelightning",
+            "leader": false
+        },
+        {
+            "id": "DinDin#8451",
+            "name": "Kaiser",
+            "rank": 1,
+            "role": "kaiser",
+            "leader": false
+        },
+        {
+            "id": "Jenny#2222",
+            "name": "DuckyTime",
+            "rank": 1,
+            "role": "evan",
             "leader": false
         },
         {
